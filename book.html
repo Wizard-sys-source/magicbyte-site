@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a Repair • MagicByte</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/mascot-icon.png" alt="MagicByte wizard mascot">
+      MagicByte
+    </a>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services & Pricing</a>
+      <a href="inventory.html">Stock Status</a>
+      <a href="book.html" aria-current="page">Book a Repair</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section>
+    <h2>How payment works</h2>
+    <p class="section-note">You should never have to pay a stranger the full amount before meeting them. Here's exactly how it works, and why.</p>
+
+    <div class="grid" style="margin-bottom:20px;">
+      <div class="card">
+        <span class="glyph">✅</span>
+        <h3>Part already in stock</h3>
+        <p>No payment upfront, ever. I show up, do the repair, you pay on completion — card tap or cash. Check <a href="inventory.html">stock status</a> first.</p>
+      </div>
+      <div class="card">
+        <span class="glyph">📦</span>
+        <h3>Part needs ordering</h3>
+        <p>A deposit equal to the <strong>part's exact cost</strong> is required to place the order — never the full invoice, never labor. Labor is still paid on completion only.</p>
+      </div>
+      <div class="card">
+        <span class="glyph">↩️</span>
+        <h3>If you need to cancel</h3>
+        <p>Cancel before the part ships: full refund, no questions. Cancel after it's shipped: a $10 cancellation fee applies (covers the non-returnable order), the rest is refunded.</p>
+      </div>
+    </div>
+
+    <p class="section-note">Payments run through Stripe/Square, not cash apps — that means a real receipt and buyer protection on their end, not just my word. Most invoices go out directly by text or email once a repair's quoted, but you can also pay straight from here.</p>
+    <a class="btn btn-ghost" href="#" onclick="alert('Replace this link with your real Stripe/Square payment link in book.html.'); return false;">Pay Deposit / Invoice</a>
+  </section>
+
+  <div class="rune-divider" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/>
+    </svg>
+  </div>
+
+  <section class="hero" style="padding-top:0;">
+    <p class="eyebrow">Book a Repair</p>
+    <h1>Summon the <span class="accent">wizard.</span></h1>
+    <p class="lede">Fill this out or just text/email directly — whichever's faster for you. I'll reply with a quote and, if the part needs ordering, a link to lock it in with a deposit.</p>
+  </section>
+
+  <section>
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); margin-bottom:36px;">
+      <div class="card">
+        <h3>Text or call</h3>
+        <p><a href="tel:3165594816">316-559-4816</a> — fastest way to reach me directly.</p>
+      </div>
+      <div class="card">
+        <h3>Email</h3>
+        <p><a href="mailto:hello@magicbyte.repair">hello@magicbyte.repair</a> — replace with your real inbox in the HTML.</p>
+      </div>
+    </div>
+
+    <h2>Booking form</h2>
+    <p class="section-note">
+      This form sends straight to your email via Formspree (free for low volume). See README.md for the two-minute setup —
+      until you connect it, submissions won't go anywhere.
+    </p>
+
+    <form class="spellform" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" method="POST">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div class="field">
+        <label for="contact">Best way to reach you (phone or email)</label>
+        <input type="text" id="contact" name="contact" required>
+      </div>
+
+      <div class="field">
+        <label for="device">Device (e.g. iPhone 12, Galaxy S22)</label>
+        <input type="text" id="device" name="device" required>
+      </div>
+
+      <div class="field">
+        <label for="issue">What's Wrong</label>
+        <select id="issue" name="issue">
+          <option>Cracked / broken screen</option>
+          <option>Battery / won't hold charge</option>
+          <option>Back glass / camera</option>
+          <option>Charging port</option>
+          <option>Won't turn on</option>
+          <option>Something else</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="details">Details</label>
+        <textarea id="details" name="details" placeholder="Anything else I should know — when it happened, water exposure, etc."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="location">Where in Wichita (for mobile visit)</label>
+        <input type="text" id="location" name="location" placeholder="Neighborhood or general area">
+      </div>
+
+      <div class="field">
+        <label for="photo">Photo of the damage (optional but helpful)</label>
+        <input type="file" id="photo" name="photo" accept="image/*">
+      </div>
+
+      <div class="field">
+        <label><input type="checkbox" name="promo" value="First 100 Heroes"> I'd like the First 100 Heroes $20 promo (if still available)</label>
+      </div>
+
+      <button class="btn btn-primary" type="submit" style="justify-self:start;">Send to the Wizard</button>
+    </form>
+  </section>
+
+</main>
+
+<footer class="site wrap">
+  <div class="foot-row">
+    <span>© 2026 MagicByte · Wichita, KS · Mobile Wizard Repair</span>
+    <span>Wichita, KS &amp; surrounding area · <a href="tel:3165594816">316-559-4816</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

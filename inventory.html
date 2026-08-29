@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Status • MagicByte</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="nav-row">
+    <a class="brand" href="index.html">
+      <img src="assets/mascot-icon.png" alt="MagicByte wizard mascot">
+      MagicByte
+    </a>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services & Pricing</a>
+      <a href="inventory.html" aria-current="page">Stock Status</a>
+      <a href="book.html">Book a Repair</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" style="padding-top:48px;">
+    <p class="eyebrow">Stock Status</p>
+    <h1>What's <span class="accent">in the bag</span> right now.</h1>
+    <p class="lede">In-stock parts mean same-day repair. Anything marked "order" ships in a few days after booking — I'll always confirm before you commit.</p>
+  </section>
+
+  <!--
+    HOW TO UPDATE THIS TABLE
+    Each row is one part. To mark something in stock, change the
+    class on the <span> from "stock-order" to "stock-in" and update
+    the text from "Order (3–5 days)" to "In stock". Add new rows by
+    copying an existing <tr>...</tr> block. See README.md for the
+    full walkthrough.
+  -->
+
+  <section>
+    <h2>iPhone parts</h2>
+    <table class="data">
+      <thead>
+        <tr><th>Part</th><th>Cost</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>iPhone 12 Screen</td>
+          <td class="price">$56.81</td>
+          <td><span class="stock-tag stock-in">In stock</span></td>
+        </tr>
+        <tr>
+          <td>iPhone 12 Battery</td>
+          <td class="price">—</td>
+          <td><span class="stock-tag stock-order">Order (3–5 days)</span></td>
+        </tr>
+        <tr>
+          <td>iPhone 11 Screen</td>
+          <td class="price">—</td>
+          <td><span class="stock-tag stock-order">Order (3–5 days)</span></td>
+        </tr>
+        <tr>
+          <td>iPhone 13 Screen</td>
+          <td class="price">—</td>
+          <td><span class="stock-tag stock-order">Order (3–5 days)</span></td>
+        </tr>
+        <tr>
+          <td>iPhone 14 Screen</td>
+          <td class="price">—</td>
+          <td><span class="stock-tag stock-order">Order (3–5 days)</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="rune-divider" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/>
+    </svg>
+  </div>
+
+  <section>
+    <h2>Android & other</h2>
+    <table class="data">
+      <thead>
+        <tr><th>Part</th><th>Cost</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Common Android screens</td>
+          <td class="price">Varies</td>
+          <td><span class="stock-tag stock-order">Order (3–5 days)</span></td>
+        </tr>
+        <tr>
+          <td>Charging port kits (iPhone & Android)</td>
+          <td class="price">Varies</td>
+          <td><span class="stock-tag stock-order">Order (3–5 days)</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="field-hint" style="margin-top:16px;">Don't see your model? Send it through the <a href="book.html">booking form</a> — most parts can be ordered within a few days.</p>
+  </section>
+
+</main>
+
+<footer class="site wrap">
+  <div class="foot-row">
+    <span>© 2026 MagicByte · Wichita, KS · Mobile Wizard Repair</span>
+    <span>Wichita, KS &amp; surrounding area · <a href="tel:3165594816">316-559-4816</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
