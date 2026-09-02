@@ -1,32 +1,24 @@
 /* ============================================================
-   MagicByte — Wizard's Satchel (cart)
-   No backend. Cart lives in localStorage. Checkout is a single
-   Formspree submission — same "request, then I quote/invoice"
-   flow as the booking form, just itemized. Nothing here charges
-   a card or auto-confirms anything.
+   MagicByte — The Knight's Satchel (Cart)
    ============================================================ */
 
 (function () {
-  var STORAGE_KEY = "magicbyte_satchel_v1";
+  var STORAGE_KEY = "magicbyte_satchel_v2";
   var FORMSPREE_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_YOUR_PARTS_FORM_ID";
 
   function readCart() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (e) { return []; }
+    try { var raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; } 
+    catch (e) { return []; }
   }
+  
   function writeCart(items) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     renderBadge();
     renderDrawerItems();
   }
-  function cartCount(items) {
-    return items.reduce(function (sum, i) { return sum + i.qty; }, 0);
-  }
-  function cartTotal(items) {
-    return items.reduce(function (sum, i) { return sum + (i.price || 0) * i.qty; }, 0);
-  }
+  
+  function cartCount(items) { return items.reduce(function (sum, i) { return sum + i.qty; }, 0); }
+  function cartTotal(items) { return items.reduce(function (sum, i) { return sum + (i.price || 0) * i.qty; }, 0); }
 
   function addToCart(id, name, price) {
     var items = readCart();
@@ -37,28 +29,25 @@
     openDrawer();
     toast(name + " added to your satchel");
   }
+
   function setQty(id, qty) {
     var items = readCart();
-    if (qty <= 0) {
-      items = items.filter(function (i) { return i.id !== id; });
-    } else {
-      var it = items.find(function (i) { return i.id === id; });
-      if (it) it.qty = qty;
-    }
+    if (qty <= 0) items = items.filter(function (i) { return i.id !== id; });
+    else { var it = items.find(function (i) { return i.id === id; }); if (it) it.qty = qty; }
     writeCart(items);
   }
+  
   function clearCart() { writeCart([]); }
 
   /* ---------- UI injection ---------- */
-
   function injectNavButton() {
     var nav = document.querySelector(".nav-row");
     if (!nav) return;
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "cart-nav-btn";
-    btn.setAttribute("aria-label", "Open satchel");
-    btn.innerHTML = '<span class="cart-glyph">🜛</span><span class="cart-nav-label">Satchel</span><span class="cart-badge" id="cart-badge" hidden>0</span>';
+    btn.style.cssText = "background: transparent; border: 1px solid var(--steel); color: var(--parchment); padding: 5px 15px; border-radius: 4px; cursor: pointer; font-family: var(--font-mono); text-transform: uppercase;";
+    btn.innerHTML = 'Satchel <span class="cart-badge" id="cart-badge" style="background: var(--teal); color: #000; padding: 2px 6px; border-radius: 50%; margin-left: 5px;" hidden>0</span>';
     btn.addEventListener("click", openDrawer);
     nav.appendChild(btn);
   }
@@ -75,27 +64,29 @@
     var overlay = document.createElement("div");
     overlay.className = "satchel-overlay";
     overlay.id = "satchel-overlay";
+    overlay.style.cssText = "position: fixed; inset: 0; background: rgba(0,0,0,0.7); opacity: 0; pointer-events: none; transition: opacity .25s ease; z-index: 40;";
 
     var drawer = document.createElement("aside");
     drawer.className = "satchel-drawer";
     drawer.id = "satchel-drawer";
+    drawer.style.cssText = "position: fixed; top: 0; right: 0; height: 100%; width: min(400px, 92vw); background: var(--bg-panel); border-left: 2px solid var(--steel-dark); transform: translateX(100%); transition: transform .3s ease; z-index: 41; display: flex; flex-direction: column;";
+    
     drawer.innerHTML =
-      '<div class="satchel-head">' +
-        '<h3>Your Satchel</h3>' +
-        '<button type="button" class="satchel-close" aria-label="Close satchel">&times;</button>' +
+      '<div style="padding: 20px; border-bottom: 2px solid var(--steel-dark); display: flex; justify-content: space-between;">' +
+        '<h3 style="margin: 0; color: var(--gold); font-family: var(--font-display);">Your Satchel</h3>' +
+        '<button type="button" class="satchel-close" style="background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>' +
       '</div>' +
-      '<div class="satchel-body" id="satchel-body"></div>' +
-      '<div class="satchel-foot">' +
-        '<div class="satchel-total"><span>Total</span><strong id="satchel-total">$0.00</strong></div>' +
-        '<p class="field-hint">Parts already in stock ship no upfront cost — you pay on completion. Special-order parts need a deposit equal to the part\u2019s exact cost, invoiced after I confirm. Submitting this just sends the request — no payment happens here.</p>' +
-        '<form id="satchel-form">' +
-          '<div class="field"><label for="s-name">Name</label><input type="text" id="s-name" name="name" required></div>' +
-          '<div class="field"><label for="s-contact">Best way to reach you (text or email)</label><input type="text" id="s-contact" name="contact" required></div>' +
-          '<div class="field"><label for="s-notes">Notes (device model, timing, etc.)</label><textarea id="s-notes" name="notes"></textarea></div>' +
+      '<div class="satchel-body" id="satchel-body" style="flex: 1; overflow-y: auto; padding: 20px;"></div>' +
+      '<div style="padding: 20px; border-top: 2px solid var(--steel-dark);">' +
+        '<div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-family: var(--font-mono);"><span>Total Amount</span><strong id="satchel-total" style="color: var(--teal-bright);">$0.00</strong></div>' +
+        '<p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Submitting this request sends a raven to the Wizard. No gold is charged until the quote is approved.</p>' +
+        '<form id="satchel-form" style="display: flex; flex-direction: column; gap: 10px;">' +
+          '<input type="text" name="name" placeholder="Your Name" required style="padding: 10px; background: #111; border: 1px solid var(--steel); color: #fff;">' +
+          '<input type="text" name="contact" placeholder="Text or Email" required style="padding: 10px; background: #111; border: 1px solid var(--steel); color: #fff;">' +
+          '<textarea name="notes" placeholder="Device Lore (Model, Notes)" style="padding: 10px; background: #111; border: 1px solid var(--steel); color: #fff;"></textarea>' +
           '<input type="hidden" name="order_summary" id="s-summary">' +
-          '<input type="hidden" name="_subject" value="New parts order — MagicByte satchel">' +
-          '<button type="submit" class="btn btn-primary" id="satchel-submit">Send Order to the Wizard</button>' +
-          '<p class="field-hint" id="satchel-status" role="status"></p>' +
+          '<button type="submit" class="btn btn-knight" id="satchel-submit" style="margin-top: 10px;">Send Order to the Wizard</button>' +
+          '<p id="satchel-status" style="color: var(--teal-bright); font-size: 0.85rem; text-align: center; margin-top: 5px;"></p>' +
         '</form>' +
       '</div>';
 
@@ -104,10 +95,6 @@
 
     overlay.addEventListener("click", closeDrawer);
     drawer.querySelector(".satchel-close").addEventListener("click", closeDrawer);
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") closeDrawer();
-    });
-
     document.getElementById("satchel-form").addEventListener("submit", handleCheckout);
   }
 
@@ -118,20 +105,20 @@
     var items = readCart();
 
     if (items.length === 0) {
-      body.innerHTML = '<p class="field-hint">Your satchel is empty. Browse <a href="inventory.html">parts</a> and add what you need.</p>';
+      body.innerHTML = '<p style="color: #aaa; font-size: 0.9rem;">Your satchel is empty. Browse the Armory to add components.</p>';
     } else {
       body.innerHTML = items.map(function (i) {
-        var priceLabel = i.price ? ("$" + i.price.toFixed(2)) : "Quoted after review";
+        var priceLabel = i.price ? ("$" + i.price.toFixed(2)) : "Quoted";
         return (
-          '<div class="satchel-item" data-id="' + i.id + '">' +
-            '<div class="satchel-item-info">' +
-              '<span class="satchel-item-name">' + i.name + '</span>' +
-              '<span class="satchel-item-price">' + priceLabel + '</span>' +
+          '<div class="satchel-item" data-id="' + i.id + '" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line);">' +
+            '<div>' +
+              '<div style="color: var(--parchment); font-size: 0.95rem;">' + i.name + '</div>' +
+              '<div style="color: var(--teal); font-family: var(--font-mono); font-size: 0.85rem;">' + priceLabel + '</div>' +
             '</div>' +
-            '<div class="satchel-qty">' +
-              '<button type="button" class="qty-btn" data-action="dec">\u2212</button>' +
-              '<span>' + i.qty + '</span>' +
-              '<button type="button" class="qty-btn" data-action="inc">+</button>' +
+            '<div style="display: flex; gap: 10px; align-items: center;">' +
+              '<button type="button" class="qty-btn" data-action="dec" style="background: var(--steel-dark); border: none; color: #fff; border-radius: 4px; padding: 2px 8px; cursor: pointer;">-</button>' +
+              '<span style="font-family: var(--font-mono);">' + i.qty + '</span>' +
+              '<button type="button" class="qty-btn" data-action="inc" style="background: var(--steel-dark); border: none; color: #fff; border-radius: 4px; padding: 2px 8px; cursor: pointer;">+</button>' +
             '</div>' +
           '</div>'
         );
@@ -141,32 +128,26 @@
         btn.addEventListener("click", function () {
           var row = btn.closest(".satchel-item");
           var id = row.getAttribute("data-id");
-          var items2 = readCart();
-          var it = items2.find(function (i) { return i.id === id; });
+          var it = readCart().find(function (i) { return i.id === id; });
           if (!it) return;
           var delta = btn.getAttribute("data-action") === "inc" ? 1 : -1;
           setQty(id, it.qty + delta);
         });
       });
     }
-
     totalEl.textContent = "$" + cartTotal(items).toFixed(2);
   }
 
   function openDrawer() {
-    var overlay = document.getElementById("satchel-overlay");
-    var drawer = document.getElementById("satchel-drawer");
-    if (!overlay || !drawer) return;
+    document.getElementById("satchel-overlay").style.opacity = "1";
+    document.getElementById("satchel-overlay").style.pointerEvents = "auto";
+    document.getElementById("satchel-drawer").style.transform = "translateX(0)";
     renderDrawerItems();
-    overlay.classList.add("open");
-    drawer.classList.add("open");
   }
   function closeDrawer() {
-    var overlay = document.getElementById("satchel-overlay");
-    var drawer = document.getElementById("satchel-drawer");
-    if (!overlay || !drawer) return;
-    overlay.classList.remove("open");
-    drawer.classList.remove("open");
+    document.getElementById("satchel-overlay").style.opacity = "0";
+    document.getElementById("satchel-overlay").style.pointerEvents = "none";
+    document.getElementById("satchel-drawer").style.transform = "translateX(100%)";
   }
 
   function handleCheckout(e) {
@@ -176,80 +157,55 @@
     var submitBtn = document.getElementById("satchel-submit");
 
     if (items.length === 0) {
-      statusEl.textContent = "Your satchel is empty — add a part first.";
+      statusEl.textContent = "Your satchel is empty!";
       return;
     }
 
     var summary = items.map(function (i) {
-      var priceLabel = i.price ? ("$" + i.price.toFixed(2)) : "quote needed";
-      return i.qty + "x " + i.name + " (" + priceLabel + " each)";
+      return i.qty + "x " + i.name + " (" + (i.price ? "$" + i.price.toFixed(2) : "quote needed") + " each)";
     }).join("\n") + "\n\nEstimated total: $" + cartTotal(items).toFixed(2);
-
     document.getElementById("s-summary").value = summary;
 
-    var form = e.target;
-    var data = new FormData(form);
-
+    var data = new FormData(e.target);
     submitBtn.disabled = true;
-    submitBtn.textContent = "Sending...";
+    submitBtn.textContent = "Sending Raven...";
     statusEl.textContent = "";
 
-    fetch(FORMSPREE_ENDPOINT, {
-      method: "POST",
-      body: data,
-      headers: { Accept: "application/json" }
-    }).then(function (resp) {
-      if (resp.ok) {
-        statusEl.textContent = "Sent! I\u2019ll text or email you a quote shortly.";
-        clearCart();
-        form.reset();
+    fetch(FORMSPREE_ENDPOINT, { method: "POST", body: data, headers: { Accept: "application/json" } })
+      .then(function (resp) {
+        if (resp.ok) {
+          statusEl.textContent = "Raven sent! The Wizard will text or email you shortly.";
+          clearCart();
+          e.target.reset();
+          setTimeout(closeDrawer, 2000);
+        } else throw new Error("Formspree error");
+      }).catch(function () {
+        statusEl.textContent = "Raven failed! Please text the wizard directly instead.";
+      }).finally(function() {
         submitBtn.textContent = "Send Order to the Wizard";
         submitBtn.disabled = false;
-        setTimeout(closeDrawer, 1800);
-      } else {
-        throw new Error("Formspree error");
-      }
-    }).catch(function () {
-      statusEl.textContent = "Couldn\u2019t send automatically — text 316-559-4816 or use the booking form instead.";
-      submitBtn.textContent = "Send Order to the Wizard";
-      submitBtn.disabled = false;
-    });
+      });
   }
 
   function toast(message) {
     var el = document.createElement("div");
-    el.className = "wizard-toast";
     el.textContent = message;
+    el.style.cssText = "position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--steel-dark); border: 1px solid var(--gold); color: #fff; padding: 10px 20px; border-radius: 4px; font-family: var(--font-mono); z-index: 50; box-shadow: 0 4px 10px rgba(0,0,0,0.5);";
     document.body.appendChild(el);
-    requestAnimationFrame(function () { el.classList.add("show"); });
-    setTimeout(function () {
-      el.classList.remove("show");
-      setTimeout(function () { el.remove(); }, 300);
-    }, 2200);
+    setTimeout(function () { el.remove(); }, 2500);
   }
-
-  /* ---------- wire up "Add to Satchel" buttons on the shop page ---------- */
 
   function wireAddButtons() {
     document.querySelectorAll("[data-add-to-cart]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var card = btn.closest("[data-part-id]");
         if (!card) return;
-        var id = card.getAttribute("data-part-id");
-        var name = card.getAttribute("data-part-name");
-        var priceAttr = card.getAttribute("data-part-price");
-        var price = priceAttr ? parseFloat(priceAttr) : 0;
-        addToCart(id, name, price);
+        addToCart(card.getAttribute("data-part-id"), card.getAttribute("data-part-name"), parseFloat(card.getAttribute("data-part-price") || 0));
       });
     });
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    injectNavButton();
-    buildDrawer();
-    renderBadge();
-    wireAddButtons();
+    injectNavButton(); buildDrawer(); renderBadge(); wireAddButtons();
   });
-
-  window.MagicByteCart = { addToCart: addToCart, openDrawer: openDrawer };
 })();
