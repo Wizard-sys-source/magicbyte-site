@@ -1,9 +1,15 @@
 # MagicByte website
 
-A 5-page static site: `index.html` (home), `services.html` (pricing),
-`inventory.html` (stock status), `book.html` (booking form + payment
-link), `faq.html`. No build step — plain HTML/CSS, so you can edit
-any file directly in GitHub and see changes live.
+A static site, still no build step: `index.html` (home),
+`inventory.html` (the parts shop — DoorDash-style cards with an
+"Add to Satchel" button), `services.html` (labor pricing),
+`book.html` (repair booking form + payment link), `consult.html`
+(the voice-message orb), `faq.html`, plus two shared files: `cart.js`
+(the satchel cart, loaded on every page) and `styles.css`.
+
+Nothing here is automated beyond the forms and the cart. No calls —
+the footer's phone number is voicemail-only; text, email, the orb,
+or a form are the ways people reach you.
 
 ## 1. Publish it on GitHub Pages
 
@@ -35,6 +41,50 @@ an email to you — no backend needed.
    Replace `REPLACE_WITH_YOUR_FORM_ID` with your real ID.
 4. Submit a test booking — you should get an email within a minute.
 
+## 2b. Connect the parts order form (Satchel checkout)
+
+The cart drawer (`cart.js`) submits orders to its own Formspree form
+so they land separately from repair bookings.
+
+1. In your Formspree account, create a second form (e.g. "MagicByte
+   parts orders"), get its form ID.
+2. In `cart.js`, find near the top:
+   ```js
+   var FORMSPREE_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_YOUR_PARTS_FORM_ID";
+   ```
+   Replace with your real ID.
+3. Add a test part to the satchel on `inventory.html` and submit —
+   you should get an itemized email within a minute.
+
+The satchel never collects payment — it just sends you an itemized
+request (part names, quantities, estimated total, name, contact,
+notes), same as the booking form. You quote and invoice manually
+per your existing deposit policy.
+
+## 2c. Connect the orb (Consult the Wizard)
+
+`consult.html` records a voice message in the browser (no app, no
+account) and sends it to you as an audio file attachment, or accepts
+a typed message if someone would rather not record.
+
+1. Create a third Formspree form (e.g. "MagicByte consult"), get its
+   ID. Formspree's free tier supports file attachments.
+2. In `consult.html`, find near the top of the `<script>` block:
+   ```js
+   var FORMSPREE_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_YOUR_CONSULT_FORM_ID";
+   ```
+   Replace with your real ID.
+3. Recording requires the browser's microphone permission, which
+   only works over HTTPS — GitHub Pages serves everything over HTTPS
+   by default, so this works with no extra setup once it's live.
+4. Test it yourself: record a few seconds, send it, confirm the
+   audio file arrives as an attachment on the Formspree email. If a
+   visitor's browser blocks the mic, the typed-message form below
+   the orb sends to the same place.
+5. You reply the normal way — text or email, whichever contact info
+   they left. The orb doesn't build a two-way chat; it's a one-way
+   "leave a message," same spirit as a voicemail box.
+
 ## 3. Connect a payment link
 
 1. Create a free Stripe or Square account, make a **Payment Link**
@@ -49,25 +99,36 @@ an email to you — no backend needed.
    payment link per customer and text/email it directly — the button
    on the site is for people who land there first.
 
-## 4. Update stock status (`inventory.html`)
+## 4. Update the parts shop (`inventory.html`)
 
-Each row in the table is one part:
+Each part is one `.part-card` block:
 
 ```html
-<tr>
-  <td>iPhone 12 Screen</td>
-  <td class="price">$56.81</td>
-  <td><span class="stock-tag stock-in">In stock</span></td>
-</tr>
+<div class="part-card" data-category="iphone" data-part-id="iphone-12-screen"
+     data-part-name="iPhone 12 Screen" data-part-price="56.81">
+  <div class="part-card-top">
+    <div><h3>iPhone 12 Screen</h3><p class="part-device">iPhone 12 / 12 Pro</p></div>
+    <span class="stock-tag stock-in">In stock</span>
+  </div>
+  <div class="part-card-foot">
+    <span class="part-price">$56.81</span>
+    <button class="btn-add" data-add-to-cart>Add to Satchel</button>
+  </div>
+</div>
 ```
 
-- To mark something **in stock**: use class `stock-in` and text
-  `In stock`.
-- To mark something as **needing an order**: use class `stock-order`
-  and text like `Order (3–5 days)`.
-- To **add a new part**: copy an entire `<tr>...</tr>` block and edit
-  the three values (name, price, status).
-- To **remove a part**: delete its `<tr>...</tr>` block.
+- `data-part-id` must be unique — it's how the cart tracks quantity.
+- `data-part-price` is a plain number, no `$`. Leave it empty
+  (`data-part-price=""`) for parts you want to quote instead of
+  price upfront — the card will show "Quoted after review" and the
+  order will list it as "quote needed."
+- `data-category` controls the filter buttons at the top
+  (`iphone`, `android`, or `other`) — add a new filter button in the
+  `.shop-filters` block if you add a new category.
+- Stock status is the same `stock-in` / `stock-order` pattern as
+  before.
+- To **add a new part**: copy an entire `.part-card` block and edit
+  the values. To **remove one**: delete its block.
 
 ## 5. Update pricing (`services.html`)
 
@@ -101,10 +162,11 @@ place.
 ## 7. Site-wide changes
 
 - **Phone number**: appears in the footer of every page and in
-  `book.html`. Search-and-replace `316-559-4816` across all files if
-  it changes. The street address is intentionally left off the site
-  since this is a mobile-only operation — footer just says "Wichita,
-  KS & surrounding area."
+  `book.html`, labeled "voicemail only" — it's a text/voicemail line,
+  not something to answer live. Search-and-replace `316-559-4816`
+  across all files if it changes. The street address is intentionally
+  left off the site since this is a mobile-only operation — footer
+  just says "Wichita, KS & surrounding area."
 - **Logo**: your wizard-phone mascot is now baked in as local files —
   `assets/mascot.png` (full artwork, used in the homepage hero) and
   `assets/mascot-icon.png` (square crop of just the hat + mustache,
@@ -123,7 +185,9 @@ place.
 
 ## Known placeholders you should replace
 
-- Formspree form ID in `book.html`
+- Formspree form ID in `book.html` (repair bookings)
+- Formspree form ID in `cart.js` (parts orders — the satchel)
+- Formspree form ID in `consult.html` (orb voice/text messages)
 - Payment link `href` in `book.html`
 - Email address `hello@magicbyte.repair` in `book.html`
 - Logo image (currently the same Imgur link you were already using)
