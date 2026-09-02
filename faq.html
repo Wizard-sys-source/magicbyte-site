@@ -1,89 +1,73 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FAQ • MagicByte</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Oracle's Answers | MagicByte</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    details.faq-item { border-bottom: 1px solid var(--steel-dark); padding: 16px 0; }
+    details.faq-item summary { cursor: pointer; font-family: var(--font-display); font-size: 1.1rem; color: var(--parchment); list-style: none; display: flex; justify-content: space-between; }
+    details.faq-item summary::-webkit-details-marker { display: none; }
+    details.faq-item p { color: var(--parchment-dim); margin: 10px 0 0 0; padding-left: 20px; border-left: 2px solid var(--teal-dim); }
+  </style>
 </head>
 <body>
 
 <header class="site">
   <div class="nav-row">
     <a class="brand" href="index.html">
-      <img src="assets/mascot-icon.png" alt="MagicByte wizard mascot">
+      <img src="assets/mascot-icon.png" alt="MagicByte Mascot">
       MagicByte
     </a>
     <nav class="links">
-      <a href="index.html">Home</a>
-      <a href="inventory.html">Shop Parts</a>
-      <a href="services.html">Services & Pricing</a>
-      <a href="book.html">Book a Repair</a>
-      <a href="consult.html" class="orb-nav-link">Consult the Wizard</a>
-      <a href="faq.html" aria-current="page">FAQ</a>
+      <a href="index.html">The Sanctum</a>
+      <a href="inventory.html">The Armory</a>
+      <a href="book.html">Consult the Wizard</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-
   <section class="hero" style="padding-top:48px;">
-    <p class="eyebrow">FAQ</p>
-    <h1>Questions <span class="accent">answered.</span></h1>
+    <p class="eyebrow">The Oracle's Answers</p>
+    <h1>Knowledge is <span class="accent">power.</span></h1>
+    <p class="lede">Total transparency is the foundation of good magic. Here are the answers to the most common questions travelers ask before handing over their artifacts.</p>
   </section>
 
-  <section>
+  <section class="spellform" style="max-width: 800px; margin: 0 auto;">
     <details class="faq-item" open>
-      <summary><span class="q">How long does a repair take?</span><span class="toggle">+</span></summary>
-      <p>I quote about 1:30 (an hour and a half) for most repairs — screens, batteries, charging ports, cameras — and most finish sooner than that. The one exception is back glass on iPhone X through 14, which takes at least two days since it requires laser separation I don't have equipment for yet. Everything else, including back glass on Android and iPhone 15+, is same-day. If a part needs to be ordered first, add 3–5 days for shipping.</p>
+      <summary>Are you a real wizard, or just a weird tech guy? <span>+</span></summary>
+      <p>A healthy mix of both. The wizard persona makes a stressful situation fun, but my repair standards are dead serious. I believe in treating your device like a vital piece of machinery, not a disposable toy.</p>
     </details>
 
     <details class="faq-item">
-      <summary><span class="q">Is there a warranty?</span><span class="toggle">+</span></summary>
-      <p>Yes — every repair is covered for 30 days on both the part and the labor. If something related to the repair fails in that window, it's fixed at no charge.</p>
+      <summary>What if the mending spell fails? (Refunds) <span>+</span></summary>
+      <p>If I attempt the repair and the device is truly beyond saving, you pay $0. If you cancel before a special-order part ships, you get a full refund. If it has already shipped, a tiny $10 cancellation fee applies, and the rest of your gold is returned.</p>
     </details>
 
     <details class="faq-item">
-      <summary><span class="q">Should I back up my phone first?</span><span class="toggle">+</span></summary>
-      <p>Yes, if possible — back up to iCloud, Google, or a computer before your appointment. Most repairs don't touch your data, but it's good practice any time a device is opened up.</p>
+      <summary>How does the 30-Day Ward (Warranty) work? <span>+</span></summary>
+      <p>Every repair is magically sealed with a 30-day guarantee on both the component and my labor. If something related to the repair fails in that window, I will recast the spell and fix it at no charge.</p>
     </details>
 
     <details class="faq-item">
-      <summary><span class="q">Where do repairs happen?</span><span class="toggle">+</span></summary>
-      <p>I come to you anywhere in the Wichita area — home, office, or a public meeting spot if you'd rather. For first-time customers, I'll usually suggest meeting somewhere public like a coffee shop or library lot.</p>
+      <summary>Where do the rituals take place? <span>+</span></summary>
+      <p>I travel to you anywhere in the Wichita area—your home, your office, or a public meeting spot like a local tavern (coffee shop). For first-time travelers, I usually suggest a public meeting spot for everyone's comfort.</p>
     </details>
 
     <details class="faq-item">
-      <summary><span class="q">What if I need to cancel or want a refund?</span><span class="toggle">+</span></summary>
-      <p>If your part hasn't been ordered yet, you get a full refund, no questions. If it's already been ordered, a $10 cancellation fee applies to cover the non-returnable order, and the rest of your deposit is refunded. You're never charged for labor until the repair is actually done.</p>
-    </details>
-
-    <details class="faq-item">
-      <summary><span class="q">How do I pay?</span><span class="toggle">+</span></summary>
-      <p>Card payment link (sent after your quote) or cash on completion. A deposit is required up front only if a part needs to be special-ordered.</p>
-    </details>
-
-    <details class="faq-item">
-      <summary><span class="q">What if my part isn't in stock?</span><span class="toggle">+</span></summary>
-      <p>Check the <a href="inventory.html">shop page</a> before booking. If it's not listed as in stock, I'll quote you a price and turnaround, and a deposit covers ordering the part.</p>
-    </details>
-
-    <details class="faq-item">
-      <summary><span class="q">Can I just call you?</span><span class="toggle">+</span></summary>
-      <p>Calls to 316-559-4816 go to voicemail — I don't take calls, but I check messages regularly. Text, email, the <a href="consult.html">orb</a>, or the booking form all reach me directly and get a faster reply.</p>
+      <summary>Can I just call you on a standard telephone? <span>+</span></summary>
+      <p>Calls to my line go directly to the void (voicemail). I do not take live calls so I can focus purely on repairs. Texting, emailing, or speaking into the Consultation Orb are the fastest ways to summon me.</p>
     </details>
   </section>
-
 </main>
 
 <footer class="site wrap">
-  <div class="foot-row">
-    <span>© 2026 MagicByte · Wichita, KS · Mobile Wizard Repair</span>
-    <span>Wichita, KS &amp; surrounding area · <a href="tel:3165594816">316-559-4816</a> (voicemail only)</span>
-  </div>
+  <span>© 2026 MagicByte · Wichita, KS · The Wizard Comes to You</span>
 </footer>
 
 <script src="cart.js"></script>
 </body>
 </html>
+
