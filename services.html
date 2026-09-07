@@ -1,97 +1,95 @@
-<!DOCTYPE html>
+
+              <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Grimoire of Labor | MagicByte</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services & Pricing • MagicByte</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <header class="site">
   <div class="nav-row">
     <a class="brand" href="index.html">
-      <img src="assets/mascot-icon.png" alt="MagicByte Mascot">
+      <img src="assets/mascot-icon.png" alt="MagicByte wizard mascot">
       MagicByte
     </a>
     <nav class="links">
-      <a href="index.html">The Sanctum</a>
-      <a href="inventory.html">The Armory</a>
-      <a href="book.html">Consult the Wizard</a>
+      <a href="index.html">Home</a>
+      <a href="inventory.html">Shop Parts</a>
+      <a href="services.html" aria-current="page">Services & Pricing</a>
+      <a href="book.html">Consult & Book</a>
+      <a href="faq.html">FAQ</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
+
   <section class="hero" style="padding-top:48px;">
-    <p class="eyebrow">The Grimoire of Labor</p>
-    <h1>Honest alchemy: <span class="accent">part cost + labor.</span></h1>
-    <p class="lede">Corporate guilds charge a flat "mystery" rate. I do not. You will always see the exact cost of the armor plating and my fee to cast the mending spell before you commit.</p>
+    <p class="eyebrow">Services & Pricing</p>
+    <h1>Simple pricing: <span class="accent">part cost + labor.</span></h1>
+    <p class="lede">No flat "mystery" rate. You'll always know the part price and the labor fee before you commit — and the promo below applies to labor, not parts.</p>
   </section>
 
-  <div class="card" style="margin: 30px 0; border-color: var(--gold); box-shadow: 0 0 15px rgba(223,178,48,0.2);">
-    <strong style="color: var(--gold-bright); font-family: var(--font-display);">First 100 Travelers Special</strong>
-    <p style="margin-top: 5px; font-size: 0.92rem;">The spellcasting fee is reduced to $20 for the first 100 heroes · parts priced separately · mention the promo to the Wizard when you submit your writ.</p>
+  <div class="promo">
+    <strong>First 100 Heroes Special</strong>
+    <span class="note">Labor fee is $20 for the first 100 customers · parts priced separately at cost · mention the promo when booking</span>
   </div>
 
   <section>
-    <h2>Standard Transmutations</h2>
-    <p class="section-note">These are the base labor fees. The exact cost of your required component (screen, battery, etc.) is added on top. See current part pricing in <a href="inventory.html">The Armory</a>.</p>
-    
-    <table class="spellform" style="width: 100%; text-align: left; border-collapse: collapse; padding: 0;">
+    <h2>Standard labor rates</h2>
+    <p class="section-note">These are the labor fees once the promo ends, or for anyone who wants to skip the promo and lock in warranty terms early. Part cost is added on top.</p>
+    <table class="data">
       <thead>
-        <tr style="border-bottom: 2px solid var(--steel-dark); color: var(--gold);">
-          <th style="padding: 12px;">The Spell (Repair)</th>
-          <th style="padding: 12px;">Labor Fee</th>
-          <th style="padding: 12px;">Casting Time</th>
-        </tr>
+        <tr><th>Repair</th><th>Labor Fee</th><th>Quoted Time</th></tr>
       </thead>
       <tbody>
-        <tr style="border-bottom: 1px solid var(--line);">
-          <td style="padding: 12px;"><strong>Glass Polishing (Signature Spell)</strong></td>
-          <td style="padding: 12px; color: var(--teal-bright);">Quoted</td>
-          <td style="padding: 12px;">~2:00</td>
-        </tr>
-        <tr style="border-bottom: 1px solid var(--line);">
-          <td style="padding: 12px;">Screen Resurrection</td>
-          <td style="padding: 12px; color: var(--teal-bright);">$35–45</td>
-          <td style="padding: 12px;">~1:30</td>
-        </tr>
-        <tr style="border-bottom: 1px solid var(--line);">
-          <td style="padding: 12px;">Battery Infusion</td>
-          <td style="padding: 12px; color: var(--teal-bright);">$35–40</td>
-          <td style="padding: 12px;">~1:30</td>
-        </tr>
-        <tr style="border-bottom: 1px solid var(--line);">
-          <td style="padding: 12px;">Leyline Clearing (Charging Port)</td>
-          <td style="padding: 12px; color: var(--teal-bright);">$40–60</td>
-          <td style="padding: 12px;">~1:30</td>
-        </tr>
-        <tr style="border-bottom: 1px solid var(--line);">
-          <td style="padding: 12px;">Scrying Lens (Camera) Repair</td>
-          <td style="padding: 12px; color: var(--teal-bright);">$40–50</td>
-          <td style="padding: 12px;">~1:30</td>
-        </tr>
-        <tr>
-          <td style="padding: 12px;">Diagnostic Divination (No repair)</td>
-          <td style="padding: 12px; color: var(--teal-bright);">$15–20</td>
-          <td style="padding: 12px;">~30 min</td>
-        </tr>
+        <tr><td><strong>Glass Polishing (Signature Spell)</strong></td><td class="price">Quoted</td><td>~2:00</td></tr>
+        <tr><td>Screen replacement</td><td class="price">$35–45</td><td>~1:30</td></tr>
+        <tr><td>Battery replacement</td><td class="price">$35–40</td><td>~1:30</td></tr>
+        <tr><td>Back glass — Android & newer iPhones</td><td class="price">$40–50</td><td>~1:30</td></tr>
+        <tr><td>Camera repair</td><td class="price">$40–50</td><td>~1:30</td></tr>
+        <tr><td>Charging port repair</td><td class="price">$40–60</td><td>~1:30</td></tr>
+        <tr><td>Diagnostics only (no repair booked)</td><td class="price">$15–20</td><td>~30 min</td></tr>
       </tbody>
     </table>
     
-    <div class="card" style="margin-top: 30px; border-color: var(--danger);">
-      <h3 style="color: var(--danger);">The Forbidden Arts</h3>
-      <p>To ensure I only provide fixes that actually last, I do not practice <strong>Deep Water Resurrections</strong> (unless the device still shows a spark of life) or <strong>Microsoldering</strong> (board-level chip repair). I focus strictly on modular perfection and glass restoration.</p>
+    <div class="card" style="margin-top: 20px; background: rgba(79,209,197,0.05); border-color: var(--teal);">
+      <h3 style="color: var(--teal);">The Forbidden Arts (Limitations)</h3>
+      <p style="font-size: 0.9rem;">To ensure I only provide fixes that actually last, I do not practice <strong>Deep Water Resurrections</strong> (unless the device still shows a spark of life) or <strong>Microsoldering</strong> (board-level chip repair). I focus strictly on modular perfection and glass restoration.</p>
     </div>
   </section>
+
+  <div class="rune-divider" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/>
+    </svg>
+  </div>
+
+  <section>
+    <h2>How a job works</h2>
+    <div class="grid">
+      <div class="card"><h3>1. Book</h3><p>Send your device, model, and issue through the <a href="book.html">booking form</a>, or text 316-559-4816.</p></div>
+      <div class="card"><h3>2. Quote & deposit</h3><p>You'll get a quote (part cost + labor). If the part isn't in stock, a deposit covers ordering it.</p></div>
+      <div class="card"><h3>3. Repair</h3><p>In-stock repairs are usually done same day, on site, wherever works for you in Wichita.</p></div>
+      <div class="card"><h3>4. Warranty</h3><p>Every job is covered — see the <a href="faq.html">FAQ</a> for terms.</p></div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site wrap">
-  <span>© 2026 MagicByte · Wichita, KS · The Wizard Comes to You</span>
+  <div class="foot-row">
+    <span>© 2026 MagicByte · Wichita, KS · Mobile Wizard Repair</span>
+    <span>Wichita, KS &amp; surrounding area · <a href="tel:3165594816">316-559-4816</a> (voicemail only)</span>
+  </div>
 </footer>
 
 <script src="cart.js"></script>
 </body>
-                        </html>
-                        
+</html>
+          
