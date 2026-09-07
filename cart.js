@@ -1,5 +1,5 @@
 /* ============================================================
-   MagicByte — Wizard's Satchel (cart)
+   MagicByte — Wizard's Bag (cart)
    ============================================================ */
 
 (function () {
@@ -31,7 +31,7 @@
     else { items.push({ id: id, name: name, price: price, qty: 1 }); }
     writeCart(items);
     openDrawer();
-    toast(name + " added to your satchel");
+    toast(name + " added to your bag");
   }
   function setQty(id, qty) {
     var items = readCart();
@@ -46,14 +46,15 @@
   function clearCart() { writeCart([]); }
 
   /* ---------- UI injection ---------- */
+
   function injectNavButton() {
     var nav = document.querySelector(".nav-row");
     if (!nav) return;
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "cart-nav-btn";
-    btn.setAttribute("aria-label", "Open satchel");
-    btn.innerHTML = '<span class="cart-glyph">🜛</span><span class="cart-nav-label">Satchel</span><span class="cart-badge" id="cart-badge" hidden>0</span>';
+    btn.setAttribute("aria-label", "Open bag");
+    btn.innerHTML = '<span class="cart-glyph">🜛</span><span class="cart-nav-label">Bag</span><span class="cart-badge" id="cart-badge" hidden>0</span>';
     btn.addEventListener("click", openDrawer);
     nav.appendChild(btn);
   }
@@ -76,8 +77,8 @@
     drawer.id = "satchel-drawer";
     drawer.innerHTML =
       '<div class="satchel-head">' +
-        '<h3>Your Satchel</h3>' +
-        '<button type="button" class="satchel-close" aria-label="Close satchel">&times;</button>' +
+        '<h3>Your Bag</h3>' +
+        '<button type="button" class="satchel-close" aria-label="Close bag">&times;</button>' +
       '</div>' +
       '<div class="satchel-body" id="satchel-body"></div>' +
       '<div class="satchel-foot">' +
@@ -88,7 +89,7 @@
           '<div class="field"><label for="s-contact">Best way to reach you (text or email)</label><input type="text" id="s-contact" name="contact" required></div>' +
           '<div class="field"><label for="s-notes">Notes (device model, timing, etc.)</label><textarea id="s-notes" name="notes"></textarea></div>' +
           '<input type="hidden" name="order_summary" id="s-summary">' +
-          '<input type="hidden" name="_subject" value="New parts order — MagicByte satchel">' +
+          '<input type="hidden" name="_subject" value="New parts order — MagicByte Bag">' +
           '<button type="submit" class="btn btn-primary" id="satchel-submit">Send Order to the Wizard</button>' +
           '<p class="field-hint" id="satchel-status" role="status"></p>' +
         '</form>' +
@@ -113,7 +114,7 @@
     var items = readCart();
 
     if (items.length === 0) {
-      body.innerHTML = '<p class="field-hint">Your satchel is empty. Browse <a href="inventory.html">parts</a> and add what you need.</p>';
+      body.innerHTML = '<p class="field-hint">Your bag is empty. Browse <a href="inventory.html">parts</a> and add what you need.</p>';
     } else {
       body.innerHTML = items.map(function (i) {
         var priceLabel = i.price ? ("$" + i.price.toFixed(2)) : "Quoted after review";
@@ -171,7 +172,7 @@
     var submitBtn = document.getElementById("satchel-submit");
 
     if (items.length === 0) {
-      statusEl.textContent = "Your satchel is empty — add a part first.";
+      statusEl.textContent = "Your bag is empty — add a part first.";
       return;
     }
 
@@ -222,6 +223,8 @@
       setTimeout(function () { el.remove(); }, 300);
     }, 2200);
   }
+
+  /* ---------- wire up "Add to Bag" buttons on the shop page ---------- */
 
   function wireAddButtons() {
     document.querySelectorAll("[data-add-to-cart]").forEach(function (btn) {
