@@ -236,3 +236,15 @@ footer.site .foot-row { display: flex; justify-content: space-between; flex-wrap
 .shop-filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
 .shop-filter { font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); color: var(--parchment-dim); background: transparent; cursor: pointer; transition: border-color .2s ease, color .2s ease; }
 .shop-filter:hover, .shop-filter.active { border-color: var(--gold); color: var(--gold-bright); }
+/* Animated breadcrumb bounce */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(6px); }
+  60% { transform: translateY(3px); }
+}
+
+/* Updated cart label to "Bag" */
+.cart-nav-label::after {
+  content: "";
+}
+
