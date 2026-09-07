@@ -3,65 +3,69 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shop Parts • MagicByte</title>
-<meta name="description" content="Order phone parts from MagicByte. In-stock parts ship with your repair same day; everything else is a few days out.">
+<title>Shop Parts · MagicByte</title>
+<meta name="description" content="Order phone parts from MagicByte in Wichita, KS. In-stock parts mean a same-day repair; everything else ships in a few days.">
+<meta name="theme-color" content="#150f1e">
+<link rel="icon" href="assets/favicon.ico" sizes="32x32">
+<link rel="icon" href="assets/mascot-icon.png" type="image/png" sizes="512x512">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+<div class="starfield" aria-hidden="true"></div>
+<a class="skip-link" href="#main">Skip to content</a>
+
 <header class="site">
   <div class="nav-row">
     <a class="brand" href="index.html">
-      <img src="assets/mascot-icon.png" alt="MagicByte wizard mascot">
+      <img src="assets/mascot-icon.png" alt="">
       MagicByte
     </a>
-    <nav class="links">
+    <nav class="links" aria-label="Main">
       <a href="index.html">Home</a>
       <a href="inventory.html" aria-current="page">Shop Parts</a>
-      <a href="services.html">Services & Pricing</a>
+      <a href="services.html">Services &amp; Pricing</a>
       <a href="book.html" class="orb-nav-link">Ask the Wizard</a>
       <a href="faq.html">FAQ</a>
     </nav>
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main">
 
-  <section class="hero" style="padding-top:48px;">
-    <p class="eyebrow">The Reliquary</p>
-    <h1>Order your <span class="accent">part</span> from the wizard.</h1>
-    <p class="lede">Add what you need to your bag and send the order — I'll confirm stock, quote labor if you want it installed, and reply by text or email. In-stock parts mean same-day repair; everything else ships in a few days.</p>
+  <section class="hero">
+    <p class="eyebrow">The reliquary</p>
+    <h1>Order your part <span class="accent">from the wizard.</span></h1>
+    <p class="lede">Add what you need to your bag and send the order. I'll confirm stock, quote labor if you want it installed, and reply by text or email. In-stock parts mean a same-day repair; everything else ships in a few days.</p>
   </section>
 
-  <!-- NEW LEGAL AND DIY DISCLAIMERS -->
-  <div class="card" style="margin: 0 0 30px 0; border-color: var(--line); background: rgba(21,15,30,0.6);">
-    <p style="font-size: 0.88rem; margin: 0; color: var(--parchment-dim);">
-      ⚡ <strong>Parts Transparency:</strong> Components are sourced from leading industry suppliers (MobileSentrix &amp; InjuredGadgets) for fast, reliable delivery. Market prices fluctuate; final pricing is confirmed when your quote is sent.
-    </p>
-    <p style="font-size: 0.88rem; margin: 12px 0 0; color: var(--parchment-dim);">
-      🛠️ <strong>DIY Parts Sourcing (+5% Fee):</strong> Want to do your own repair? I can source and order professional-grade parts for you at cost + 5% handling. <em>Disclaimer: MagicByte is not liable for any device damage or defects resulting from self-installation or third-party labor.</em>
-    </p>
-  </div>
-
-  <div class="shop-filters" role="tablist" aria-label="Filter parts by device">
-    <button class="shop-filter active" data-filter="all">All Parts</button>
-    <button class="shop-filter" data-filter="iphone">iPhone</button>
-    <button class="shop-filter" data-filter="android">Android</button>
-    <button class="shop-filter" data-filter="other">Other</button>
+  <div class="card card-note" style="margin-bottom:28px;">
+    <p><strong>Where parts come from.</strong> Components are sourced from MobileSentrix and Injured Gadgets. Market prices move, so the final figure is confirmed when your quote goes out.</p>
+    <p><strong>Doing the repair yourself? Cost + 5%.</strong> I'll source and order professional-grade parts for you at cost plus a 5% handling fee. MagicByte isn't liable for damage or defects from self-installation or third-party labor.</p>
   </div>
 
   <section id="shop-grid">
+    <div class="shop-filters" aria-label="Filter parts by device">
+      <button type="button" class="shop-filter" data-filter="all" aria-pressed="true">All parts</button>
+      <button type="button" class="shop-filter" data-filter="iphone" aria-pressed="false">iPhone</button>
+      <button type="button" class="shop-filter" data-filter="android" aria-pressed="false">Android</button>
+      <button type="button" class="shop-filter" data-filter="other" aria-pressed="false">Other</button>
+    </div>
+
     <div class="grid" id="shop-cards">
 
-      <!-- Diagnostic Card for users who don't know what they need -->
-      <div class="part-card" style="border-color: var(--teal); background: rgba(79,209,197,0.05);">
+      <!-- Pinned: stays visible under every filter -->
+      <div class="part-card card-teal" data-always>
         <div class="part-card-top">
           <div>
-            <h3 style="color: var(--teal);">Not sure what's broken?</h3>
-            <p class="part-device">Let the Wizard diagnose it.</p>
+            <h3>Not sure what's broken?</h3>
+            <p class="part-device">Describe it and I'll work it out.</p>
           </div>
-          <span class="stock-tag stock-in">Free Review</span>
+          <span class="stock-tag stock-in">Free review</span>
         </div>
         <div class="part-card-foot">
           <span class="part-price quote">No upfront cost</span>
@@ -69,76 +73,65 @@
         </div>
       </div>
 
-      <!-- Example Parts from original -->
       <div class="part-card" data-category="iphone" data-part-id="iphone-12-screen" data-part-name="iPhone 12 Screen" data-part-price="56.81">
         <div class="part-card-top">
           <div>
-            <h3>iPhone 12 Screen</h3>
+            <h3>iPhone 12 screen</h3>
             <p class="part-device">iPhone 12 / 12 Pro</p>
           </div>
           <span class="stock-tag stock-in">In stock</span>
         </div>
         <div class="part-card-foot">
           <span class="part-price">$56.81</span>
-          <button class="btn-add" data-add-to-cart>Add to Bag</button>
+          <button type="button" class="btn-add" data-add-to-cart>Add to bag</button>
         </div>
       </div>
 
       <div class="part-card" data-category="iphone" data-part-id="iphone-12-battery" data-part-name="iPhone 12 Battery" data-part-price="">
         <div class="part-card-top">
           <div>
-            <h3>iPhone 12 Battery</h3>
+            <h3>iPhone 12 battery</h3>
             <p class="part-device">iPhone 12 / 12 Pro</p>
           </div>
-          <span class="stock-tag stock-order">Order (3–5 days)</span>
+          <span class="stock-tag stock-order">Order · 3–5 days</span>
         </div>
         <div class="part-card-foot">
           <span class="part-price quote">Quoted after review</span>
-          <button class="btn-add" data-add-to-cart>Add to Bag</button>
+          <button type="button" class="btn-add" data-add-to-cart>Add to bag</button>
         </div>
       </div>
 
       <div class="part-card" data-category="iphone" data-part-id="iphone-11-screen" data-part-name="iPhone 11 Screen" data-part-price="">
         <div class="part-card-top">
           <div>
-            <h3>iPhone 11 Screen</h3>
+            <h3>iPhone 11 screen</h3>
             <p class="part-device">iPhone 11</p>
           </div>
-          <span class="stock-tag stock-order">Order (3–5 days)</span>
+          <span class="stock-tag stock-order">Order · 3–5 days</span>
         </div>
         <div class="part-card-foot">
           <span class="part-price quote">Quoted after review</span>
-          <button class="btn-add" data-add-to-cart>Add to Bag</button>
+          <button type="button" class="btn-add" data-add-to-cart>Add to bag</button>
         </div>
       </div>
 
     </div>
 
-    <p class="field-hint" style="margin-top:20px;">Don't see your model? <a href="book.html">Ask the Wizard</a> — most parts can be ordered within a few days.</p>
+    <p class="field-hint" style="margin-top:20px;">
+      Showing <span id="filter-count">3 parts</span>. Don't see your model? <a href="book.html">Ask the wizard</a> — most parts can be ordered within a few days.
+    </p>
   </section>
 
 </main>
 
 <footer class="site wrap">
   <div class="foot-row">
-    <span>© 2026 MagicByte · Wichita, KS &amp; Surrounding Area</span>
-    <span>Voicemail: <a href="tel:3165594816">316-559-4816</a></span>
+    <span>© 2026 MagicByte · Mobile repair · Wichita, KS &amp; surrounding area</span>
+    <span>Voicemail <a href="tel:3165594816">316-559-4816</a></span>
   </div>
 </footer>
 
+<script src="wizard.js"></script>
 <script src="cart.js"></script>
-<script>
-  document.querySelectorAll(".shop-filter").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      document.querySelectorAll(".shop-filter").forEach(function (b) { b.classList.remove("active"); });
-      btn.classList.add("active");
-      var filter = btn.getAttribute("data-filter");
-      document.querySelectorAll(".part-card").forEach(function (card) {
-        var show = filter === "all" || card.getAttribute("data-category") === filter;
-        card.style.display = show ? "" : "none";
-      });
-    });
-  });
-</script>
 </body>
 </html>

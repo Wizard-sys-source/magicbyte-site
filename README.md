@@ -1,59 +1,135 @@
 # MagicByte Mobile Repair
 
-A static, mobile-first web interface for a mobile tech repair business in Wichita, KS. The site requires no build step and relies on a clean "Tech Wizard" aesthetic to build trust, highlight transparency, and filter out friction[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span). 
+A static, mobile-first site for a one-person mobile phone repair business in
+Wichita, KS. No build step, no framework — plain HTML, one stylesheet, two
+scripts. Drop the files on GitHub Pages and it runs.
 
-## File Structure
-* `index.html` (The Front Gate / Hero / Trust Oaths / Arch-Mage Bio)[span_10](start_span)[span_10](end_span)
-* `inventory.html` (The Armory / Parts Shop)[span_11](start_span)[span_11](end_span)
-* `book.html` (The Funnel: Voice Orb, Quick Missive, and Detailed Requisition)[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)
-* `services.html` (The Grimoire of Labor / Pricing)[span_14](start_span)[span_14](end_span)
-* `faq.html` (The Oracle's Answers)[span_15](start_span)[span_15](end_span)
-* `styles.css` (The Visual Magic: Deep plum, teal glows, gold accents)[span_16](start_span)[span_16](end_span)
-* `cart.js` (The Satchel logic for ordering parts)[span_17](start_span)[span_17](end_span)
-* `assets/` (Folder containing `mascot.png` and `mascot-icon.png`)
+## Files
+
+| File | What it is |
+|---|---|
+| `index.html` | Home — hero, the three oaths, about |
+| `inventory.html` | Shop parts, with device filters and the bag |
+| `services.html` | Labor rates, what you don't take on, how a job works |
+| `book.html` | Ask the Wizard — the voice orb and the written form |
+| `faq.html` | Common questions |
+| `consult.html` | Redirect only. Forwards old links to `book.html` |
+| `styles.css` | All styling. Numbered sections, tokens at the top |
+| `wizard.js` | Shared behaviour: the orb, shop filters, written form, effects |
+| `cart.js` | The bag / parts ordering |
+| `assets/` | Artwork — see below |
+
+### assets/
+
+| File | Used for | Size |
+|---|---|---|
+| `mascot.png` | The hero sigil on the home page | 476 × 669, transparent |
+| `mascot-icon.png` | The circular icon beside the wordmark, and the PNG favicon | 512 × 512, transparent |
+| `favicon.ico` | Browser tabs on older browsers | 16 / 32 / 48 |
+| `apple-touch-icon.png` | Home-screen icon when someone saves the site on a phone | 180 × 180, opaque |
+| `og-image.png` | The preview card when the link is texted or posted | 1200 × 630 |
+
+The mascot was cut out from your artwork and matted against transparency, so it
+sits on the dark background with no white box around it. `mascot-icon.png` is a
+tighter crop of the hat and moustache, centred so nothing important is lost when
+the nav clips it to a circle. All of them are palette-optimised — the whole
+folder is about 300 KB.
+
+The share card uses Lora for the wordmark, because Cinzel wasn't available when
+it was generated. If you want it to match the site exactly, regenerate that one
+image with Cinzel; nothing else depends on it.
+
+Every page loads the same `<header>` and `<footer>` markup. If you change a nav
+link, change it in all five pages — that mismatch is what made some tabs read
+"Consult & Book" while others read "Ask the Wizard".
 
 ---
 
 ## 1. Publish to GitHub Pages
-1. Upload all files to the **root** of your repository[span_18](start_span)[span_18](end_span).
-2. Navigate to **Settings → Pages → Build and deployment → Source**[span_19](start_span)[span_19](end_span).
-3. Select **Deploy from a branch**, choose `main` (or `master`) and `/ (root)`, then click Save[span_20](start_span)[span_20](end_span).
-4. Your site will be live at `https://yourname.github.io/reponame/` within a few minutes[span_21](start_span)[span_21](end_span).
+
+1. Upload every file to the **root** of the repository.
+2. Go to **Settings → Pages → Build and deployment → Source**.
+3. Choose **Deploy from a branch**, pick `main` and `/ (root)`, and save.
+4. The site is live at `https://yourname.github.io/reponame/` in a few minutes.
 
 ---
 
-## 2. Capture Customer Data (The Forms)
-Since this is a static site, all customer data (text and voice) is routed through Formspree, a free service that turns HTML forms into emails[span_22](start_span)[span_22](end_span). **Until you complete this step, customer submissions will not reach you.**
+## 2. Wire up the forms
 
-1. Create a free account at [formspree.io](https://formspree.io)[span_23](start_span)[span_23](end_span).
-2. Create **three** separate forms to keep your inbox organized[span_24](start_span)[span_24](end_span):
-   * **Form 1: General Consultations** (For the text missive and detailed form on `book.html`).
-   * **Form 2: Voice Orb** (For the audio recordings on `book.html`)[span_25](start_span)[span_25](end_span).
-   * **Form 3: The Armory** (For parts orders submitted via `cart.js`)[span_26](start_span)[span_26](end_span)[span_27](start_span)[span_27](end_span).
-3. Copy the unique Form ID for each (it looks like `xayzabcd`)[span_28](start_span)[span_28](end_span).
+Nothing reaches you until this is done. Customer messages route through
+Formspree, which turns an HTML form into an email.
 
-### Where to paste your Form IDs:
-* **`book.html` (Text Missive & Detailed Form):** Find the `<form class="spellform" action="...">` tags and replace the placeholders[span_29](start_span)[span_29](end_span)[span_30](start_span)[span_30](end_span).
-* **`cart.js` (The Satchel):** Find `var FORMSPREE_ENDPOINT = "...";` near the top and replace the placeholder[span_31](start_span)[span_31](end_span)[span_32](start_span)[span_32](end_span).
+1. Make a free account at [formspree.io](https://formspree.io).
+2. Create **two** forms so your inbox stays sorted:
+   - **Consultations** — the voice orb and the written message on `book.html`
+   - **Parts orders** — the bag on `inventory.html`
+3. Copy each form ID. It looks like `xayzabcd`.
+
+Then paste them in **two** places:
+
+**`wizard.js`** — near the top, in the `FORMS` block:
+
+```js
+var FORMS = {
+  consult: "https://formspree.io/f/YOUR_CONSULT_ID"
+};
+```
+
+**`cart.js`** — find `var FORMSPREE_ENDPOINT = "…";` and replace it.
+
+`book.html` also carries the endpoint in the written form's `action` attribute
+as a fallback for visitors with JavaScript off. Update that one too:
+
+```html
+<form class="spellform" id="write-form" method="POST"
+      action="https://formspree.io/f/YOUR_CONSULT_ID">
+```
 
 ---
 
-## 3. The Voice Orb Setup
-The voice orb records audio directly in the browser and attaches it to a Formspree submission[span_33](start_span)[span_33](end_span)[span_34](start_span)[span_34](end_span). 
-* Formspree's free tier automatically accepts file attachments[span_35](start_span)[span_35](end_span). 
-* The microphone will only work when the site is hosted on a secure connection (HTTPS). GitHub Pages does this automatically, so it will function properly once the site is live[span_36](start_span)[span_36](end_span). 
+## 3. The voice orb
+
+The orb records audio in the browser and attaches it to the Formspree
+submission. Two things to know:
+
+- The microphone only works over HTTPS. GitHub Pages is HTTPS, so it works
+  live even though it may not work opening the file locally.
+- Formspree's free tier accepts file attachments, so the recording arrives as
+  an email attachment. Recordings are capped at 90 seconds.
+
+If a browser blocks the mic or doesn't support recording, the orb says so and
+points the visitor at the written form instead.
 
 ---
 
-## 4. Payment Links
-To handle deposits for special-order parts safely:
-1. Generate a generic "Pay Deposit" link using a free Stripe or Square account[span_37](start_span)[span_37](end_span).
-2. Replace the placeholder link in `book.html` (or just keep it saved in your phone to text to customers)[span_38](start_span)[span_38](end_span)[span_39](start_span)[span_39](end_span).
+## 4. Deposits
+
+For special-order parts, generate a "Pay deposit" link from a free Stripe or
+Square account and text it to the customer once you've quoted them. There's no
+payment form on the site by design — nothing to secure, nothing to maintain.
 
 ---
 
-## 5. Google Business Verification
-To capture local Wichita traffic:
+## 5. Google Business Profile
+
+To pick up local Wichita searches:
+
 1. Claim your Google Business Profile.
-2. Use your residential address to receive the physical verification postcard.
-3. **Crucial:** Once verified, set your business as a "Service Area Business" to hide the physical address from the public map, displaying only that you cover Wichita and the surrounding areas.
+2. Use your home address to receive the verification postcard.
+3. Once verified, set the business as a **Service Area Business**. This hides
+   your street address from the public map and shows only that you cover
+   Wichita and the surrounding area.
+
+---
+
+## Editing notes
+
+- **Colours and fonts** are CSS variables in section 01 of `styles.css`.
+  Change `--gold` or `--teal` there and the whole site follows.
+- **Adding a part** to `inventory.html`: copy an existing `.part-card` block.
+  The `data-category`, `data-part-id`, `data-part-name` and `data-part-price`
+  attributes are what `cart.js` reads. A card with `data-always` stays visible
+  under every filter — that's how the "Not sure what's broken?" card works.
+- **Motion** is off automatically for visitors who have reduced motion enabled
+  in their OS settings. If you add an effect, add it to that block at the
+  bottom of `styles.css` too.

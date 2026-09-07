@@ -1,0 +1,349 @@
+/* ============================================================
+   MagicByte — wizard.js
+   Shared behaviour for every page. Safe to include everywhere:
+   each block checks for its own elements before running.
+
+   Contents
+     0  Config          — your Formspree IDs go here
+     1  Spark burst on click
+     2  Cursor wisp (desktop only)
+     3  Shop filters
+     4  Written form (AJAX submit)
+     5  The Voice Orb
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  /* ---------- 0  Config ------------------------------------
+     Replace the two IDs below with your own Formspree form IDs.
+     Parts orders are configured separately, inside cart.js.
+     --------------------------------------------------------- */
+  var FORMS = {
+    // Voice orb recordings + written messages
+    consult: "https://formspree.io/f/REPLACE_WITH_YOUR_CONSULT_FORM_ID"
+  };
+
+  var PHONE = "316-559-4816";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- 1  Spark burst on click ----------
+     Motion that answers an action, not ambient decoration. */
+  function burst(x, y, tint, count) {
+    if (reduced) return;
+    var n = count || 10;
+    for (var i = 0; i < n; i++) {
+      var s = document.createElement("span");
+      s.className = "spark" + (tint === "teal" ? " teal" : "");
+      var angle = (Math.PI * 2 * i) / n + Math.random() * 0.5;
+      var dist = 26 + Math.random() * 34;
+      s.style.left = x + "px";
+      s.style.top = y + "px";
+      s.style.setProperty("--dx", Math.cos(angle) * dist + "px");
+      s.style.setProperty("--dy", Math.sin(angle) * dist + "px");
+      s.style.animationDelay = Math.random() * 60 + "ms";
+      document.body.appendChild(s);
+      window.setTimeout(function (node) {
+        return function () { node.remove(); };
+      }(s), 800);
+    }
+  }
+
+  document.addEventListener("click", function (e) {
+    var target = e.target.closest(".btn-primary, .btn-add, .orb-btn");
+    if (!target) return;
+    var r = target.getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + r.height / 2,
+          target.classList.contains("orb-btn") ? "teal" : "gold",
+          target.classList.contains("orb-btn") ? 16 : 10);
+  });
+
+  /* ---------- 2  Cursor wisp ----------
+     Desktop pointers only. Throttled, and capped by its own
+     short animation, so it never accumulates nodes. */
+  (function wisp() {
+    if (reduced) return;
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
+    var last = 0;
+    document.addEventListener("mousemove", function (e) {
+      var now = Date.now();
+      if (now - last < 55) return;
+      last = now;
+
+      var w = document.createElement("span");
+      w.className = "wisp";
+      w.style.left = e.clientX + "px";
+      w.style.top = e.clientY + "px";
+      document.body.appendChild(w);
+      window.setTimeout(function () { w.remove(); }, 800);
+    }, { passive: true });
+  })();
+
+  /* ---------- 3  Shop filters ---------- */
+  (function filters() {
+    var buttons = document.querySelectorAll(".shop-filter");
+    if (!buttons.length) return;
+
+    var cards = document.querySelectorAll(".part-card");
+    var count = document.getElementById("filter-count");
+
+    function apply(filter) {
+      var shown = 0;
+      cards.forEach(function (card) {
+        // Cards marked data-always stay visible under every filter
+        var always = card.hasAttribute("data-always");
+        var match = filter === "all" || card.getAttribute("data-category") === filter;
+        var show = always || match;
+        card.hidden = !show;
+        if (show && !always) shown++;
+      });
+      if (count) {
+        count.textContent = shown === 1 ? "1 part" : shown + " parts";
+      }
+    }
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        buttons.forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+        btn.setAttribute("aria-pressed", "true");
+        apply(btn.getAttribute("data-filter"));
+      });
+    });
+
+    apply("all");
+  })();
+
+  /* ---------- 4  Written form ---------- */
+  (function writtenForm() {
+    var form = document.getElementById("write-form");
+    if (!form) return;
+
+    var status = document.getElementById("write-status");
+    var submit = form.querySelector("[type=submit]");
+
+    form.setAttribute("action", FORMS.consult);
+
+    form.addEventListener("submit", function (e) {
+      if (!window.fetch) return; // let the browser post it the old way
+      e.preventDefault();
+
+      submit.disabled = true;
+      submit.textContent = "Sending…";
+      status.className = "field-hint";
+      status.textContent = "Sending your message…";
+
+      fetch(FORMS.consult, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("rejected");
+          form.reset();
+          status.className = "field-hint ok";
+          status.textContent = "Sent. You'll hear back by text or email, usually same day.";
+          submit.textContent = "Sent";
+        })
+        .catch(function () {
+          status.className = "field-hint err";
+          status.textContent = "That didn't go through. Text " + PHONE + " instead and I'll pick it up there.";
+          submit.disabled = false;
+          submit.textContent = "Send message";
+        });
+    });
+  })();
+
+  /* ---------- 5  The Voice Orb ---------- */
+  (function orb() {
+    var btn = document.getElementById("orb-btn");
+    if (!btn) return;
+
+    var MAX_SECONDS = 90;
+
+    var label = document.getElementById("orb-label");
+    var status = document.getElementById("orb-status");
+    var playbackWrap = document.getElementById("orb-playback");
+    var player = document.getElementById("orb-player");
+    var buttonsWrap = document.getElementById("orb-buttons");
+    var reRecord = document.getElementById("orb-rerecord");
+    var form = document.getElementById("orb-form");
+    var sendBtn = document.getElementById("orb-send");
+
+    var recorder = null;
+    var chunks = [];
+    var blob = null;
+    var ticker = null;
+    var seconds = 0;
+    var state = "idle";
+
+    // Web Audio, used only to make the orb pulse with the voice
+    var audioCtx = null;
+    var analyser = null;
+    var levelFrame = null;
+
+    function say(text, isError) {
+      status.textContent = text;
+      status.className = "orb-status" + (isError ? " err" : "");
+    }
+
+    function setLevel(v) {
+      document.documentElement.style.setProperty("--orb-level", v.toFixed(3));
+    }
+
+    function canRecord() {
+      return !!(navigator.mediaDevices &&
+                navigator.mediaDevices.getUserMedia &&
+                window.MediaRecorder);
+    }
+
+    function clock(s) {
+      var m = Math.floor(s / 60);
+      var r = s % 60;
+      return m + ":" + (r < 10 ? "0" + r : r);
+    }
+
+    /* Drive --orb-level from the live mic signal so the orb
+       visibly reacts while someone is talking. */
+    function watchLevel(stream) {
+      if (reduced) return;
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      try {
+        audioCtx = new Ctx();
+        var src = audioCtx.createMediaStreamSource(stream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        analyser.smoothingTimeConstant = 0.75;
+        src.connect(analyser);
+
+        var data = new Uint8Array(analyser.frequencyBinCount);
+        (function loop() {
+          if (!analyser) return;
+          analyser.getByteFrequencyData(data);
+          var sum = 0;
+          for (var i = 0; i < data.length; i++) sum += data[i];
+          setLevel(Math.min(1, (sum / data.length) / 90));
+          levelFrame = requestAnimationFrame(loop);
+        })();
+      } catch (err) {
+        /* pulsing is a nicety; recording continues without it */
+      }
+    }
+
+    function stopLevel() {
+      if (levelFrame) cancelAnimationFrame(levelFrame);
+      levelFrame = null;
+      analyser = null;
+      if (audioCtx && audioCtx.state !== "closed") audioCtx.close();
+      audioCtx = null;
+      setLevel(0);
+    }
+
+    function start() {
+      if (!canRecord()) {
+        say("This browser can't record audio. Use the written message below instead.", true);
+        return;
+      }
+
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+        chunks = [];
+        recorder = new MediaRecorder(stream);
+
+        recorder.ondataavailable = function (e) {
+          if (e.data.size > 0) chunks.push(e.data);
+        };
+        recorder.onstop = function () {
+          blob = new Blob(chunks, { type: "audio/webm" });
+          player.src = URL.createObjectURL(blob);
+          stream.getTracks().forEach(function (t) { t.stop(); });
+          stopLevel();
+          recorded();
+        };
+
+        recorder.start();
+        watchLevel(stream);
+
+        state = "recording";
+        seconds = 0;
+        btn.classList.add("recording");
+        label.innerHTML = "Listening…<br>touch to stop";
+        say("0:00");
+
+        ticker = setInterval(function () {
+          seconds += 1;
+          say(clock(seconds) + " / " + clock(MAX_SECONDS));
+          if (seconds >= MAX_SECONDS) stop();
+        }, 1000);
+      }).catch(function () {
+        say("Microphone access was blocked. Use the written message below instead.", true);
+      });
+    }
+
+    function stop() {
+      if (recorder && recorder.state !== "inactive") recorder.stop();
+      clearInterval(ticker);
+      btn.classList.remove("recording");
+      setLevel(0);
+    }
+
+    function recorded() {
+      state = "recorded";
+      label.innerHTML = "Message ready";
+      say("Give it a listen, then add your contact details below.");
+      playbackWrap.hidden = false;
+      buttonsWrap.hidden = false;
+      form.hidden = false;
+    }
+
+    btn.addEventListener("click", function () {
+      if (state === "idle") start();
+      else if (state === "recording") stop();
+    });
+
+    reRecord.addEventListener("click", function () {
+      blob = null;
+      playbackWrap.hidden = true;
+      buttonsWrap.hidden = true;
+      form.hidden = true;
+      btn.classList.remove("sent");
+      label.innerHTML = "Touch the orb<br>to speak";
+      say("");
+      state = "idle";
+    });
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!blob) return;
+
+      sendBtn.disabled = true;
+      sendBtn.textContent = "Sending…";
+      say("Sending your message…");
+
+      var data = new FormData();
+      data.append("voice_message", blob, "wizard-consult.webm");
+      data.append("contact", document.getElementById("orb-contact").value);
+      data.append("device", document.getElementById("orb-device").value);
+      data.append("_subject", "New voice message — MagicByte");
+
+      fetch(FORMS.consult, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" }
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("rejected");
+          state = "sent";
+          btn.classList.add("sent");
+          label.innerHTML = "Message sent";
+          say("Sent. You'll hear back by text or email, usually same day.");
+          sendBtn.textContent = "Sent";
+        })
+        .catch(function () {
+          say("That didn't go through. Text " + PHONE + " instead and I'll pick it up there.", true);
+          sendBtn.disabled = false;
+          sendBtn.textContent = "Send voice message";
+        });
+    });
+  })();
+})();
