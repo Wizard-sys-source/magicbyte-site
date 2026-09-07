@@ -1,88 +1,282 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consult the Wizard | MagicByte</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consult & Book • MagicByte</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <header class="site">
   <div class="nav-row">
     <a class="brand" href="index.html">
-      <img src="assets/mascot-icon.png" alt="MagicByte Mascot">
+      <img src="assets/mascot-icon.png" alt="MagicByte wizard mascot">
       MagicByte
     </a>
     <nav class="links">
-      <a href="index.html">The Sanctum</a>
-      <a href="inventory.html">The Armory</a>
-      <a href="book.html" aria-current="page">Consult the Wizard</a>
+      <a href="index.html">Home</a>
+      <a href="inventory.html">Shop Parts</a>
+      <a href="services.html">Services & Pricing</a>
+      <a href="book.html" aria-current="page">Consult & Book</a>
+      <a href="faq.html">FAQ</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <!-- Section 1: The Magical Orb -->
-  <section class="orb-stage">
-    <h2>Speak Into the Crystal Orb</h2>
-    <p class="section-note">Tap the orb and describe your device's affliction. The Wizard is listening.</p>
-    
-    <div class="orb-container">
-      <div class="orb"></div>
-      <div class="embers">
-        <span></span><span></span><span></span><span></span>
-      </div>
-    </div>
-    <button class="btn btn-knight">Begin Incantation (Voice)</button>
+
+  <section class="hero" style="padding-top:48px; text-align:center; display:block;">
+    <p class="eyebrow" style="justify-content:center;">Consult the Wizard</p>
+    <h1>Speak, and the <span class="accent">orb will carry it.</span></h1>
+    <p class="lede" style="margin-left:auto; margin-right:auto; text-align:center;">Touch the orb and leave a voice message — what's wrong, your device, whatever you'd tell me in person. I'll reply by text or email. (No phone calls, ever; direct calls go to voicemail).</p>
   </section>
 
-  <div class="rune-divider"></div>
+  <!-- Section 1: The Voice Orb -->
+  <section class="orb-stage">
+    <div class="orb-wrap">
+      <div class="orb-glow" aria-hidden="true"></div>
+      <button type="button" class="orb-btn" id="orb-btn">
+        <span id="orb-label">Touch the orb<br>to speak</span>
+      </button>
+    </div>
+
+    <p class="orb-status" id="orb-status"></p>
+
+    <div class="orb-actions" id="orb-playback" hidden>
+      <audio class="orb-player" id="orb-player" controls></audio>
+    </div>
+
+    <div class="orb-actions" id="orb-buttons" hidden>
+      <button type="button" class="btn btn-ghost" id="orb-rerecord">Re-record</button>
+    </div>
+
+    <form id="orb-form" class="spellform" style="max-width:420px; display:none;">
+      <div class="field">
+        <label for="orb-contact">Best way to reach you back (text or email)</label>
+        <input type="text" id="orb-contact" name="contact" required placeholder="316-555-0100 or you@email.com">
+      </div>
+      <div class="field">
+        <label for="orb-device">Device (optional)</label>
+        <input type="text" id="orb-device" name="device" placeholder="iPhone 12, Galaxy S22, etc.">
+      </div>
+      <button type="submit" class="btn btn-primary" id="orb-send" style="justify-self:center;">Send to the Wizard</button>
+    </form>
+  </section>
+
+  <div class="rune-divider" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>
+  </div>
 
   <!-- Section 2: Quick Missive -->
-  <section class="orb-fallback" style="text-align: center;">
-    <h3>Prefer a Written Missive?</h3>
+  <section class="orb-fallback" style="text-align: center; border-top: none;">
+    <h2>Prefer to type it out?</h2>
     <p class="section-note">Briefly state your issue below. We shall divine the required components and return a quote swift as a raven.</p>
     
-    <form class="spellform" style="margin: 0 auto; align-items: center;" action="https://formspree.io/f/REPLACE_WITH_YOUR_CONSULT_FORM_ID" method="POST">
-      <textarea rows="3" name="message" placeholder="e.g., My scrying glass fell and the screen is shattered..." style="width: 100%;" required></textarea>
-      <input type="text" name="contact" placeholder="How to reach you (Text/Email)" style="width: 100%; margin-top: 10px;" required>
-      <button type="submit" class="btn btn-knight" style="margin-top: 10px;">Send Missive</button>
+    <form class="spellform" id="text-form" style="margin: 0 auto; text-align: left;" action="https://formspree.io/f/REPLACE_WITH_YOUR_CONSULT_FORM_ID" method="POST">
+      <div class="field">
+        <label for="t-message">Your message</label>
+        <textarea id="t-message" name="message" required placeholder="What's wrong, your device, and anything else I should know."></textarea>
+      </div>
+      <div class="field">
+        <label for="t-contact">Best way to reach you back (text or email)</label>
+        <input type="text" id="t-contact" name="contact" required placeholder="316-555-0100 or you@email.com">
+      </div>
+      <button type="submit" class="btn btn-primary" id="text-send" style="justify-self:start;">Send Message</button>
+      <p class="field-hint" id="text-status" role="status"></p>
     </form>
   </section>
 
-  <div class="rune-divider"></div>
+  <div class="rune-divider" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>
+  </div>
 
-  <!-- Section 3: The Detailed Requisition -->
-  <section class="detailed-form">
-    <h2>The Knight's Requisition</h2>
-    <p class="section-note">For the warrior who knows exactly which armor plates and spells are required. Submit your writ below.</p>
-    
-    <form class="spellform" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" method="POST" style="margin: 0 auto;">
-      <label for="device">Artifact Make & Model:</label>
-      <input type="text" id="device" name="device" placeholder="e.g., Pixel Fold, iPhone 14, Galaxy S23" required>
-      
-      <label for="damage-type">Nature of the Battle Damage:</label>
-      <select id="damage-type" name="damage-type" required>
-        <option value="">-- State your affliction --</option>
-        <option value="scratches">Surface Scratches (Requires Polishing Spell)</option>
-        <option value="screen">Shattered Display (Requires Replacement)</option>
-        <option value="battery">Drained Life Force (Battery Swap)</option>
-        <option value="port">Blocked Leyline (Charging Port Cleared)</option>
-        <option value="water">Submerged in the Moat (Must show signs of life)</option>
-      </select>
-      
-      <label for="details">Additional Lore (Optional):</label>
-      <textarea id="details" name="details" placeholder="Anything else the Wizard should know?"></textarea>
+  <!-- Section 3: Detailed Form -->
+  <section>
+    <h2>Detailed Diagnostic Form</h2>
+    <p class="section-note">Already know exactly what parts you need? Fill out the full requisition below.</p>
 
-      <button type="submit" class="btn btn-knight">Send Writ to the Sanctum</button>
+    <form class="spellform" action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID" method="POST">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div class="field">
+        <label for="contact">Best way to reach you (phone or email)</label>
+        <input type="text" id="contact" name="contact" required>
+      </div>
+
+      <div class="field">
+        <label for="device">Device (e.g. iPhone 12, Galaxy S22)</label>
+        <input type="text" id="device" name="device" required>
+      </div>
+
+      <div class="field">
+        <label for="issue">What's Wrong</label>
+        <select id="issue" name="issue">
+          <option>Surface Scratches (Polishing)</option>
+          <option>Cracked / broken screen</option>
+          <option>Battery / won't hold charge</option>
+          <option>Back glass / camera</option>
+          <option>Charging port</option>
+          <option>Water Damage (Must show signs of life)</option>
+          <option>Something else</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="details">Details</label>
+        <textarea id="details" name="details" placeholder="Anything else I should know — when it happened, etc."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="location">Where in Wichita (for mobile visit)</label>
+        <input type="text" id="location" name="location" placeholder="Neighborhood or general area">
+      </div>
+
+      <div class="field">
+        <label><input type="checkbox" name="promo" value="First 100 Heroes"> I'd like the First 100 Heroes $20 promo (if still available)</label>
+      </div>
+
+      <button class="btn btn-primary" type="submit" style="justify-self:start;">Send to the Wizard</button>
     </form>
   </section>
+
 </main>
 
 <footer class="site wrap">
-  <span>© 2026 MagicByte · Wichita, KS · The Wizard Comes to You</span>
+  <div class="foot-row">
+    <span>© 2026 MagicByte · Wichita, KS · Mobile Wizard Repair</span>
+    <span>Wichita, KS &amp; surrounding area · <a href="tel:3165594816">316-559-4816</a> (voicemail only)</span>
+  </div>
 </footer>
 
+<script>
+(function () {
+  var FORMSPREE_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_YOUR_CONSULT_FORM_ID";
+  var MAX_SECONDS = 90;
+
+  var orbBtn = document.getElementById("orb-btn");
+  var orbLabel = document.getElementById("orb-label");
+  var orbStatus = document.getElementById("orb-status");
+  var playbackWrap = document.getElementById("orb-playback");
+  var player = document.getElementById("orb-player");
+  var buttonsWrap = document.getElementById("orb-buttons");
+  var reRecordBtn = document.getElementById("orb-rerecord");
+  var orbForm = document.getElementById("orb-form");
+  var orbSendBtn = document.getElementById("orb-send");
+
+  var mediaRecorder = null;
+  var chunks = [];
+  var recordedBlob = null;
+  var timerInterval = null;
+  var seconds = 0;
+  var state = "idle"; // idle | recording | recorded | sending | sent
+
+  function setStatus(text) { orbStatus.textContent = text; }
+
+  function supportsRecording() {
+    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+  }
+
+  orbBtn.addEventListener("click", function () {
+    if (state === "idle") { startRecording(); }
+    else if (state === "recording") { stopRecording(); }
+  });
+
+  function startRecording() {
+    if (!supportsRecording()) {
+      setStatus("This browser can't record audio here — use the typed message below instead.");
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+      chunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = function (e) { if (e.data.size > 0) chunks.push(e.data); };
+      mediaRecorder.onstop = function () {
+        recordedBlob = new Blob(chunks, { type: "audio/webm" });
+        player.src = URL.createObjectURL(recordedBlob);
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        enterRecordedState();
+      };
+      mediaRecorder.start();
+      state = "recording";
+      seconds = 0;
+      orbBtn.classList.add("recording");
+      orbLabel.innerHTML = "Recording...<br>touch to stop";
+      setStatus("0:00");
+      timerInterval = setInterval(function () {
+        seconds += 1;
+        var m = Math.floor(seconds / 60), s = seconds % 60;
+        setStatus((m ? m + ":" : "0:") + (s < 10 ? "0" + s : s));
+        if (seconds >= MAX_SECONDS) stopRecording();
+      }, 1000);
+    }).catch(function () {
+      setStatus("Microphone access was blocked — use the typed message below instead.");
+    });
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+    clearInterval(timerInterval);
+    orbBtn.classList.remove("recording");
+  }
+
+  function enterRecordedState() {
+    state = "recorded";
+    orbLabel.innerHTML = "Message ready";
+    setStatus("Listen back, then send it or re-record.");
+    playbackWrap.hidden = false;
+    buttonsWrap.hidden = false;
+    orbForm.style.display = "grid";
+  }
+
+  reRecordBtn.addEventListener("click", function () {
+    recordedBlob = null;
+    playbackWrap.hidden = true;
+    buttonsWrap.hidden = true;
+    orbForm.style.display = "none";
+    orbLabel.innerHTML = "Touch the orb<br>to speak";
+    orbBtn.classList.remove("sent");
+    setStatus("");
+    state = "idle";
+  });
+
+  orbForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!recordedBlob) return;
+    state = "sending";
+    orbSendBtn.disabled = true;
+    orbSendBtn.textContent = "Sending...";
+    setStatus("Sending your message to the wizard...");
+
+    var data = new FormData();
+    data.append("voice_message", recordedBlob, "wizard-message.webm");
+    data.append("contact", document.getElementById("orb-contact").value);
+    data.append("device", document.getElementById("orb-device").value);
+    data.append("_subject", "New voice consult — MagicByte orb");
+
+    fetch(FORMSPREE_ENDPOINT, { method: "POST", body: data, headers: { Accept: "application/json" } })
+      .then(function (resp) {
+        if (!resp.ok) throw new Error("send failed");
+        state = "sent";
+        orbBtn.classList.add("sent");
+        orbLabel.innerHTML = "Message sent";
+        setStatus("The wizard has it — expect a text or email reply soon.");
+        orbSendBtn.textContent = "Sent";
+      })
+      .catch(function () {
+        setStatus("Couldn't send automatically — text 316-559-4816 or use the typed message below.");
+        orbSendBtn.disabled = false;
+        orbSendBtn.textContent = "Send to the Wizard";
+      });
+  });
+})();
+</script>
+
+<script src="cart.js"></script>
 </body>
 </html>
