@@ -127,9 +127,23 @@ To pick up local Wichita searches:
 - **Colours and fonts** are CSS variables in section 01 of `styles.css`.
   Change `--gold` or `--teal` there and the whole site follows.
 - **Adding a part** to `inventory.html`: copy an existing `.part-card` block.
-  The `data-category`, `data-part-id`, `data-part-name` and `data-part-price`
-  attributes are what `cart.js` reads. A card with `data-always` stays visible
-  under every filter — that's how the "Not sure what's broken?" card works.
+  These attributes are what `cart.js` reads:
+
+  | Attribute | What it does |
+  |---|---|
+  | `data-category` | Which filter button shows it (`iphone`, `android`, `other`) |
+  | `data-part-id` | Unique key for the bag. Any short slug |
+  | `data-part-name` | What the customer sees in the bag |
+  | `data-part-price` | Number only, no `$`. Leave empty for "quoted after review" |
+  | `data-part-stock` | `in` or `order`. **This decides whether the order asks for a deposit** |
+  | `data-always` | Optional. Keeps the card visible under every filter |
+
+  Get `data-part-stock` right — it's what tells the customer whether they owe a
+  deposit, and it goes into the order email you receive.
+
+- **The bag** asks whether you're installing or they are, and prices the
+  self-install option at cost + 5% to match the note on the shop page. If you
+  change that percentage, it's `SELF_INSTALL_MARKUP` at the top of `cart.js`.
 - **Motion** is off automatically for visitors who have reduced motion enabled
   in their OS settings. If you add an effect, add it to that block at the
   bottom of `styles.css` too.

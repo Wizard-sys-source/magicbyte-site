@@ -5,11 +5,14 @@
 
    Contents
      0  Config          — your Formspree IDs go here
-     1  Spark burst on click
+     1  Spark burst + cast rings (shared, exposed on window)
      2  Cursor wisp (desktop only)
-     3  Shop filters
-     4  Written form (AJAX submit)
-     5  The Voice Orb
+     3  Dust motes
+     4  Hero sigil parallax
+     5  FAQ sparks
+     6  Shop filters
+     7  Written form (AJAX submit)
+     8  The Voice Orb
    ============================================================ */
 
 (function () {
@@ -49,8 +52,20 @@
     }
   }
 
+  /* An expanding rune ring, for the moment a spell lands. */
+  function castRing(host, tint) {
+    if (reduced || !host) return;
+    var r = document.createElement("span");
+    r.className = "cast-ring" + (tint === "gold" ? " gold" : "");
+    host.appendChild(r);
+    window.setTimeout(function () { r.remove(); }, 1200);
+  }
+
+  // cart.js uses these too, so the whole site sparks the same way
+  window.MagicByteFX = { burst: burst, castRing: castRing };
+
   document.addEventListener("click", function (e) {
-    var target = e.target.closest(".btn-primary, .btn-add, .orb-btn");
+    var target = e.target.closest(".btn-primary, .btn-add, .orb-btn, .cue-arrow");
     if (!target) return;
     var r = target.getBoundingClientRect();
     burst(r.left + r.width / 2, r.top + r.height / 2,
@@ -80,7 +95,72 @@
     }, { passive: true });
   })();
 
-  /* ---------- 3  Shop filters ---------- */
+  /* ---------- 3  Dust motes ----------
+     A slow drift of gold and teal specks behind every page. */
+  (function motes() {
+    if (reduced) return;
+    var layer = document.createElement("div");
+    layer.className = "motes";
+    layer.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < 14; i++) {
+      var m = document.createElement("i");
+      m.style.left = (Math.random() * 100).toFixed(2) + "%";
+      m.style.setProperty("--drift", (Math.random() * 120 - 60).toFixed(0) + "px");
+      m.style.animationDuration = (16 + Math.random() * 20).toFixed(1) + "s";
+      m.style.animationDelay = (-Math.random() * 30).toFixed(1) + "s";
+      layer.appendChild(m);
+    }
+    document.body.appendChild(layer);
+  })();
+
+  /* ---------- 4  Hero sigil parallax ----------
+     The sigil drifts a little against the pointer. Desktop only —
+     there is no pointer to track on a phone. */
+  (function parallax() {
+    if (reduced) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(max-width: 780px)").matches) return;
+
+    var sigil = document.querySelector(".hero-sigil");
+    var mascot = document.querySelector(".sigil-mascot");
+    if (!sigil) return;
+
+    var pending = false, mx = 0, my = 0;
+    window.addEventListener("mousemove", function (e) {
+      mx = (e.clientX / window.innerWidth) - 0.5;
+      my = (e.clientY / window.innerHeight) - 0.5;
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () {
+        sigil.style.setProperty("--par-x", (mx * 26).toFixed(1) + "px");
+        sigil.style.setProperty("--par-y", (my * 18).toFixed(1) + "px");
+        if (mascot) {
+          // the mascot leads the rings slightly, for a sense of depth
+          mascot.style.transform =
+            "translate(-50%, -50%) translate(" + (mx * 14).toFixed(1) + "px," + (my * 10).toFixed(1) + "px)";
+        }
+        pending = false;
+      });
+    }, { passive: true });
+  })();
+
+  /* ---------- 5  FAQ sparks ----------
+     A small flare off the rune as an answer unfurls. */
+  (function faqSparks() {
+    var items = document.querySelectorAll("details.faq-item");
+    if (!items.length) return;
+    items.forEach(function (d) {
+      d.addEventListener("toggle", function () {
+        if (!d.open) return;
+        var s = d.querySelector("summary");
+        if (!s) return;
+        var r = s.getBoundingClientRect();
+        burst(r.left + 6, r.top + r.height / 2, "teal", 6);
+      });
+    });
+  })();
+
+  /* ---------- 6  Shop filters ---------- */
   (function filters() {
     var buttons = document.querySelectorAll(".shop-filter");
     if (!buttons.length) return;
@@ -114,7 +194,7 @@
     apply("all");
   })();
 
-  /* ---------- 4  Written form ---------- */
+  /* ---------- 7  Written form ---------- */
   (function writtenForm() {
     var form = document.getElementById("write-form");
     if (!form) return;
@@ -154,7 +234,7 @@
     });
   })();
 
-  /* ---------- 5  The Voice Orb ---------- */
+  /* ---------- 8  The Voice Orb ---------- */
   (function orb() {
     var btn = document.getElementById("orb-btn");
     if (!btn) return;
@@ -167,6 +247,7 @@
     var player = document.getElementById("orb-player");
     var buttonsWrap = document.getElementById("orb-buttons");
     var reRecord = document.getElementById("orb-rerecord");
+    var cue = document.getElementById("orb-cue");
     var form = document.getElementById("orb-form");
     var sendBtn = document.getElementById("orb-send");
 
@@ -290,10 +371,22 @@
     function recorded() {
       state = "recorded";
       label.innerHTML = "Message ready";
-      say("Give it a listen, then add your contact details below.");
+      say("Give it a listen, then add your details below and send.");
       playbackWrap.hidden = false;
       buttonsWrap.hidden = false;
       form.hidden = false;
+      cue.hidden = false;
+
+      // The form appears below the fold, so bring it into view rather than
+      // leaving people to wonder whether anything happened.
+      window.setTimeout(function () {
+        if (form.getBoundingClientRect().bottom > window.innerHeight) {
+          form.scrollIntoView({
+            behavior: reduced ? "auto" : "smooth",
+            block: "center"
+          });
+        }
+      }, 420);
     }
 
     btn.addEventListener("click", function () {
@@ -301,11 +394,17 @@
       else if (state === "recording") stop();
     });
 
+    cue.addEventListener("click", function () {
+      form.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+      document.getElementById("orb-contact").focus({ preventScroll: true });
+    });
+
     reRecord.addEventListener("click", function () {
       blob = null;
       playbackWrap.hidden = true;
       buttonsWrap.hidden = true;
       form.hidden = true;
+      cue.hidden = true;
       btn.classList.remove("sent");
       label.innerHTML = "Touch the orb<br>to speak";
       say("");
@@ -335,6 +434,8 @@
           if (!res.ok) throw new Error("rejected");
           state = "sent";
           btn.classList.add("sent");
+          cue.hidden = true;
+          castRing(document.querySelector(".orb-wrap"));
           label.innerHTML = "Message sent";
           say("Sent. You'll hear back by text or email, usually same day.");
           sendBtn.textContent = "Sent";

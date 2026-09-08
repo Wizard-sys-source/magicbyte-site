@@ -85,11 +85,11 @@ img { max-width: 100%; height: auto; }
 a { color: var(--teal); text-decoration: none; transition: color .2s ease; }
 a:hover { color: var(--gold-bright); }
 
+/* Gold outline is the treatment for things that DO something — links,
+   buttons, summaries. Text fields get their own ring further down, so
+   they don't borrow the affordance of a link. */
 a:focus-visible,
 button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
 summary:focus-visible {
   outline: 2px solid var(--gold-bright);
   outline-offset: 3px;
@@ -576,25 +576,30 @@ h2::before {
 }
 .part-card { display: flex; flex-direction: column; }
 
-/* Arcane sheen that sweeps a card on hover */
-.card::after,
-.part-card::after {
-  content: "";
-  position: absolute;
-  top: 0; left: -70%;
-  width: 45%; height: 100%;
-  background: linear-gradient(115deg, transparent, rgba(79, 209, 197, 0.10), transparent);
-  transition: left .65s ease;
-  pointer-events: none;
-}
-.card:hover::after,
-.part-card:hover::after { left: 130%; }
+/* Arcane sheen that sweeps a card — hover-capable pointers only.
+   On a touchscreen there is no hover, so these rules used to fire on TAP
+   and made a plain card light up as though it were a link. */
+@media (hover: hover) and (pointer: fine) {
+  .card::after,
+  .part-card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -70%;
+    width: 45%; height: 100%;
+    background: linear-gradient(115deg, transparent, rgba(79, 209, 197, 0.10), transparent);
+    transition: left .65s ease;
+    pointer-events: none;
+  }
+  .card:hover::after,
+  .part-card:hover::after { left: 130%; }
 
-.card:hover,
-.part-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--teal-dim);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4), 0 0 18px rgba(79, 209, 197, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  .card:hover,
+  .part-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--teal-dim);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4), 0 0 18px rgba(79, 209, 197, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+  table.data tbody tr:hover { background: rgba(79, 209, 197, 0.05); }
 }
 
 .card h3,
@@ -671,7 +676,6 @@ table.data th {
   border-bottom: 2px solid var(--gold);
 }
 table.data tbody tr { transition: background .2s ease; }
-table.data tbody tr:hover { background: rgba(79, 209, 197, 0.05); }
 table.data td.price { color: var(--teal); font-weight: 600; white-space: nowrap; }
 
 .stock-tag {
@@ -727,11 +731,16 @@ form.spellform.bare {
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
   transition: border-color .2s ease, box-shadow .2s ease;
 }
+/* Resting affordance: a field looks inset and editable before you touch it */
+.field input:hover,
+.field select:hover,
+.field textarea:hover { border-color: #4b3860; }
+
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-  border-color: var(--teal-dim);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(79, 209, 197, 0.14);
+  border-color: var(--teal);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(79, 209, 197, 0.18);
   outline: none;
 }
 .field textarea { min-height: 110px; resize: vertical; }
@@ -1078,7 +1087,54 @@ details.faq-item[open] p { animation: unfurl .32s ease-out; }
   padding: 12px 0;
   border-bottom: 1px solid var(--line);
 }
-.satchel-item-info { display: flex; flex-direction: column; gap: 3px; }
+.satchel-item-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.satchel-controls { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+
+.satchel-stock {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.satchel-stock.in    { color: var(--teal); }
+.satchel-stock.order { color: var(--danger); }
+
+.satchel-remove {
+  background: none;
+  border: none;
+  color: var(--parchment-dim);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  padding: 2px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.satchel-remove:hover { color: var(--danger); }
+
+.satchel-clear {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  background: none;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  color: var(--parchment-dim);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 9px;
+  cursor: pointer;
+  transition: border-color .2s ease, color .2s ease;
+}
+.satchel-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+#satchel-terms { margin: 0 0 14px; line-height: 1.5; }
+#satchel-form select { font-size: 0.92rem; padding: 9px 11px; }
+.satchel-head { position: relative; overflow: hidden; }
 .satchel-item-name  { color: var(--parchment); font-size: 0.92rem; }
 .satchel-item-price { color: var(--teal); font-family: var(--font-mono); font-size: 0.8rem; }
 .satchel-qty { display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); }
@@ -1104,13 +1160,16 @@ details.faq-item[open] p { animation: unfurl .32s ease-out; }
   font-family: var(--font-mono);
   color: var(--parchment);
   margin-bottom: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
-.satchel-total strong { color: var(--gold-bright); font-size: 1.1rem; }
+.satchel-total strong { color: var(--gold-bright); font-size: 1.1rem; text-align: right; }
 #satchel-form { display: grid; gap: 10px; margin-top: 12px; }
 #satchel-form .field input,
 #satchel-form .field textarea { padding: 9px 11px; font-size: 0.92rem; }
 #satchel-form textarea { min-height: 60px; }
 #satchel-submit { width: 100%; text-align: center; }
+#satchel-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 #satchel-status { min-height: 1.2em; color: var(--teal); }
 
 .wizard-toast {
@@ -1210,6 +1269,112 @@ footer.site .foot-row {
 }
 
 
+
+/* ---------- 19 Enchantments ----------
+   Ambient and reactive effects. Everything here is switched off
+   under prefers-reduced-motion, at the bottom of the file. */
+
+/* Drifting dust motes — injected sitewide by wizard.js */
+.motes { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.motes i {
+  position: absolute;
+  bottom: -12px;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px 1px rgba(233, 198, 90, 0.55);
+  opacity: 0;
+  animation: mote-drift linear infinite;
+}
+.motes i:nth-child(even) {
+  background: var(--teal);
+  box-shadow: 0 0 6px 1px rgba(79, 209, 197, 0.5);
+}
+@keyframes mote-drift {
+  0%   { transform: translate(0, 0) scale(0.6);            opacity: 0; }
+  12%  { opacity: 0.5; }
+  85%  { opacity: 0.28; }
+  100% { transform: translate(var(--drift), -108vh) scale(1); opacity: 0; }
+}
+
+/* Hero sigil follows the pointer a little, like it's tracking you */
+.hero-sigil {
+  transform: translateY(-50%) translate3d(var(--par-x, 0px), var(--par-y, 0px), 0);
+  transition: transform .5s cubic-bezier(.2,.7,.3,1);
+}
+.sigil-mascot { transition: transform .5s cubic-bezier(.2,.7,.3,1); }
+
+/* Down-arrow cue: points at the step that just appeared */
+.cue-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--gold-bright);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  animation: cue-bob 1.9s ease-in-out infinite;
+}
+.cue-arrow svg { width: 22px; height: 22px; filter: drop-shadow(0 0 6px rgba(233,198,90,0.6)); }
+.cue-arrow:hover { color: var(--teal); }
+@keyframes cue-bob {
+  0%, 100% { transform: translateY(0);   opacity: 0.85; }
+  50%      { transform: translateY(6px); opacity: 1; }
+}
+
+/* Expanding rune ring when a spell lands (voice message sent, order sent) */
+.cast-ring {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 200px; height: 200px;
+  margin: -100px 0 0 -100px;
+  border-radius: 50%;
+  border: 2px solid var(--teal);
+  pointer-events: none;
+  animation: cast-out 1.1s cubic-bezier(.2,.8,.3,1) forwards;
+}
+.cast-ring.gold { border-color: var(--gold-bright); }
+@keyframes cast-out {
+  0%   { transform: scale(0.55); opacity: 0.9; }
+  100% { transform: scale(2.1);  opacity: 0; }
+}
+
+/* The bag: a light sweeps the drawer as it slides in */
+.satchel-drawer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgba(79,209,197,0.10) 50%, transparent 65%);
+  background-size: 300% 100%;
+  background-position: 200% 0;
+}
+.satchel-drawer.open::before { animation: drawer-sweep 1.1s ease-out .12s; }
+@keyframes drawer-sweep {
+  from { background-position: 200% 0; }
+  to   { background-position: -100% 0; }
+}
+
+/* A row flashes when it lands in the bag */
+.satchel-item.just-added { animation: item-land .7s ease-out; }
+@keyframes item-land {
+  0%   { background: rgba(201, 162, 39, 0.22); transform: translateX(10px); }
+  100% { background: transparent;              transform: none; }
+}
+
+/* Bag glyph reacts when the count changes */
+.cart-nav-btn.bump .cart-glyph { animation: glyph-bump .5s cubic-bezier(.3,1.4,.5,1); }
+@keyframes glyph-bump {
+  0%, 100% { transform: scale(1) rotate(0); }
+  40%      { transform: scale(1.35) rotate(-12deg); }
+}
+
 /* ---------- 17 Responsive ---------- */
 @media (max-width: 900px) {
   .hero-copy { max-width: 26rem; }
@@ -1241,7 +1406,7 @@ footer.site .foot-row {
   .hero-sigil {
     position: relative;
     right: auto; top: auto;
-    transform: none;
+    transform: none;   /* cancels the desktop parallax offset */
     width: min(260px, 68vw);
     height: min(260px, 68vw);
     margin: 0 auto;
@@ -1296,7 +1461,9 @@ footer.site .foot-row {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  .embers, .orb-orbit, .starfield, .wisp, .spark { display: none !important; }
+  .embers, .orb-orbit, .starfield, .wisp, .spark,
+  .motes, .cast-ring { display: none !important; }
+  .hero-sigil { transform: translateY(-50%) !important; }
   .orb-glow { transform: none; }
 }
 
