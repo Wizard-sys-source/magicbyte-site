@@ -30,6 +30,7 @@
       <a href="inventory.html">Shop Parts</a>
       <a href="services.html" aria-current="page">Services &amp; Pricing</a>
       <a href="book.html" class="orb-nav-link">Ask the Wizard</a>
+      <a href="trust.html">Trust</a>
       <a href="faq.html">FAQ</a>
     </nav>
   </div>
@@ -46,6 +47,36 @@
   <div class="promo">
     <strong>First 100 Heroes</strong>
     <span class="note">Labor is $20 for the first 100 customers · parts priced separately at cost · mention it when you book</span>
+  </div>
+
+  <section id="estimator-section">
+    <h2>What will mine cost?</h2>
+    <p class="section-note">Pick your device and what's wrong. You'll get the labor fee, the turnaround, and the honest caveats for that specific repair.</p>
+
+    <div class="estimator" id="estimator">
+      <div class="est-step">
+        <p class="est-label"><span class="est-num">1</span> What have you got?</p>
+        <div class="est-chips" id="est-devices"></div>
+      </div>
+
+      <div class="est-step" id="est-step-2" hidden>
+        <p class="est-label"><span class="est-num">2</span> What's it doing?</p>
+        <div class="est-chips" id="est-repairs"></div>
+      </div>
+
+      <div class="est-step" id="est-step-3" hidden>
+        <p class="est-label"><span class="est-num">3</span> Your estimate</p>
+        <div class="est-result" id="est-result"></div>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="field-hint">The estimator needs JavaScript. The full labor table is just below, or text 316-559-4816 and I'll price it for you.</p>
+    </noscript>
+  </section>
+
+  <div class="rune-divider" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>
   </div>
 
   <section>
@@ -102,14 +133,58 @@
     </div>
   </section>
 
+
+  <div class="rune-divider" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>
+  </div>
+
+  <section id="devices">
+    <h2>Devices and repairs I take on</h2>
+    <p class="section-note">If your model isn't listed, ask anyway — most parts can be ordered in a few days.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>iPhone</h3>
+        <p>Screen replacement · battery · charging port · rear and front camera · back glass (iPhone 15 and up same-day; X&#8211;14 needs two days) · glass polishing</p>
+      </div>
+      <div class="card">
+        <h3>Samsung Galaxy</h3>
+        <p>Screen replacement · battery · charging port · camera · back glass · glass polishing</p>
+      </div>
+      <div class="card">
+        <h3>Google Pixel</h3>
+        <p>Screen replacement · battery · charging port · camera · back glass · glass polishing</p>
+      </div>
+      <div class="card">
+        <h3>Other Android phones and tablets</h3>
+        <p>Same repairs, subject to parts being available for your model. Send me the model and I'll check before you commit to anything.</p>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site wrap">
   <div class="foot-row">
     <span>© 2026 MagicByte · Mobile repair · Wichita, KS &amp; surrounding area</span>
-    <span>Voicemail <a href="tel:3165594816">316-559-4816</a></span>
+    <span>Voicemail <a href="tel:+13165594816">316-559-4816</a></span>
   </div>
 </footer>
+
+
+<!-- Sticky contact bar: phone-only. Text is the fastest route to a
+     one-person mobile business, so it leads. -->
+<div class="action-bar" aria-label="Contact the wizard">
+  <a class="action-btn" href="sms:+13165594816">
+    <span aria-hidden="true">💬</span> Text
+  </a>
+  <a class="action-btn" href="tel:+13165594816">
+    <span aria-hidden="true">📞</span> Call
+  </a>
+  <a class="action-btn primary" href="services.html#estimator-section">
+    <span aria-hidden="true">🔮</span> Get a price
+  </a>
+</div>
 
 <script src="wizard.js"></script>
 <script src="cart.js"></script>

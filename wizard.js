@@ -447,4 +447,104 @@
         });
     });
   })();
+
+  /* ---------- 9  Repair estimator ----------
+     Every figure here comes from the labor table on the services page.
+     Labor can be quoted blind; parts cannot, so the estimator says so
+     rather than inventing a total it can't stand behind. */
+  (function estimator() {
+    var root = document.getElementById("estimator");
+    if (!root) return;
+
+    var REPAIRS = {
+      screen:    { label: "Cracked screen or dead display", labor: "$35\u201345", time: "about 1\u00bd hours" },
+      battery:   { label: "Battery dying fast or swollen",  labor: "$35\u201340", time: "about 1\u00bd hours" },
+      port:      { label: "Won\u2019t charge / loose port",   labor: "$40\u201360", time: "about 1\u00bd hours" },
+      camera:    { label: "Camera or camera glass",         labor: "$40\u201350", time: "about 1\u00bd hours" },
+      backglass: { label: "Cracked back glass",             labor: "$40\u201350", time: "about 1\u00bd hours" },
+      polish:    { label: "Scratched glass \u2014 polishing", labor: "Quoted once I see it", time: "about 2 hours" },
+      water:     { label: "Liquid damage",                  labor: "$15\u201320 to diagnose first", time: "about 30 min to assess" },
+      unsure:    { label: "Something else / not sure",      labor: "$15\u201320 to diagnose", time: "about 30 min" }
+    };
+
+    var DEVICES = {
+      iphone:  "iPhone",
+      samsung: "Samsung Galaxy",
+      pixel:   "Google Pixel",
+      other:   "Another phone or tablet"
+    };
+
+    /* Caveats, straight from what the services page and FAQ already say.
+       Better the customer reads these now than is surprised on the day. */
+    function caveats(device, repair) {
+      var out = [];
+      if (repair === "backglass" && device === "iphone") {
+        out.push("On iPhone X through 14, back glass needs laser separation I don\u2019t have yet, so that one takes at least two days rather than same-day. iPhone 15 and up is same-day.");
+      }
+      if (repair === "water") {
+        out.push("I only take liquid damage on if the device still shows some sign of life. Fully dead means board-level work, and I\u2019ll point you to someone with a microsoldering bench instead of taking your money.");
+      }
+      if (repair === "screen" && device === "iphone") {
+        out.push("An aftermarket screen makes iOS log a non-genuine part in Settings, and True Tone usually stops working. Nothing else about the phone changes. Full detail on the Trust page.");
+      }
+      if (repair === "battery" && device === "iphone") {
+        out.push("With an aftermarket battery, iOS often stops showing the battery health percentage. The battery itself works normally.");
+      }
+      if (repair === "polish") {
+        out.push("Polishing clears scratches and haze in the glass. It can\u2019t close a crack that has gone all the way through.");
+      }
+      return out;
+    }
+
+    var device = null, repair = null;
+    var deviceWrap = document.getElementById("est-devices");
+    var repairWrap = document.getElementById("est-repairs");
+    var result     = document.getElementById("est-result");
+    var stepTwo    = document.getElementById("est-step-2");
+    var stepThree  = document.getElementById("est-step-3");
+
+    function chip(value, label, group) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "est-chip";
+      b.setAttribute("aria-pressed", "false");
+      b.textContent = label;
+      b.addEventListener("click", function () {
+        group.querySelectorAll(".est-chip").forEach(function (c) { c.setAttribute("aria-pressed", "false"); });
+        b.setAttribute("aria-pressed", "true");
+        if (group === deviceWrap) { device = value; stepTwo.hidden = false; }
+        else { repair = value; }
+        render();
+      });
+      return b;
+    }
+
+    Object.keys(DEVICES).forEach(function (k) { deviceWrap.appendChild(chip(k, DEVICES[k], deviceWrap)); });
+    Object.keys(REPAIRS).forEach(function (k) { repairWrap.appendChild(chip(k, REPAIRS[k].label, repairWrap)); });
+
+    function render() {
+      if (!device || !repair) return;
+      var r = REPAIRS[repair];
+      var notes = caveats(device, repair);
+
+      result.innerHTML =
+        '<p class="est-line"><span>MagicByte labor</span><strong>' + r.labor + '</strong></p>' +
+        '<p class="est-line"><span>Parts</span><strong>At cost, quoted once I confirm the model</strong></p>' +
+        '<p class="est-line"><span>Typical time on site</span><strong>' + r.time + '</strong></p>' +
+        '<p class="est-line"><span>Warranty</span><strong>30 days, parts and labor</strong></p>' +
+        (notes.length
+          ? '<div class="est-notes">' + notes.map(function (n) { return "<p>" + n + "</p>"; }).join("") + "</div>"
+          : "") +
+        '<p class="est-fineprint">Labor is a range because it moves with the model. Parts move with the market, so I confirm the exact figure before you commit to anything. While the First 100 Heroes promo lasts, labor is $20 flat.</p>' +
+        '<div class="est-actions">' +
+          '<a class="btn btn-primary" href="book.html">Send this to the wizard</a>' +
+          '<a class="btn btn-ghost" href="sms:+13165594816">Text instead</a>' +
+        '</div>';
+
+      stepThree.hidden = false;
+      if (result.getBoundingClientRect().bottom > window.innerHeight) {
+        result.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "nearest" });
+      }
+    }
+  })();
 })();

@@ -1375,6 +1375,137 @@ footer.site .foot-row {
   40%      { transform: scale(1.35) rotate(-12deg); }
 }
 
+
+/* ---------- 20 Estimator ---------- */
+.estimator {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.est-step + .est-step { margin-top: 26px; padding-top: 24px; border-top: 1px solid var(--line-soft, #2c2039); }
+
+.est-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--parchment-dim);
+  margin: 0 0 14px;
+}
+.est-num {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.74rem;
+}
+
+.est-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.est-chip {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  text-align: left;
+  padding: 11px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  color: var(--parchment);
+  cursor: pointer;
+  transition: border-color .2s ease, background .2s ease, color .2s ease;
+}
+.est-chip[aria-pressed="true"] {
+  border-color: var(--gold);
+  background: rgba(201, 162, 39, 0.14);
+  color: var(--gold-bright);
+  box-shadow: 0 0 14px rgba(201, 162, 39, 0.18);
+}
+@media (hover: hover) and (pointer: fine) {
+  .est-chip:hover { border-color: var(--teal-dim); }
+}
+
+.est-result { display: grid; gap: 2px; }
+.est-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+.est-line span   { color: var(--parchment-dim); font-size: 0.92rem; }
+.est-line strong { font-family: var(--font-mono); color: var(--gold-bright); font-size: 0.95rem; text-align: right; }
+
+.est-notes {
+  margin-top: 16px;
+  border-left: 2px solid var(--teal-dim);
+  padding: 4px 0 4px 14px;
+}
+.est-notes p { margin: 0 0 10px; color: var(--parchment); font-size: 0.93rem; }
+.est-notes p:last-child { margin-bottom: 0; }
+
+.est-fineprint { color: var(--parchment-dim); font-size: 0.85rem; margin: 16px 0 0; }
+.est-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+
+/* ---------- 21 Sticky contact bar ----------
+   Phones only. A one-person mobile business lives on text, so the
+   fastest routes stay in reach no matter how far down the page you are. */
+.action-bar { display: none; }
+
+@media (max-width: 780px) {
+  .action-bar {
+    display: flex;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 30;
+    gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: rgba(13, 8, 19, 0.96);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45);
+  }
+  .action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 8px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--bg-raised);
+    color: var(--parchment);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .action-btn.primary {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #1a1220;
+    font-weight: 700;
+    flex: 1.35;
+  }
+  .action-btn:hover, .action-btn:active { color: var(--parchment); }
+  .action-btn.primary:hover, .action-btn.primary:active { color: #1a1220; }
+
+  /* keep the bar off the footer and the bag drawer's send button */
+  body { padding-bottom: 72px; }
+  .satchel-drawer { padding-bottom: 64px; }
+}
+
 /* ---------- 17 Responsive ---------- */
 @media (max-width: 900px) {
   .hero-copy { max-width: 26rem; }
@@ -1425,7 +1556,7 @@ footer.site .foot-row {
 @media (max-width: 520px) {
   .wrap { padding: 0 16px; }
   .nav-row { padding: 10px 16px; }
-  nav.links { gap: 12px 14px; font-size: 0.68rem; }
+  nav.links { gap: 10px 12px; font-size: 0.66rem; }
   .brand { font-size: 1.05rem; }
 
   .hero { padding: 28px 0 20px; }
@@ -1443,6 +1574,11 @@ footer.site .foot-row {
   .orb-orbit i:nth-child(3) { transform: rotate(240deg) translateX(110px); }
 
   .promo { padding: 14px 16px; }
+  .estimator { padding: 18px; }
+  .est-chip { width: 100%; }
+  .est-line { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .est-line strong { text-align: left; }
+  .est-actions .btn { width: 100%; }
   footer.site { padding: 22px 16px 36px; }
   table.data { font-size: 0.76rem; }
   table.data th, table.data td { padding: 10px 9px; }
@@ -1468,7 +1604,7 @@ footer.site .foot-row {
 }
 
 @media print {
-  .starfield, .embers, .orb-stage, .satchel-drawer, .satchel-overlay, .wizard-toast { display: none !important; }
+  .action-bar, .starfield, .embers, .orb-stage, .satchel-drawer, .satchel-overlay, .wizard-toast { display: none !important; }
   body { background: #fff; color: #000; }
   header.site { position: static; }
 }
