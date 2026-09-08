@@ -1506,6 +1506,96 @@ footer.site .foot-row {
   .satchel-drawer { padding-bottom: 64px; }
 }
 
+
+/* ---------- 22 Quieter layout ----------
+   Typography and rules doing the work that bordered cards were doing.
+   Fewer boxes, more air. */
+
+/* Sections breathe further apart than they used to */
+section { padding: 12px 0 38px; }
+.rune-divider { margin: 54px 0; }
+
+/* One dominant action. The secondary route is a link, not a rival button. */
+.btn-lead { padding: 16px 30px; font-size: 0.94rem; }
+.btn-quiet {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--parchment-dim);
+  letter-spacing: 0.02em;
+  padding: 6px 2px;
+}
+.btn-quiet:hover { color: var(--gold-bright); }
+
+/* Promo as a single strip, not a content block */
+.promo-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin: 34px 0 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.92rem;
+  color: var(--parchment-dim);
+}
+.promo-strip strong {
+  font-family: var(--font-display);
+  color: var(--gold-bright);
+  letter-spacing: 0.01em;
+}
+
+/* Oaths / commitments: hairline-separated list instead of boxes */
+.oaths { margin: 0; display: grid; gap: 0; }
+.oaths > div {
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+  gap: 8px 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  align-items: baseline;
+}
+.oaths > div:last-child { border-bottom: 1px solid var(--line); }
+.oaths dt {
+  font-family: var(--font-display);
+  font-size: 1.03rem;
+  color: var(--gold-bright);
+}
+.oaths dd { margin: 0; color: var(--parchment-dim); font-size: 0.97rem; }
+
+/* Service area line */
+.realm {
+  margin: 26px 0 0;
+  padding-left: 16px;
+  border-left: 2px solid var(--gold);
+  color: var(--parchment-dim);
+  font-size: 0.97rem;
+}
+.realm strong {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  margin-bottom: 5px;
+}
+
+/* Covered / not covered, without two competing panels */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+.split h3 {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.split-yes { color: var(--teal); }
+.split-no  { color: var(--danger); }
+.split p { color: var(--parchment-dim); font-size: 0.95rem; margin: 0 0 10px; }
+
+.cta-tail { margin: 30px 0 0; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+
 /* ---------- 17 Responsive ---------- */
 @media (max-width: 900px) {
   .hero-copy { max-width: 26rem; }
@@ -1546,8 +1636,13 @@ footer.site .foot-row {
   .cta-row { justify-content: center; }
   h2 { justify-content: flex-start; }
 
-  .rune-divider { margin: 40px 0; }
+  .rune-divider { margin: 46px 0; }
   .grid { grid-template-columns: 1fr; }
+  section { padding: 12px 0 34px; }
+  .split { grid-template-columns: 1fr; gap: 26px; }
+  .oaths > div { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
+  .cta-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .btn-quiet { align-self: center; }
   form.spellform { padding: 20px; }
   footer.site { padding: 24px 20px 40px; }
   footer.site .foot-row { flex-direction: column; text-align: center; align-items: center; }

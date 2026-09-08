@@ -12,8 +12,8 @@ scripts. Drop the files on GitHub Pages and it runs.
 | `inventory.html` | Shop parts, with device filters and the bag |
 | `services.html` | Labor rates, what you don't take on, how a job works |
 | `book.html` | Ask the Wizard — the voice orb and the written form |
-| `trust.html` | Data promise, parts disclosure, warranty detail, repair process |
-| `faq.html` | Common questions |
+| `trust.html` | Trust & FAQ — data promise, parts disclosure, warranty, common questions |
+| `faq.html` | Redirect only. Forwards old links to `trust.html` |
 | `consult.html` | Redirect only. Forwards old links to `book.html` |
 | `styles.css` | All styling. Numbered sections, tokens at the top |
 | `wizard.js` | Shared behaviour: the orb, shop filters, written form, effects |
@@ -56,7 +56,7 @@ Search the HTML for `EDIT:` to find each one.
 | 1 | **Your real availability** | `index.html` → "When can you come out?" | Currently says "message any time, same-day depends on what's booked" — true but vague. Real hours convert better. |
 | 2 | **How far you'll drive** | `index.html` → "Further out" | Decide on a mileage limit and whether there's a travel fee. |
 | 3 | **Towns you'll actually serve** | `index.html` → "Nearby towns", and `areaServed` in the schema | I listed nine around Wichita. **Delete any you won't drive to** — it's a promise once it's published. |
-| 4 | **Payment methods** | `faq.html` → "How do I pay, and when?" | Says you'll confirm methods when booking. Replace with the real list. |
+| 4 | **Payment methods** | `trust.html` → "How do I pay, and when?" | Says you'll confirm methods when booking. Replace with the real list. |
 | 5 | **Opening hours in the schema** | `index.html` → commented block under the JSON-LD | This feeds Google. Don't publish hours you can't keep. |
 
 ### Read the Trust page before you publish it
