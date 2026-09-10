@@ -536,9 +536,9 @@ section { padding: 10px 0 30px; }
 
 h2 {
   font-family: var(--font-display);
-  font-size: 1.55rem;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 1.78rem);
   color: var(--parchment);
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -546,9 +546,10 @@ h2 {
 h2::before {
   content: "◆";
   color: var(--gold);
-  font-size: 0.55rem;
+  font-size: 0.5rem;
   flex-shrink: 0;
-  opacity: 0.9;
+  opacity: 0.85;
+  transform: translateY(-0.42em);   /* sit level with the cap height */
 }
 
 .section-note {
@@ -618,6 +619,22 @@ h2::before {
 .card-teal { background: rgba(79, 209, 197, 0.05); border-color: var(--teal-dim); }
 .card-teal h3 { color: var(--teal); }
 .card-note { background: rgba(21, 15, 30, 0.6); }
+
+/* Asides carry secondary detail without another bordered panel */
+.aside {
+  margin: 22px 0 0;
+  padding: 2px 0 2px 18px;
+  border-left: 2px solid var(--line);
+  max-width: 66ch;
+}
+.aside h3 {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  color: var(--gold-bright);
+  margin: 0 0 8px;
+}
+.aside p { color: var(--parchment-dim); font-size: 0.93rem; margin: 0 0 10px; }
+.aside p:last-child { margin-bottom: 0; }
 .card-note p { font-size: 0.88rem; }
 .card-lead { color: var(--gold-bright); font-size: 1.03rem; }
 
@@ -1513,10 +1530,12 @@ footer.site .foot-row {
 
 /* Sections breathe further apart than they used to */
 section { padding: 12px 0 38px; }
-.rune-divider { margin: 54px 0; }
+.rune-divider { margin: 46px 0; }
 
 /* One dominant action. The secondary route is a link, not a rival button. */
-.btn-lead { padding: 16px 30px; font-size: 0.94rem; }
+/* Both primary actions share a height so their captions line up. */
+.cta-pair .btn { padding: 15px 26px; font-size: 0.9rem; }
+.btn-lead { font-weight: 700; }
 .btn-quiet {
   font-family: var(--font-mono);
   font-size: 0.82rem;
@@ -1531,18 +1550,21 @@ section { padding: 12px 0 38px; }
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 6px 14px;
-  margin: 34px 0 0;
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  font-size: 0.92rem;
+  gap: 4px 12px;
+  margin: 30px 0 0;
+  padding: 11px 14px;
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-radius: var(--radius);
+  background: rgba(201, 162, 39, 0.06);
+  font-size: 0.86rem;
   color: var(--parchment-dim);
 }
 .promo-strip strong {
-  font-family: var(--font-display);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--gold-bright);
-  letter-spacing: 0.01em;
 }
 
 /* Oaths / commitments: hairline-separated list instead of boxes */
@@ -1566,6 +1588,7 @@ section { padding: 12px 0 38px; }
 /* Service area line */
 .realm {
   margin: 26px 0 0;
+  max-width: 62ch;
   padding-left: 16px;
   border-left: 2px solid var(--gold);
   color: var(--parchment-dim);
@@ -1596,6 +1619,93 @@ section { padding: 12px 0 38px; }
 
 .cta-tail { margin: 30px 0 0; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
 
+
+/* ---------- 23 Two ways in ----------
+   Both routes are real buttons. The gold one converts; the outlined one
+   is the human alternative, and the hint under each says which is which. */
+.cta-pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 22px;
+  align-items: flex-start;
+  margin-top: 30px;
+}
+.cta-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 0 1 auto;
+  min-width: 12.5rem;
+}
+.cta-choice .btn { align-self: flex-start; }
+
+.cta-hint {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--parchment-dim);
+  line-height: 1.4;
+}
+
+.btn-wizard {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold-bright);
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  transition: background .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.btn-wizard .wand { font-size: 1.02em; line-height: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .btn-wizard:hover {
+    background: rgba(201, 162, 39, 0.10);
+    border-color: var(--gold-bright);
+    color: var(--gold-bright);
+    box-shadow: 0 0 18px rgba(201, 162, 39, 0.18);
+  }
+  .btn-wizard:hover .wand { animation: wand-flick .5s ease; }
+}
+@keyframes wand-flick {
+  0%, 100% { transform: rotate(0); }
+  40%      { transform: rotate(-16deg) translateY(-2px); }
+}
+
+/* ---------- 24 Typographic polish ---------- */
+h1 { letter-spacing: -0.005em; }
+.lede { line-height: 1.6; }
+
+.eyebrow { font-size: 0.74rem; letter-spacing: 0.16em; margin-bottom: 16px; }
+
+h2 { font-size: 1.62rem; letter-spacing: 0.005em; margin-bottom: 12px; }
+.section-note { line-height: 1.62; }
+
+/* Promo reads as a thin banner, not a section */
+.promo-strip {
+  margin: 40px 0 0;
+  padding: 11px 0;
+  font-size: 0.88rem;
+}
+.promo-strip strong { font-size: 0.94rem; }
+
+/* A quieter callout than a full card, for asides on inner pages */
+.aside-note {
+  border-left: 2px solid var(--line);
+  padding: 2px 0 2px 18px;
+  margin-top: 26px;
+}
+.aside-note h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--parchment);
+  margin: 0 0 8px;
+}
+.aside-note p { color: var(--parchment-dim); font-size: 0.94rem; margin: 0 0 10px; }
+.aside-note p:last-child { margin-bottom: 0; }
+.aside-lead { border-left-color: var(--gold); }
+.aside-lead .card-lead { color: var(--gold-bright); font-size: 1.02rem; }
+
 /* ---------- 17 Responsive ---------- */
 @media (max-width: 900px) {
   .hero-copy { max-width: 26rem; }
@@ -1605,7 +1715,7 @@ section { padding: 12px 0 38px; }
 /* Below this the sigil can no longer sit beside the copy,
    so the hero stacks and the sigil moves above it. */
 @media (max-width: 780px) {
-  body { font-size: 17px; }
+  body { font-size: 17.5px; line-height: 1.68; }
 
   .nav-row {
     flex-direction: column;
@@ -1636,13 +1746,17 @@ section { padding: 12px 0 38px; }
   .cta-row { justify-content: center; }
   h2 { justify-content: flex-start; }
 
-  .rune-divider { margin: 46px 0; }
+  .rune-divider { margin: 38px 0; }
   .grid { grid-template-columns: 1fr; }
   section { padding: 12px 0 34px; }
   .split { grid-template-columns: 1fr; gap: 26px; }
   .oaths > div { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
   .cta-row { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .btn-quiet { align-self: center; }
+  .cta-pair { flex-direction: column; gap: 22px; width: 100%; }
+  .cta-choice { width: 100%; }
+  .cta-choice .btn { align-self: stretch; width: 100%; }
+  .cta-hint { max-width: none; text-align: center; }
+  .promo-strip { margin-top: 30px; font-size: 0.86rem; }
   form.spellform { padding: 20px; }
   footer.site { padding: 24px 20px 40px; }
   footer.site .foot-row { flex-direction: column; text-align: center; align-items: center; }

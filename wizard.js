@@ -406,7 +406,7 @@
       form.hidden = true;
       cue.hidden = true;
       btn.classList.remove("sent");
-      label.innerHTML = "Touch the orb<br>to speak";
+      label.innerHTML = "Touch the orb<br>to leave me a message";
       say("");
       state = "idle";
     });
