@@ -41,8 +41,14 @@
     <p class="eyebrow">Ask the wizard 🪄</p>
     <h1>Not sure what's wrong? <span class="accent">Tell me what happened.</span></h1>
     <p class="lede" style="margin-left:auto;margin-right:auto;">
-      Record a voice message or write it out — either way it comes straight to me, the person who'd be doing the repair. I'll tell you what I think is wrong, roughly what it would cost, and whether it's even worth fixing. No obligation, and no charge for asking.
+      Not sure what's wrong with your phone? Record a quick voice message or type it out below. It goes straight to me — the person who'd actually do the repair. I'll reply with what I think is wrong and what it would cost. Free, no obligation.
     </p>
+
+    <ol class="how-steps" style="text-align:left;max-width:520px;margin:22px auto 0;">
+      <li><strong>Tell me what's wrong</strong> — talk into the orb or type it in the form.</li>
+      <li><strong>I reply with a price</strong> — by text or email, usually the same day.</li>
+      <li><strong>We pick a time and place</strong> — I come to you anywhere around Wichita.</li>
+    </ol>
 </section>
 
   <!-- The orb: the fastest way to describe a problem out loud -->
@@ -60,7 +66,7 @@
       <div class="orb-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
 
       <button type="button" class="orb-btn" id="orb-btn">
-        <span id="orb-label">Touch the orb<br>to leave me a message</span>
+        <span id="orb-label">Tap to record<br>a voice message</span>
       </button>
     </div>
 
@@ -99,7 +105,7 @@
   <!-- One written path. Extra booking details fold open only if needed. -->
   <section class="write-column" aria-labelledby="write-heading">
     <h2 id="write-heading">Send a written message</h2>
-    <p class="section-note">Tell me what you've got and what it's doing. That's usually enough for an estimate.</p>
+    <p class="section-note">Tell me what you've got and what it's doing. That's usually enough for an estimate. A photo of the damage helps a lot — you can text it to 316-559-4816 after you send this.</p>
 
     <form class="spellform" id="write-form" method="POST" action="https://formspree.io/f/REPLACE_WITH_YOUR_CONSULT_FORM_ID">
       <div class="field">
@@ -178,7 +184,7 @@
 
 <!-- Sticky contact bar: phone-only. Text is the fastest route to a
      one-person mobile business, so it leads. -->
-<div class="action-bar" aria-label="Contact the wizard">
+<div class="action-bar" aria-label="Contact MagicByte">
   <a class="action-btn" href="sms:+13165594816">
     <span aria-hidden="true">💬</span> Text
   </a>
@@ -190,6 +196,8 @@
   </a>
 </div>
 
+<script src="site-data.js"></script>
+<script src="stock.js"></script>
 <script src="wizard.js"></script>
 <script src="cart.js"></script>
 </body>

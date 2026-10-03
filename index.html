@@ -12,7 +12,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="MagicByte · Mobile Phone Repair in Wichita, KS">
-<meta property="og:description" content="A one-wizard mobile repair workshop. I come to you, same day, with the tools and parts to revive your device.">
+<meta property="og:description" content="A one-person mobile phone repair shop. I come to you, same day, with the tools and parts to revive your device.">
 <meta property="og:image" content="assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -47,12 +47,11 @@
   "address": { "@type": "PostalAddress", "addressLocality": "Wichita", "addressRegion": "KS", "addressCountry": "US" }
 }
 </script>
-<!-- Once you know them, add your real hours here, e.g.
-     "openingHoursSpecification": [{
-       "@type": "OpeningHoursSpecification",
-       "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-       "opens": "17:00", "closes": "21:00"
-     }]
+<!-- Repairs are by appointment around a Tue–Sat 7am–3:30pm day job
+     (usually late afternoons, evenings, Sundays), so no fixed shop
+     hours are published. If you ever open fixed hours, add them here,
+     e.g. "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification",
+     "dayOfWeek": ["Sunday"], "opens": "12:00", "closes": "18:00" }].
      Don't publish hours you can't keep — Google shows them to customers. -->
 </head>
 <body>
@@ -103,7 +102,7 @@
     <div class="hero-copy">
       <p class="eyebrow">Wichita, KS &amp; surrounding area</p>
       <h1>Your phone, mended <span class="accent">on the spot.</span></h1>
-      <p class="lede">A one-wizard mobile repair workshop. I bring the tools and parts to you — home, office, or a coffee shop — and revive your iPhone, Galaxy or Pixel the same day. Screens, batteries, charging ports, cameras.</p>
+      <p class="lede">A one-person mobile phone repair shop. I bring the tools and parts to you — home, office, or a coffee shop — and revive your iPhone, Galaxy or Pixel the same day. Screens, batteries, charging ports, cameras.</p>
       <div class="cta-pair">
         <div class="cta-choice">
           <a class="btn btn-primary btn-lead" href="services.html#estimator-section">Get my repair price</a>
@@ -122,38 +121,49 @@
     <span>$20 flat labor · parts at cost · mention it when you get in touch</span>
   </p>
 
-  <div class="rune-divider" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>
-  </div>
+  <section id="today" aria-label="Where I am today">
+    <div class="today-banner" id="wizard-today">
+      <p class="today-kicker">Where's the wizard today</p>
+      <p class="today-area">On the road around Wichita</p>
+      <p class="today-note">Text me and I'll tell you exactly where I am</p>
+    </div>
+
+    <h2>Screens riding in the van today</h2>
+    <p class="section-note">I keep iPhone screens on hand — if your model's listed here, the repair usually happens the same visit.</p>
+    <div class="van-stock" id="van-stock"></div>
+  </section>
+
 
   <section id="mobile-service">
-    <h2>The wizard comes to you</h2>
+    <h2>I come to you</h2>
     <p class="section-note">No waiting room, no leaving your phone somewhere for three days. Most repairs are done in a single visit, wherever you already are — your kitchen table, your workplace, or somewhere public if we haven't met before.</p>
 
     <p class="realm">
-      <strong>My realm</strong>
-      <!-- EDIT: remove any of these you don't actually want to drive to. -->
+      <strong>My service area</strong>
       All of Wichita, plus Derby, Andover, Haysville, Maize, Goddard, Park City, Bel Aire, Rose Hill and Mulvane. Further out, just ask.
     </p>
+
+    <div class="card card-teal" style="margin-top:18px;">
+      <h3>Trip fee &amp; hours</h3>
+      <p>Trips anywhere in Wichita add a <strong>$10 trip fee</strong>. Outside Wichita, the fee depends on your address — ask when you book and I'll quote it up front.</p>
+      <p style="margin-top:10px;">I work a day job Tue–Sat, 7am–3:30pm, so repairs are scheduled around those hours — usually late afternoons, evenings, and Sundays. <strong>Texts and messages get answered all day, every day.</strong></p>
+    </div>
   </section>
 
-  <div class="rune-divider" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>
-  </div>
 
   <section id="oaths">
-    <h2>The wizard's sacred oaths</h2>
+    <h2>My promises to you</h2>
     <dl class="oaths">
       <div>
-        <dt>Transparent alchemy</dt>
+        <dt>Upfront pricing</dt>
         <dd>You know the exact part cost and labor fee before you commit.</dd>
       </div>
       <div>
-        <dt>The 30-day ward</dt>
+        <dt>30-day warranty</dt>
         <dd>Parts and workmanship covered for 30 days.</dd>
       </div>
       <div>
-        <dt>No fix, no gold</dt>
+        <dt>No fix, no charge</dt>
         <dd>If I can't fix it, you owe nothing for labor.</dd>
       </div>
     </dl>
@@ -163,12 +173,9 @@
     </p>
   </section>
 
-  <div class="rune-divider" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>
-  </div>
 
   <section id="about">
-    <h2>About the arch-mage</h2>
+    <h2>About me</h2>
     <p class="section-note">I treat consumer electronics as precision engineering worth restoring properly, rather than pushing an expensive full-assembly replacement. The wizard hat is there to make a cracked screen feel less like a bad day. The benchwork underneath it is careful and conventional.</p>
     <div class="cta-pair cta-tail">
       <div class="cta-choice">
@@ -189,7 +196,7 @@
   </div>
 </footer>
 
-<div class="action-bar" aria-label="Contact the wizard">
+<div class="action-bar" aria-label="Contact MagicByte">
   <a class="action-btn" href="sms:+13165594816">
     <span aria-hidden="true">💬</span> Text
   </a>
@@ -201,6 +208,8 @@
   </a>
 </div>
 
+<script src="site-data.js"></script>
+<script src="stock.js"></script>
 <script src="wizard.js"></script>
 <script src="cart.js"></script>
 </body>

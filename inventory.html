@@ -38,8 +38,8 @@
 <main class="wrap" id="main">
 
   <section class="hero">
-    <p class="eyebrow">The reliquary</p>
-    <h1>Order your part <span class="accent">from the wizard.</span></h1>
+    <p class="eyebrow">Parts shelf</p>
+    <h1>Order parts <span class="accent">for your repair.</span></h1>
     <p class="lede">Add what you need to your bag and send the order. I'll confirm stock, quote labor if you want it installed, and reply by text or email. In-stock parts mean a same-day repair; everything else ships in a few days.</p>
   </section>
 
@@ -73,52 +73,17 @@
         </div>
       </div>
 
-      <div class="part-card" data-category="iphone" data-part-id="iphone-12-screen" data-part-stock="in" data-part-name="iPhone 12 screen" data-part-price="56.81">
-        <div class="part-card-top">
-          <div>
-            <h3>iPhone 12 screen</h3>
-            <p class="part-device">iPhone 12 / 12 Pro</p>
-          </div>
-          <span class="stock-tag stock-in">In stock</span>
-        </div>
-        <div class="part-card-foot">
-          <span class="part-price">$56.81</span>
-          <button type="button" class="btn-add" data-add-to-cart>Add to bag</button>
-        </div>
-      </div>
-
-      <div class="part-card" data-category="iphone" data-part-id="iphone-12-battery" data-part-stock="order" data-part-name="iPhone 12 battery" data-part-price="">
-        <div class="part-card-top">
-          <div>
-            <h3>iPhone 12 battery</h3>
-            <p class="part-device">iPhone 12 / 12 Pro</p>
-          </div>
-          <span class="stock-tag stock-order">Order · 3–5 days</span>
-        </div>
-        <div class="part-card-foot">
-          <span class="part-price quote">Quoted after review</span>
-          <button type="button" class="btn-add" data-add-to-cart>Add to bag</button>
-        </div>
-      </div>
-
-      <div class="part-card" data-category="iphone" data-part-id="iphone-11-screen" data-part-stock="order" data-part-name="iPhone 11 screen" data-part-price="">
-        <div class="part-card-top">
-          <div>
-            <h3>iPhone 11 screen</h3>
-            <p class="part-device">iPhone 11</p>
-          </div>
-          <span class="stock-tag stock-order">Order · 3–5 days</span>
-        </div>
-        <div class="part-card-foot">
-          <span class="part-price quote">Quoted after review</span>
-          <button type="button" class="btn-add" data-add-to-cart>Add to bag</button>
-        </div>
-      </div>
+      <!-- The rest of the cards are rendered from site-data.js by stock.js.
+           Edit your stock in site-data.js — not here. -->
 
     </div>
 
+    <noscript>
+      <p class="field-hint">The parts list needs JavaScript to load. Text 316-559-4816 and I'll tell you what's in stock.</p>
+    </noscript>
+
     <p class="field-hint" style="margin-top:20px;">
-      Showing <span id="filter-count">3 parts</span>. Don't see your model? <a href="book.html">Ask the wizard</a> — most parts can be ordered within a few days.
+      Showing <span id="filter-count">…</span>. Don't see your model? <a href="book.html">Ask the Wizard</a> — most parts can be ordered within a few days.
     </p>
   </section>
 
@@ -134,7 +99,7 @@
 
 <!-- Sticky contact bar: phone-only. Text is the fastest route to a
      one-person mobile business, so it leads. -->
-<div class="action-bar" aria-label="Contact the wizard">
+<div class="action-bar" aria-label="Contact MagicByte">
   <a class="action-btn" href="sms:+13165594816">
     <span aria-hidden="true">💬</span> Text
   </a>
@@ -146,6 +111,8 @@
   </a>
 </div>
 
+<script src="site-data.js"></script>
+<script src="stock.js"></script>
 <script src="wizard.js"></script>
 <script src="cart.js"></script>
 </body>
