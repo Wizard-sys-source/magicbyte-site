@@ -1,23 +1,22 @@
 /* ============================================================
    MagicByte — cart.js
-   The bag: parts ordering on inventory.html. Injects its own nav
-   button and drawer, so every page can include this file safely.
+   The bag on the Shop Parts page (inventory.html). It shares
+   one bag with the homepage through window.MagicByteBag
+   (defined in site-data.js), so items carry over between pages.
 
-   It carries the two rules the shop page states:
+   Lines look like:
+     { key:"part|iphone-12-screen|", type:"part",
+       ref:"iphone-12-screen", model:"", qty:1 }
+     { key:"repair|screen|iPhone 13", type:"repair",
+       ref:"screen", model:"iPhone 13", qty:1 }
+
+   Part details (name, price, in-stock) resolve from the shared
+   window.MagicByteParts registry. Repair lines are priced as
+   "quoted" here — labor ranges live on services.html.
+
+   Rules, same as the shop page states:
      · in-stock parts need no deposit; special-order parts do
      · self-install is part cost + 5% handling, install is + labor
-   Both change what the order email says, so both live in here.
-
-   Contents
-     0  Config          — your Formspree parts ID goes here
-     1  Storage
-     2  Nav button + badge
-     3  The drawer
-     4  Rendering the bag
-     5  Open / close
-     6  Sending the order
-     7  Toast
-     8  Wiring
    ============================================================ */
 
 (function () {
@@ -29,90 +28,173 @@
      --------------------------------------------------------- */
   var FORMSPREE_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_YOUR_PARTS_FORM_ID";
 
-  var STORAGE_KEY = "magicbyte_satchel_v1";
+  var OLD_STORAGE_KEY = "magicbyte_satchel_v1";  // retired; migrated once
   var PHONE = "316-559-4816";
   var SELF_INSTALL_MARKUP = 0.05;   // the "cost + 5%" on the shop page
 
+  // Labor ranges mirror services.html, for repair lines added on
+  // the homepage. If you change labor there, change it here too.
+  var SERVICES = {
+    screen:  { name: "Screen replacement",   labor: [35, 45] },
+    battery: { name: "Battery replacement",  labor: [35, 40] },
+    port:    { name: "Charging port repair",  labor: [40, 60] },
+    camera:  { name: "Camera repair",         labor: [40, 50] },
+    back:    { name: "Back glass",            labor: [40, 50] },
+    polish:  { name: "Glass polishing",       labor: null },
+    diag:    { name: "Diagnostics only",      labor: [15, 20] }
+  };
+
   var lastFocus = null;
-  var justAdded = null;             // id of the row to flash on next render
+  var justAdded = null;             // key of the row to flash on next render
 
   // wizard.js publishes these; degrade quietly if it hasn't loaded
   var FX = window.MagicByteFX || {};
   function burst()   { if (FX.burst)    FX.burst.apply(null, arguments); }
   function castRing() { if (FX.castRing) FX.castRing.apply(null, arguments); }
 
-  /* ---------- 1  Storage ---------- */
-  function readCart() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      var items = raw ? JSON.parse(raw) : [];
-      return Array.isArray(items) ? items.filter(function (i) { return i && i.id; }) : [];
-    } catch (e) {
-      return [];   // private mode, or storage disabled
-    }
+  function bagStore() {
+    return window.MagicByteBag || {
+      KEY: "magicbyte_bag",
+      keyOf: function (t, r, m) { return t + "|" + r + "|" + (m || ""); },
+      read: function () { return { bag: [] }; },
+      write: function () {}
+    };
   }
 
-  function writeCart(items) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    } catch (e) {
-      /* the bag still works for this visit, it just won't persist */
-    }
+  /* ---------- 1  Storage ---------- */
+  function readEnv() {
+    var env = bagStore().read();
+    if (!env || !Array.isArray(env.bag)) env = { bag: [] };
+    return env;
+  }
+
+  function writeEnv(env) {
+    bagStore().write(env);
     renderBadge();
     renderBag();
   }
 
-  function count(items) {
-    return items.reduce(function (n, i) { return n + i.qty; }, 0);
+  // One-time move from the old shop-only bag format.
+  function migrateOld() {
+    var raw = null;
+    try { raw = localStorage.getItem(OLD_STORAGE_KEY); } catch (e) {}
+    if (!raw) return;
+    try {
+      var items = JSON.parse(raw);
+      if (!Array.isArray(items) || !items.length) return;
+      var env = readEnv();
+      if (env.bag.length) return;   // never clobber the shared bag
+      var keyOf = bagStore().keyOf;
+      items.forEach(function (i) {
+        if (!i || !i.id) return;
+        env.bag.push({
+          key: keyOf("part", i.id, ""),
+          type: "part", ref: i.id, model: "",
+          qty: Math.min(Math.max(i.qty || 1, 1), 20)
+        });
+      });
+      writeEnv(env);
+    } catch (e) { /* corrupted old bag — leave it behind */ }
+    try { localStorage.removeItem(OLD_STORAGE_KEY); } catch (e) {}
   }
 
-  function subtotal(items) {
-    return items.reduce(function (n, i) { return n + (i.price || 0) * i.qty; }, 0);
-  }
-
-  // Some parts are quoted after review, so a total is often partial.
-  function hasUnpriced(items) {
-    return items.some(function (i) { return !i.price; });
-  }
-
-  function hasSpecialOrder(items) {
-    return items.some(function (i) { return i.stock === "order"; });
-  }
-
-  function addToCart(part) {
-    var items = readCart();
-    var existing = items.find(function (i) { return i.id === part.id; });
-    if (existing) {
-      existing.qty += 1;
-      existing.price = part.price;      // refresh, in case the page was updated
-      existing.stock = part.stock;
-    } else {
-      items.push({ id: part.id, name: part.name, price: part.price, stock: part.stock, qty: 1 });
+  function findPart(ref) {
+    var parts = window.MagicByteParts || [];
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].id === ref) return parts[i];
     }
-    justAdded = part.id;
-    writeCart(items);
+    return null;
+  }
+
+  // Turn a raw line into everything the drawer and the order
+  // email need. Unknown refs degrade to "quoted" instead of
+  // vanishing — a line the customer added should never disappear.
+  function resolveLine(l) {
+    if (l.type === "repair") {
+      var s = SERVICES[l.ref];
+      var name = (s ? s.name : l.ref) + (l.model ? " \u2014 " + l.model : "");
+      var labor = s && s.labor ? "$" + s.labor[0] + "\u2013$" + s.labor[1] + " labor" : "labor quoted";
+      return { name: name, sub: "Installed by me", priceText: labor,
+               priceValue: null, stock: "na" };
+    }
+    var p = findPart(l.ref);
+    var pname = p ? p.name : l.ref;
+    var inStock = p ? p.inStock : false;
+    return {
+      name: pname + " (part only)",
+      sub: p ? (inStock ? "In stock" : "Special order \u00b7 3\u20135 days") : "Part",
+      priceText: (p && p.price != null) ? "$" + p.price.toFixed(2) : "Quoted after review",
+      priceValue: (p && p.price != null) ? p.price : null,
+      stock: p ? (inStock ? "in" : "order") : "order"
+    };
+  }
+
+  function lines() { return readEnv().bag; }
+
+  function count(ls) {
+    return ls.reduce(function (n, l) { return n + (l.qty || 0); }, 0);
+  }
+
+  function subtotal(ls) {
+    return ls.reduce(function (n, l) {
+      var r = resolveLine(l);
+      return n + (r.priceValue || 0) * (l.qty || 0);
+    }, 0);
+  }
+
+  function hasUnpriced(ls) {
+    return ls.some(function (l) { return !resolveLine(l).priceValue; });
+  }
+
+  function hasSpecialOrder(ls) {
+    return ls.some(function (l) { return resolveLine(l).stock === "order"; });
+  }
+
+  function hasRepair(ls) {
+    return ls.some(function (l) { return l.type === "repair"; });
+  }
+
+  function addPart(ref) {
+    var keyOf = bagStore().keyOf;
+    var key = keyOf("part", ref, "");
+    var env = readEnv();
+    var existing = null;
+    env.bag.forEach(function (l) { if (l.key === key) existing = l; });
+    if (existing) {
+      existing.qty = Math.min(existing.qty + 1, 20);
+    } else {
+      env.bag.push({ key: key, type: "part", ref: ref, model: "", qty: 1 });
+    }
+    justAdded = key;
+    writeEnv(env);
     bumpGlyph();
     openDrawer();
-    toast(part.name + " added to your bag");
+    var p = findPart(ref);
+    toast((p ? p.name : ref) + " added to your bag");
   }
 
-  function setQty(id, qty) {
-    var items = readCart();
-    if (qty <= 0) return removeItem(id);
-    var it = items.find(function (i) { return i.id === id; });
-    if (it) it.qty = Math.min(qty, 20);
-    writeCart(items);
+  function setQty(key, qty) {
+    var env = readEnv();
+    if (qty <= 0) return removeItem(key);
+    env.bag.forEach(function (l) {
+      if (l.key === key) l.qty = Math.min(qty, 20);
+    });
+    writeEnv(env);
   }
 
-  function removeItem(id) {
-    var items = readCart();
-    var it = items.find(function (i) { return i.id === id; });
-    writeCart(items.filter(function (i) { return i.id !== id; }));
-    if (it) toast(it.name + " removed");
+  function removeItem(key) {
+    var env = readEnv();
+    var gone = null;
+    env.bag.forEach(function (l) { if (l.key === key) gone = l; });
+    env.bag = env.bag.filter(function (l) { return l.key !== key; });
+    writeEnv(env);
+    if (gone) toast(resolveLine(gone).name + " removed");
   }
 
   function clearCart(quiet) {
-    writeCart([]);
+    var env = readEnv();
+    env.bag = [];
+    writeEnv(env);
     if (!quiet) toast("Bag emptied");
   }
 
@@ -157,7 +239,7 @@
   }
 
   function renderBadge() {
-    var n = count(readCart());
+    var n = count(lines());
     document.querySelectorAll(".cart-badge").forEach(function (badge) {
       badge.textContent = n;
       badge.hidden = n === 0;
@@ -243,12 +325,13 @@
       if (!btn) return;
       var row = btn.closest(".satchel-item");
       if (!row) return;
-      var id = row.getAttribute("data-id");
+      var key = row.getAttribute("data-key");
       var action = btn.getAttribute("data-action");
 
-      if (action === "remove") return removeItem(id);
-      var it = readCart().find(function (i) { return i.id === id; });
-      if (it) setQty(id, it.qty + (action === "inc" ? 1 : -1));
+      if (action === "remove") return removeItem(key);
+      var found = null;
+      lines().forEach(function (l) { if (l.key === key) found = l; });
+      if (found) setQty(key, found.qty + (action === "inc" ? 1 : -1));
     });
 
     document.addEventListener("keydown", function (e) {
@@ -265,31 +348,34 @@
     var submit = document.getElementById("satchel-submit");
     if (!body || !totalEl) return;
 
-    var items = readCart();
+    var ls = lines();
 
-    if (items.length === 0) {
+    if (ls.length === 0) {
       body.innerHTML =
         '<p class="field-hint">Your bag is empty. Browse the ' +
         '<a href="inventory.html">parts</a> and add what you need.</p>';
     } else {
-      body.innerHTML = items.map(function (i) {
-        var price = i.price ? money(i.price) : "Quoted after review";
-        var stock = i.stock === "order"
+      body.innerHTML = ls.map(function (l) {
+        var r = resolveLine(l);
+        var stock = r.stock === "order"
           ? '<span class="satchel-stock order">Special order \u00b7 3\u20135 days</span>'
-          : '<span class="satchel-stock in">In stock</span>';
-        return '<div class="satchel-item' + (i.id === justAdded ? " just-added" : "") + '" data-id="' + esc(i.id) + '">' +
+          : r.stock === "in"
+            ? '<span class="satchel-stock in">In stock</span>'
+            : "";
+        return '<div class="satchel-item' + (l.key === justAdded ? " just-added" : "") + '" data-key="' + esc(l.key) + '">' +
                  '<div class="satchel-item-info">' +
-                   '<span class="satchel-item-name">' + esc(i.name) + '</span>' +
-                   '<span class="satchel-item-price">' + price + '</span>' +
+                   '<span class="satchel-item-name">' + esc(r.name) + '</span>' +
+                   '<span class="satchel-item-price">' + esc(r.priceText) + '</span>' +
+                   (r.sub ? '<span class="satchel-item-sub">' + esc(r.sub) + '</span>' : "") +
                    stock +
                  '</div>' +
                  '<div class="satchel-controls">' +
                    '<div class="satchel-qty">' +
-                     '<button type="button" class="qty-btn" data-action="dec" aria-label="One fewer ' + esc(i.name) + '">\u2212</button>' +
-                     '<span aria-label="Quantity">' + i.qty + '</span>' +
-                     '<button type="button" class="qty-btn" data-action="inc" aria-label="One more ' + esc(i.name) + '">+</button>' +
+                     '<button type="button" class="qty-btn" data-action="dec" aria-label="One fewer ' + esc(r.name) + '">\u2212</button>' +
+                     '<span aria-label="Quantity">' + l.qty + '</span>' +
+                     '<button type="button" class="qty-btn" data-action="inc" aria-label="One more ' + esc(r.name) + '">+</button>' +
                    '</div>' +
-                   '<button type="button" class="satchel-remove" data-action="remove" aria-label="Remove ' + esc(i.name) + '">Remove</button>' +
+                   '<button type="button" class="satchel-remove" data-action="remove" aria-label="Remove ' + esc(r.name) + '">Remove</button>' +
                  '</div>' +
                '</div>';
       }).join("") +
@@ -300,8 +386,8 @@
     }
 
     justAdded = null;
-    totalEl.textContent = money(subtotal(items)) + (hasUnpriced(items) ? " + quotes" : "");
-    if (submit) submit.disabled = items.length === 0;
+    totalEl.textContent = money(subtotal(ls)) + (hasUnpriced(ls) ? " + quotes" : "");
+    if (submit) submit.disabled = ls.length === 0;
     renderTerms();
   }
 
@@ -310,28 +396,29 @@
   function renderTerms() {
     var el = document.getElementById("satchel-terms");
     if (!el) return;
-    var items = readCart();
+    var ls = lines();
     var installSel = document.getElementById("s-install");
     var install = installSel ? installSel.value : "";
 
-    if (items.length === 0) {
+    if (ls.length === 0) {
       el.textContent = "Sending this is a request, not a payment. Nothing is charged here.";
       return;
     }
 
     var parts = ["Sending this is a request \u2014 no payment happens here."];
 
-    if (hasSpecialOrder(items)) {
+    if (hasSpecialOrder(ls)) {
       parts.push("Your bag has special-order parts, so those need a deposit for the exact part cost, invoiced once I confirm the price.");
     } else {
-      parts.push("Everything in your bag is in stock, so there\u2019s nothing to pay up front \u2014 you settle when the repair is done.");
+      parts.push("Everything in your bag is in stock or quoted with no deposit, so there\u2019s nothing to pay up front \u2014 you settle when the repair is done.");
     }
 
     if (install === "Self install") {
-      var est = subtotal(items) * (1 + SELF_INSTALL_MARKUP);
+      var est = subtotal(ls) * (1 + SELF_INSTALL_MARKUP);
       parts.push("Parts only, at cost plus 5% handling" +
-        (subtotal(items) ? " \u2014 about " + money(est) + " on the priced items so far" : "") +
-        ". I\u2019m not liable for damage from self-installation.");
+        (subtotal(ls) ? " \u2014 about " + money(est) + " on the priced parts so far" : "") +
+        ". I\u2019m not liable for damage from self-installation." +
+        (hasRepair(ls) ? " Repairs in your bag are installed by me." : ""));
     } else if (install === "Install for me") {
       parts.push("Labor is quoted on top of parts \u2014 see the rates on the services page.");
     }
@@ -356,8 +443,9 @@
     overlay.classList.add("open");
     drawer.classList.add("open");
 
-    var btn = document.querySelector(".cart-nav-btn");
-    if (btn) btn.setAttribute("aria-expanded", "true");
+    document.querySelectorAll("[data-bag-open]").forEach(function (btn) {
+      btn.setAttribute("aria-expanded", "true");
+    });
     drawer.querySelector(".satchel-close").focus();
     document.addEventListener("keydown", trapTab);
   }
@@ -371,8 +459,9 @@
     drawer.classList.remove("open");
     document.removeEventListener("keydown", trapTab);
 
-    var btn = document.querySelector(".cart-nav-btn");
-    if (btn) btn.setAttribute("aria-expanded", "false");
+    document.querySelectorAll("[data-bag-open]").forEach(function (btn) {
+      btn.setAttribute("aria-expanded", "false");
+    });
     if (lastFocus && lastFocus.focus) lastFocus.focus();
     lastFocus = null;
   }
@@ -396,34 +485,39 @@
   function sendOrder(e) {
     e.preventDefault();
 
-    var items = readCart();
+    var ls = lines();
     var status = document.getElementById("satchel-status");
     var submit = document.getElementById("satchel-submit");
 
-    if (items.length === 0) {
+    if (ls.length === 0) {
       status.className = "field-hint err";
       status.textContent = "Your bag is empty \u2014 add a part first.";
       return;
     }
 
     var install = document.getElementById("s-install").value;
-    var lines = items.map(function (i) {
-      return i.qty + "x " + i.name +
-             " \u2014 " + (i.price ? money(i.price) + " each" : "price to be quoted") +
-             " \u2014 " + (i.stock === "order" ? "special order" : "in stock");
+    var orderLines = ls.map(function (l) {
+      var r = resolveLine(l);
+      var qty = (l.qty || 0) + "x ";
+      if (l.type === "repair") {
+        return qty + r.name + " \u2014 " + r.priceText;
+      }
+      return qty + r.name +
+             " \u2014 " + (r.priceValue != null ? money(r.priceValue) + " each" : "price to be quoted") +
+             " \u2014 " + (r.stock === "order" ? "special order" : "in stock");
     });
 
-    lines.push("");
-    lines.push("Parts subtotal: " + money(subtotal(items)) +
-               (hasUnpriced(items) ? " plus items still to be quoted" : ""));
-    lines.push("Installation: " + install);
+    orderLines.push("");
+    orderLines.push("Parts subtotal: " + money(subtotal(ls)) +
+               (hasUnpriced(ls) ? " plus items still to be quoted" : ""));
+    orderLines.push("Installation: " + install);
     if (install === "Self install") {
-      lines.push("Self-install pricing: part cost + 5% handling = " +
-                 money(subtotal(items) * (1 + SELF_INSTALL_MARKUP)) + " on priced items");
+      orderLines.push("Self-install pricing: part cost + 5% handling = " +
+                 money(subtotal(ls) * (1 + SELF_INSTALL_MARKUP)) + " on priced parts");
     }
-    lines.push("Deposit needed: " + (hasSpecialOrder(items) ? "yes, special-order parts in bag" : "no, all in stock"));
+    orderLines.push("Deposit needed: " + (hasSpecialOrder(ls) ? "yes, special-order parts in bag" : "no"));
 
-    document.getElementById("s-summary").value = lines.join("\n");
+    document.getElementById("s-summary").value = orderLines.join("\n");
 
     var form = e.target;
     var data = new FormData(form);
@@ -477,21 +571,17 @@
       btn.addEventListener("click", function () {
         var card = btn.closest("[data-part-id]");
         if (!card) return;
-        var priceAttr = card.getAttribute("data-part-price");
+        var ref = card.getAttribute("data-part-id");
         var r = btn.getBoundingClientRect();
         burst(r.left + r.width / 2, r.top + r.height / 2, "gold", 10);
-        addToCart({
-          id: card.getAttribute("data-part-id"),
-          name: card.getAttribute("data-part-name"),
-          price: priceAttr ? parseFloat(priceAttr) : 0,
-          stock: card.getAttribute("data-part-stock") || "in"
-        });
+        addPart(ref);
       });
     });
   }
 
   function init() {
     FX = window.MagicByteFX || FX;
+    migrateOld();
     injectNavButton();
     buildDrawer();
     renderBadge();
@@ -506,11 +596,9 @@
   }
 
   window.MagicByteCart = {
-    add: addToCart,
-    remove: removeItem,
-    clear: clearCart,
+    add: addPart,
     open: openDrawer,
     close: closeDrawer,
-    items: readCart
+    lines: lines
   };
 })();

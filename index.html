@@ -1,27 +1,178 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MagicByte · Mobile Phone Repair in Wichita, KS</title>
 <meta name="description" content="Mobile phone repair that comes to you in Wichita, KS. iPhone, Samsung Galaxy and Google Pixel — screens, batteries, charging ports and cameras, same day. Part cost plus labor, quoted up front.">
-<meta name="theme-color" content="#150f1e">
-<link rel="icon" href="assets/favicon.ico" sizes="32x32">
-<link rel="icon" href="assets/mascot-icon.png" type="image/png" sizes="512x512">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-
-<meta property="og:type" content="website">
 <meta property="og:title" content="MagicByte · Mobile Phone Repair in Wichita, KS">
 <meta property="og:description" content="A one-person mobile phone repair shop. I come to you, same day, with the tools and parts to revive your device.">
 <meta property="og:image" content="assets/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-
+<meta name="theme-color" content="#150f1e">
+<link rel="icon" href="assets/mascot-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600;700&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#150f1e; --panel:#1e1730; --panel-2:#261e3b; --line:#3a3052;
+  --gold:#d4a72c; --gold-ink:#1b1405; --teal:#3fbfb0; --text:#efe7d6;
+  --muted:#a99fb8; --danger:#e58a7c;
+  --serif:"Spectral",Georgia,"Times New Roman",serif;
+  --caps:"Cormorant SC","Cormorant Garamond",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --dock:76px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 120px)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--text);font:400 17px/1.6 var(--serif);
+  padding-bottom:calc(var(--dock) + env(safe-area-inset-bottom,0px) + 16px);
+  background-image:radial-gradient(circle at 20% 0%,#2a1d45 0,transparent 45%),radial-gradient(circle at 90% 30%,#1c2b3a 0,transparent 40%);background-attachment:fixed}
+a{color:var(--teal)}
+img{max-width:100%;display:block}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:6px}
+.wrap{max-width:680px;margin:0 auto;padding:0 18px}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;background:var(--gold);color:var(--gold-ink);padding:8px 12px;z-index:99}
+
+/* header */
+header.top{position:sticky;top:0;z-index:30;background:rgba(21,15,30,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px);margin-top:calc(-1 * env(safe-area-inset-top,0px))}
+.brandrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0 6px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font:700 26px/1 var(--caps);letter-spacing:.02em}
+.brand img{width:40px;height:40px;border-radius:50%;border:2px solid var(--gold)}
+.status{display:flex;align-items:center;gap:7px;font:500 12px/1.2 var(--mono);color:var(--muted);text-align:right}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.dot.on{background:var(--teal);box-shadow:0 0 0 0 rgba(63,191,176,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(63,191,176,0)}100%{box-shadow:0 0 0 0 rgba(63,191,176,0)}}
+nav.links{display:flex;gap:18px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}
+nav.links::-webkit-scrollbar{display:none}
+nav.links a{flex:none;color:var(--muted);text-decoration:none;font:500 13px/1 var(--mono);padding:6px 0;border-bottom:2px solid transparent}
+nav.links a[aria-current]{color:var(--gold);border-color:var(--gold)}
+
+/* hero */
+.hero{padding:26px 0 8px;display:grid;grid-template-columns:1fr 120px;gap:12px;align-items:center}
+.hero h1{font:600 clamp(34px,8vw,48px)/1.05 var(--serif);margin:0 0 12px;letter-spacing:-.01em}
+.hero p{margin:0;color:var(--muted)}
+.hero img{width:120px;filter:drop-shadow(0 8px 24px rgba(212,167,44,.25))}
+.where{margin:18px 0 6px;padding:14px 16px;border:1px solid #2f5b5a;border-radius:14px;background:rgba(63,191,176,.06)}
+.where strong{display:block;font-size:19px}
+.where span{color:var(--muted);font-size:15px}
+.where a{color:var(--teal)}
+
+.choices{display:grid;gap:18px;margin:22px 0 8px}
+.choice p{margin:0 0 8px;color:var(--muted);font-size:16px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border-radius:14px;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font:700 17px/1 var(--mono);text-decoration:none;cursor:pointer;padding:0 18px}
+.btn.solid{background:var(--gold);color:var(--gold-ink)}
+.btn:active{transform:scale(.98)}
+
+/* device picker */
+section{padding:28px 0 4px}
+h2{font:600 26px/1.15 var(--serif);margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 16px;font-size:16px}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--panel);padding:5px;border-radius:14px;border:1px solid var(--line)}
+.seg button{border:0;background:transparent;padding:11px 4px;border-radius:10px;font:500 14px/1 var(--mono);color:var(--muted);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--gold)}
+.modelpick{margin-top:10px;position:relative}
+.modelpick select{width:100%;appearance:none;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 44px 14px 16px;font-size:17px}
+.modelpick::after{content:"";position:absolute;right:18px;top:50%;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+
+/* chips + menu */
+.chips{position:sticky;top:calc(env(safe-area-inset-top,0px) + 104px);z-index:20;background:var(--bg);display:flex;gap:8px;overflow-x:auto;padding:12px 0;margin:8px 0 0;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:9px 15px;font:500 14px/1 var(--mono);cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.menu{list-style:none;margin:4px 0 0;padding:0}
+.item{display:grid;grid-template-columns:1fr auto;gap:12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.item h3{margin:0;font:600 18px/1.3 var(--serif)}
+.item .desc{margin:3px 0 6px;color:var(--muted);font-size:15px;line-height:1.45}
+.meta{display:flex;flex-wrap:wrap;gap:6px 12px;font:500 12.5px/1.4 var(--mono);color:var(--muted)}
+.price{color:var(--text)}
+.badge{color:var(--teal)}
+.side{display:flex;flex-direction:column;align-items:flex-end;justify-content:center}
+.add{width:44px;height:44px;border-radius:50%;border:0;background:var(--gold);color:var(--gold-ink);font:700 24px/1 var(--mono);cursor:pointer}
+.stepper{display:flex;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:999px}
+.stepper button{width:40px;height:40px;border:0;background:transparent;font:700 20px/1 var(--mono);cursor:pointer;color:var(--text)}
+.stepper output{min-width:20px;text-align:center;font:700 15px/1 var(--mono)}
+.empty-menu{padding:18px 0;color:var(--muted)}
+
+/* van carousel */
+.van{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x mandatory}
+.vcard{flex:0 0 78%;max-width:300px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.vcard h3{margin:0 0 4px;font:600 18px/1.3 var(--serif)}
+.vcard p{margin:0 0 12px;color:var(--muted);font-size:15px}
+.vcard .btn{min-height:46px;font-size:15px}
+
+/* info */
+.facts{display:grid;gap:12px}
+.fact{border-left:3px solid var(--gold);padding:2px 0 2px 14px}
+.fact strong{display:block}
+.fact span{color:var(--muted);font-size:16px}
+.steps{list-style:none;counter-reset:s;padding:0;margin:0;display:grid;gap:14px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px}
+.steps li::before{content:counter(s);width:34px;height:34px;border-radius:50%;border:1.5px solid var(--teal);color:var(--teal);display:grid;place-items:center;font:700 14px/1 var(--mono)}
+.steps strong{display:block}
+.steps span{color:var(--muted);font-size:16px}
+footer{padding:36px 0 10px;color:var(--muted);font-size:14px}
+
+/* dock */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(21,15,30,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px))}
+.dock .row{max-width:680px;margin:0 auto;display:grid;grid-template-columns:auto auto 1fr;gap:8px}
+.dbtn{min-height:54px;border-radius:14px;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;gap:6px;padding:0 14px;font:500 14px/1 var(--mono);text-decoration:none;color:var(--text);cursor:pointer}
+.dbtn.main{background:var(--gold);border-color:var(--gold);color:var(--gold-ink);font-weight:700;justify-content:space-between}
+.dbtn.main .count{background:var(--gold-ink);color:var(--gold);border-radius:999px;min-width:26px;height:26px;display:grid;place-items:center;font-size:13px;padding:0 6px}
+.bump{animation:bump .35s}
+@keyframes bump{40%{transform:scale(1.05)}}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(var(--dock) + env(safe-area-inset-bottom,0px) + 14px);transform:translate(-50%,20px);opacity:0;z-index:45;background:var(--text);color:var(--bg);border-radius:12px;padding:12px 14px;font-size:15px;display:flex;gap:14px;align-items:center;transition:.25s;pointer-events:none;width:min(92vw,520px)}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.toast button{margin-left:auto;border:0;background:none;color:#6b3fa0;font:700 14px/1 var(--mono);cursor:pointer;white-space:nowrap}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(5,3,10,.6);z-index:50;opacity:0;pointer-events:none;transition:.25s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;max-height:92%;background:var(--panel);border-radius:22px 22px 0 0;border-top:1px solid var(--line);transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;max-width:680px;margin:0 auto}
+.sheet.open{transform:none}
+.grab{width:44px;height:5px;border-radius:5px;background:var(--line);margin:10px auto 0}
+.shead{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 12px;border-bottom:1px solid var(--line)}
+.shead h2{margin:0;font:700 28px/1 var(--caps);color:var(--gold)}
+.x{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:transparent;font-size:22px;cursor:pointer;color:var(--text)}
+.sbody{overflow-y:auto;padding:4px 20px calc(24px + env(safe-area-inset-bottom,0px))}
+.line{display:grid;grid-template-columns:1fr auto;gap:8px 12px;padding:16px 0;border-bottom:1px solid var(--line)}
+.line h3{margin:0;font:600 17px/1.3 var(--serif)}
+.line .for{color:var(--muted);font-size:14px}
+.line .lp{font:500 14px/1.3 var(--mono);text-align:right}
+.line .acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.link{border:0;background:none;padding:6px 0;font:500 13.5px/1 var(--mono);cursor:pointer;color:var(--teal)}
+.link.danger{color:var(--danger)}
+.lab{display:block;font:500 13px/1 var(--mono);color:var(--muted);margin:18px 0 8px}
+.field{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-size:17px}
+textarea.field{min-height:84px;resize:vertical}
+.field[aria-invalid="true"]{border-color:var(--danger)}
+.err{color:var(--danger);font-size:14px;margin:6px 0 0}
+.sum{margin-top:18px;padding:14px 16px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
+.sum div{display:flex;justify-content:space-between;gap:12px;font:500 14px/1.9 var(--mono);color:var(--muted)}
+.sum .tot{color:var(--text);font-weight:700;font-size:16px;border-top:1px solid var(--line);margin-top:6px;padding-top:6px}
+.note{color:var(--muted);font-size:14.5px;margin:10px 0 0}
+.sbtns{display:grid;gap:10px;margin-top:18px}
+.emptybag{text-align:center;padding:30px 0 10px}
+.emptybag img{width:96px;margin:0 auto 10px;opacity:.9}
+.track{list-style:none;padding:0;margin:18px 0}
+.track li{display:grid;grid-template-columns:28px 1fr;gap:12px;padding-bottom:18px;position:relative}
+.track li::before{content:"";width:16px;height:16px;border-radius:50%;border:2px solid var(--line);margin:4px 0 0 6px;background:var(--panel)}
+.track li::after{content:"";position:absolute;left:13px;top:24px;bottom:2px;width:2px;background:var(--line)}
+.track li:last-child::after{display:none}
+.track li.done::before{background:var(--teal);border-color:var(--teal)}
+.track li.now::before{border-color:var(--gold);animation:pulse 2s infinite}
+.track strong{display:block}
+.track span{color:var(--muted);font-size:15px}
+@media (min-width:700px){.vcard{flex-basis:46%}}
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -47,170 +198,373 @@
   "address": { "@type": "PostalAddress", "addressLocality": "Wichita", "addressRegion": "KS", "addressCountry": "US" }
 }
 </script>
-<!-- Repairs are by appointment around a Tue–Sat 7am–3:30pm day job
-     (usually late afternoons, evenings, Sundays), so no fixed shop
-     hours are published. If you ever open fixed hours, add them here,
-     e.g. "openingHoursSpecification": [{ "@type": "OpeningHoursSpecification",
-     "dayOfWeek": ["Sunday"], "opens": "12:00", "closes": "18:00" }].
-     Don't publish hours you can't keep — Google shows them to customers. -->
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
-<div class="starfield" aria-hidden="true"></div>
-<a class="skip-link" href="#main">Skip to content</a>
-
-<header class="site">
-  <div class="nav-row">
-    <a class="brand" href="index.html">
-      <img src="assets/mascot-icon.png" alt="">
-      MagicByte
-    </a>
-    <nav class="links" aria-label="Main">
+<header class="top">
+  <div class="wrap">
+    <div class="brandrow">
+      <a class="brand" href="index.html"><img src="assets/mascot-icon.png" alt="">MagicByte</a>
+      <div class="status"><span class="dot" id="availDot"></span><span id="availText">Checking hours…</span></div>
+    </div>
+    <nav class="links" aria-label="Site">
       <a href="index.html" aria-current="page">Home</a>
-      <a href="services.html">Services &amp; Pricing</a>
-      <a href="book.html" class="orb-nav-link">Ask the Wizard</a>
+      <a href="services.html">Services &amp; pricing</a>
+      <a href="book.html">Ask the Wizard</a>
       <a href="trust.html">Trust &amp; FAQ</a>
-      <a href="inventory.html">Shop Parts</a>
+      <a href="inventory.html">Shop parts</a>
     </nav>
   </div>
 </header>
 
-<main class="wrap" id="main">
+<main id="main" class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Your phone, mended on the spot.</h1>
+      <p>I bring the tools and parts to you — home, office, or a coffee shop — and fix your iPhone, Galaxy or Pixel the same day.</p>
+    </div>
+    <img src="assets/mascot.png" alt="MagicByte's wizard-hat phone mascot">
+  </div>
 
-  <section class="hero hero-arcane">
-    <div class="embers" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  <div class="where">
+    <strong>📍 <span id="whereArea">On the road around Wichita</span></strong>
+    <span><a href="sms:+13165594816">Text me</a> <span id="whereNote">and I'll tell you exactly where I am.</span></span>
+  </div>
+
+  <div class="choices">
+    <div class="choice">
+      <p>I know what's broken.</p>
+      <a class="btn solid" href="#order">Get my repair price</a>
+    </div>
+    <div class="choice">
+      <p>Not sure? Tell me what happened.</p>
+      <a class="btn" href="book.html">Ask the Wizard 🪄</a>
+    </div>
+  </div>
+
+  <section id="order" aria-labelledby="orderH">
+    <h2 id="orderH">What are we fixing?</h2>
+    <p class="sub">Pick your phone, then add repairs to your bag. Prices update as you go.</p>
+    <div class="seg" role="group" aria-label="Phone brand" id="brandSeg"></div>
+    <div class="modelpick">
+      <label class="skip" for="modelSel">Model</label>
+      <select id="modelSel"></select>
     </div>
 
-    <div class="hero-sigil" aria-hidden="true">
-      <svg viewBox="0 0 400 400" class="sigil-frame">
-        <defs>
-          <filter id="sigilGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-        <g filter="url(#sigilGlow)">
-          <circle class="ring ring-outer" cx="200" cy="200" r="170" fill="none" stroke="var(--gold)" stroke-width="1.4" stroke-dasharray="4 10"/>
-          <circle class="ring ring-mid" cx="200" cy="200" r="138" fill="none" stroke="var(--teal)" stroke-width="1" stroke-dasharray="1 8"/>
-          <circle cx="200" cy="200" r="104" fill="none" stroke="var(--line)" stroke-width="1"/>
-        </g>
-      </svg>
-      <img class="sigil-mascot" src="assets/mascot.png" alt="">
-    </div>
+    <div class="chips" role="group" aria-label="Filter repairs" id="chips"></div>
+    <ul class="menu" id="menu"></ul>
+  </section>
 
-    <div class="hero-copy">
-      <p class="eyebrow">Wichita, KS &amp; surrounding area</p>
-      <h1>Your phone, mended <span class="accent">on the spot.</span></h1>
-      <p class="lede">A one-person mobile phone repair shop. I bring the tools and parts to you — home, office, or a coffee shop — and revive your iPhone, Galaxy or Pixel the same day. Screens, batteries, charging ports, cameras.</p>
-      <div class="cta-pair">
-        <div class="cta-choice">
-          <a class="btn btn-primary btn-lead" href="services.html#estimator-section">Get my repair price</a>
-          <p class="cta-hint">I know what's broken.</p>
-        </div>
-        <div class="cta-choice">
-          <a class="btn btn-wizard" href="book.html">Ask the Wizard <span class="wand" aria-hidden="true">🪄</span></a>
-          <p class="cta-hint">Not sure? Tell me what happened.</p>
-        </div>
-      </div>
+  <section aria-labelledby="vanH">
+    <h2 id="vanH">In the van today</h2>
+    <p class="sub">If your model is here, the repair usually happens on the same visit.</p>
+    <div class="van" id="van"></div>
+  </section>
+
+  <section aria-labelledby="howH">
+    <h2 id="howH">How an order works</h2>
+    <ol class="steps">
+      <li><div><strong>Fill your bag</strong><span>Add the repairs or parts you need. Nothing is charged on this site.</span></div></li>
+      <li><div><strong>Send it by text</strong><span>Your order goes to my phone with your model, location and notes.</span></div></li>
+      <li><div><strong>I confirm the price</strong><span>Exact part cost and labor before you commit. Parts I need to order may need a deposit.</span></div></li>
+      <li><div><strong>I come to you</strong><span>Most repairs are done in one visit, wherever you already are.</span></div></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="areaH">
+    <h2 id="areaH">Where and when</h2>
+    <div class="facts">
+      <div class="fact"><strong>Service area</strong><span>All of Wichita, plus Derby, Andover, Haysville, Maize, Goddard, Park City, Bel Aire, Rose Hill and Mulvane. Further out, just ask.</span></div>
+      <div class="fact"><strong>Trip fee</strong><span>$10 anywhere in Wichita. Outside Wichita it depends on your address, and I'll quote it up front.</span></div>
+      <div class="fact"><strong>Hours</strong><span>I work a day job Tue–Sat, 7am–3:30pm, so visits are late afternoons, evenings and Sundays. Texts get answered all day, every day.</span></div>
     </div>
   </section>
 
-  <p class="promo-strip">
-    <strong>First 100 Heroes</strong>
-    <span>$20 flat labor · parts at cost · mention it when you get in touch</span>
-  </p>
-
-  <section id="today" aria-label="Where I am today">
-    <div class="today-banner" id="wizard-today">
-      <p class="today-kicker">Where's the wizard today</p>
-      <p class="today-area">On the road around Wichita</p>
-      <p class="today-note">Text me and I'll tell you exactly where I am</p>
+  <section aria-labelledby="promH">
+    <h2 id="promH">My promises</h2>
+    <div class="facts">
+      <div class="fact"><strong>Upfront pricing</strong><span>You know the part cost and labor before you commit.</span></div>
+      <div class="fact"><strong>30-day warranty</strong><span>Parts and workmanship covered for 30 days.</span></div>
+      <div class="fact"><strong>No fix, no charge</strong><span>If I can't fix it, you owe nothing for labor.</span></div>
     </div>
-
-    <h2>Screens riding in the van today</h2>
-    <p class="section-note">I keep iPhone screens on hand — if your model's listed here, the repair usually happens the same visit.</p>
-    <div class="van-stock" id="van-stock"></div>
+    <p class="note">Data handling, parts and warranty details are <a href="trust.html">all written down</a>.</p>
   </section>
 
-
-  <section id="mobile-service">
-    <h2>I come to you</h2>
-    <p class="section-note">No waiting room, no leaving your phone somewhere for three days. Most repairs are done in a single visit, wherever you already are — your kitchen table, your workplace, or somewhere public if we haven't met before.</p>
-
-    <p class="realm">
-      <strong>My service area</strong>
-      All of Wichita, plus Derby, Andover, Haysville, Maize, Goddard, Park City, Bel Aire, Rose Hill and Mulvane. Further out, just ask.
-    </p>
-
-    <div class="card card-teal" style="margin-top:18px;">
-      <h3>Trip fee &amp; hours</h3>
-      <p>Trips anywhere in Wichita add a <strong>$10 trip fee</strong>. Outside Wichita, the fee depends on your address — ask when you book and I'll quote it up front.</p>
-      <p style="margin-top:10px;">I work a day job Tue–Sat, 7am–3:30pm, so repairs are scheduled around those hours — usually late afternoons, evenings, and Sundays. <strong>Texts and messages get answered all day, every day.</strong></p>
-    </div>
+  <section aria-labelledby="aboutH">
+    <h2 id="aboutH">About me</h2>
+    <p>I treat phones as precision hardware worth restoring properly, not something to swap for an expensive full assembly. The wizard hat is there to make a cracked screen feel less like a bad day. The benchwork underneath it is careful and conventional.</p>
   </section>
 
-
-  <section id="oaths">
-    <h2>My promises to you</h2>
-    <dl class="oaths">
-      <div>
-        <dt>Upfront pricing</dt>
-        <dd>You know the exact part cost and labor fee before you commit.</dd>
-      </div>
-      <div>
-        <dt>30-day warranty</dt>
-        <dd>Parts and workmanship covered for 30 days.</dd>
-      </div>
-      <div>
-        <dt>No fix, no charge</dt>
-        <dd>If I can't fix it, you owe nothing for labor.</dd>
-      </div>
-    </dl>
-    <p class="section-note" style="margin-top:24px;">
-      How I handle your data, what parts I fit, and exactly what the warranty covers
-      — <a href="trust.html">all of it is written down</a>.
-    </p>
-  </section>
-
-
-  <section id="about">
-    <h2>About me</h2>
-    <p class="section-note">I treat consumer electronics as precision engineering worth restoring properly, rather than pushing an expensive full-assembly replacement. The wizard hat is there to make a cracked screen feel less like a bad day. The benchwork underneath it is careful and conventional.</p>
-    <div class="cta-pair cta-tail">
-      <div class="cta-choice">
-        <a class="btn btn-primary" href="services.html#estimator-section">Get my repair price</a>
-      </div>
-      <div class="cta-choice">
-        <a class="btn btn-wizard" href="book.html">Ask the Wizard <span class="wand" aria-hidden="true">🪄</span></a>
-      </div>
-    </div>
-  </section>
-
+  <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Call <a href="tel:+13165594816">316-559-4816</a> for voicemail; texts reach me faster.</footer>
 </main>
 
-<footer class="site wrap">
-  <div class="foot-row">
-    <span>© 2026 MagicByte · Mobile repair · Wichita, KS &amp; surrounding area</span>
-    <span>Voicemail <a href="tel:+13165594816">316-559-4816</a> · text reaches me faster</span>
+<nav class="dock" aria-label="Quick actions">
+  <div class="row">
+    <a class="dbtn" href="sms:+13165594816">💬 Text</a>
+    <a class="dbtn" href="tel:+13165594816">📼 Voicemail</a>
+    <button class="dbtn main" id="dockMain" type="button"></button>
   </div>
-</footer>
+</nav>
 
-<div class="action-bar" aria-label="Contact MagicByte">
-  <a class="action-btn" href="sms:+13165594816">
-    <span aria-hidden="true">💬</span> Text
-  </a>
-  <a class="action-btn" href="tel:+13165594816">
-    <span aria-hidden="true">📼</span> Voicemail
-  </a>
-  <a class="action-btn primary" href="services.html#estimator-section">
-    <span aria-hidden="true">🔮</span> Get a price
-  </a>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastView">View bag</button></div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="grab"></div>
+  <div class="shead"><h2 id="sheetTitle">Your bag</h2><button class="x" id="closeSheet" type="button" aria-label="Close bag">×</button></div>
+  <div class="sbody" id="sheetBody"></div>
 </div>
 
 <script src="site-data.js"></script>
-<script src="stock.js"></script>
-<script src="wizard.js"></script>
-<script src="cart.js"></script>
+<script>
+/* ===== Page settings. Prices, stock and today's location live in site-data.js ===== */
+const CONFIG = {
+  phone: "+13165594816",
+  tripFeeWichita: 10,
+  partsHandling: 0.05,
+  dayJob: { days: [2,3,4,5,6], end: 15.5 },   // Tue–Sat until 3:30pm
+  visitHours: { start: 9, end: 21 },          // window shown as "booking now"
+  bagKey: "magicbyte_bag"                     // share this key with inventory.html
+};
+const MODELS = {
+  iPhone: ["iPhone 11","iPhone 11 Pro","iPhone 12","iPhone 12 Pro","iPhone 13","iPhone 13 Pro","iPhone 14","iPhone 14 Pro","iPhone 15","iPhone 15 Pro","iPhone 16","iPhone 16 Pro","Other iPhone"],
+  Galaxy: ["Galaxy S21","Galaxy S22","Galaxy S23","Galaxy S24","Galaxy S25","Galaxy A-series","Other Galaxy"],
+  Pixel: ["Pixel 6","Pixel 7","Pixel 8","Pixel 9","Other Pixel"],
+  Other: ["Other phone or tablet"]
+};
+const SERVICES = [
+  {id:"screen", cat:"Screens", name:"Screen replacement", desc:"Cracked glass, dead touch, lines or a black display.", labor:[35,45], time:"About 1½ hrs", part:"screen"},
+  {id:"battery", cat:"Batteries", name:"Battery replacement", desc:"Dies by lunch, shuts off early, or the battery is swelling.", labor:[35,40], time:"About 1½ hrs", part:"battery"},
+  {id:"port", cat:"Charging", name:"Charging port repair", desc:"Loose cable, slow charging or no charging at all.", labor:[40,60], time:"About 1½ hrs", part:"port"},
+  {id:"camera", cat:"Cameras", name:"Camera repair", desc:"Blurry, black, or a cracked lens.", labor:[40,50], time:"About 1½ hrs", part:"camera"},
+  {id:"back", cat:"Back glass", name:"Back glass", desc:"Shattered back on Android and newer iPhones.", labor:[40,50], time:"About 1½ hrs", part:"back"},
+  {id:"polish", cat:"Screens", name:"Glass polishing", desc:"My signature spell: light scratches buffed out of the original glass.", labor:null, time:"About 2 hrs"},
+  {id:"diag", cat:"Not sure", name:"Diagnostics only", desc:"I find the fault and tell you the fix. No repair booked.", labor:[15,20], time:"About 30 min"}
+];
+const PARTS = window.MagicByteParts || [];  // built from site-data.js
+const AREAS = ["Wichita","Derby","Andover","Haysville","Maize","Goddard","Park City","Bel Aire","Rose Hill","Mulvane","Somewhere else"];
+/* ======================================================== */
+
+const $ = s => document.querySelector(s);
+const money = n => "$" + (Math.round(n*100)%100 ? n.toFixed(2) : Math.round(n));
+const range = (a,b) => a===b ? money(a) : money(a) + "–" + money(b).slice(1);
+
+let state = { brand:"iPhone", model:"iPhone 12", cat:"All", bag:[], area:"Wichita", sent:false };
+try { const s = JSON.parse(localStorage.getItem(CONFIG.bagKey) || "null"); if (s && Array.isArray(s.bag)) Object.assign(state, {bag:s.bag, brand:s.brand||state.brand, model:s.model||state.model, area:s.area||state.area}); } catch(e){}
+function save(){ try { localStorage.setItem(CONFIG.bagKey, JSON.stringify({bag:state.bag, brand:state.brand, model:state.model, area:state.area})); } catch(e){} }
+
+/* ---- pricing ---- */
+function partFor(kind, model){ return PARTS.find(p => p.kind===kind && p.models.includes(model)); }
+function priceLine(line){
+  if (line.type === "part"){
+    const p = PARTS.find(x => x.id===line.ref);
+    if (!p || p.price==null) return {lo:0, hi:0, quoted:true, label:"Quoted"};
+    const v = p.price * (1+CONFIG.partsHandling) * line.qty;
+    return {lo:v, hi:v, quoted:false, label:money(v)};
+  }
+  const s = SERVICES.find(x => x.id===line.ref);
+  if (!s || !s.labor) return {lo:0, hi:0, quoted:true, label:"Quoted"};
+  const p = s.part ? partFor(s.part, line.model) : null;
+  const known = p && p.price!=null;
+  const lo = (s.labor[0] + (known?p.price:0)) * line.qty, hi = (s.labor[1] + (known?p.price:0)) * line.qty;
+  const partPending = s.part && !known;
+  return {lo, hi, quoted:false, partPending, label: range(lo,hi) + (partPending ? " + part" : "")};
+}
+function totals(){
+  let lo=0, hi=0, quoted=0, repairs=0, count=0;
+  state.bag.forEach(l => { const p = priceLine(l); lo+=p.lo; hi+=p.hi; if (p.quoted||p.partPending) quoted++; if (l.type==="repair") repairs++; count+=l.qty; });
+  let trip = null;
+  if (repairs){ trip = state.area==="Wichita" ? CONFIG.tripFeeWichita : "quoted"; if (typeof trip==="number"){ lo+=trip; hi+=trip; } }
+  return {lo, hi, quoted, repairs, trip, count};
+}
+
+/* ---- availability ---- */
+function availability(){
+  const d = new Date(), day = d.getDay(), h = d.getHours() + d.getMinutes()/60;
+  if (h < CONFIG.visitHours.start || h >= CONFIG.visitHours.end) return [false, "Visits resume tomorrow"];
+  if (CONFIG.dayJob.days.includes(day) && h < CONFIG.dayJob.end) return [false, "Visits open after 4pm"];
+  return [true, "Booking visits now"];
+}
+function paintAvail(){ const [on, t] = availability(); $("#availDot").classList.toggle("on", on); $("#availText").textContent = t; }
+
+/* ---- bag ops ---- */
+const keyOf = (type, ref, model) => type + "|" + ref + "|" + (model||"");
+function qtyOf(type, ref, model){ const l = state.bag.find(x => x.key===keyOf(type,ref,model)); return l ? l.qty : 0; }
+function setQty(type, ref, model, qty, name){
+  const key = keyOf(type, ref, model);
+  const i = state.bag.findIndex(x => x.key===key);
+  if (qty <= 0){ if (i>-1) state.bag.splice(i,1); }
+  else if (i>-1) state.bag[i].qty = Math.min(qty, 5);
+  else { state.bag.push({key, type, ref, model, qty:1}); toast("Added " + name + (model ? " for " + model : "")); }
+  state.sent = false; save(); renderAll(); bumpDock();
+}
+
+/* ---- render: picker, chips, menu ---- */
+function renderPicker(){
+  $("#brandSeg").innerHTML = Object.keys(MODELS).map(b => `<button type="button" aria-pressed="${b===state.brand}" data-brand="${b}">${b}</button>`).join("");
+  $("#modelSel").innerHTML = MODELS[state.brand].map(m => `<option ${m===state.model?"selected":""}>${m}</option>`).join("");
+}
+const CATS = ["All","Screens","Batteries","Charging","Cameras","Back glass","Not sure","Parts only"];
+function renderChips(){ $("#chips").innerHTML = CATS.map(c => `<button type="button" aria-pressed="${c===state.cat}" data-cat="${c}">${c}</button>`).join(""); }
+function control(type, ref, model, name){
+  const q = qtyOf(type, ref, model);
+  const a = `data-type="${type}" data-ref="${ref}" data-model="${model||""}" data-name="${name}"`;
+  return q ? `<div class="stepper"><button type="button" ${a} data-d="-1" aria-label="One fewer ${name}">−</button><output>${q}</output><button type="button" ${a} data-d="1" aria-label="One more ${name}">+</button></div>`
+           : `<button class="add" type="button" ${a} data-d="1" aria-label="Add ${name} to bag">+</button>`;
+}
+function renderMenu(){
+  let html = "";
+  if (state.cat !== "Parts only"){
+    SERVICES.filter(s => state.cat==="All" || s.cat===state.cat).forEach(s => {
+      const p = priceLine({type:"repair", ref:s.id, model:state.model, qty:1});
+      const part = s.part ? partFor(s.part, state.model) : null;
+      const badge = part && part.inStock ? `<span class="badge">In the van</span>` : (part ? `<span>Part ships in 3–5 days</span>` : "");
+      const priceTxt = p.quoted ? "Quoted after a look" : (p.partPending ? `Labor ${range(...s.labor)} + part` : p.label);
+      html += `<li class="item"><div><h3>${s.name}</h3><p class="desc">${s.desc}</p><div class="meta"><span class="price">${priceTxt}</span><span>${s.time}</span>${badge}</div></div><div class="side">${control("repair", s.id, state.model, s.name)}</div></li>`;
+    });
+  }
+  if (state.cat==="All" || state.cat==="Parts only"){
+    PARTS.forEach(p => {
+      const nm = p.name + " (part only)";
+      const priceTxt = p.price!=null ? `${money(p.price)} + 5% handling` : "Quoted after review";
+      html += `<li class="item"><div><h3>${p.name}</h3><p class="desc">Part only. You fit it yourself; I source pro-grade parts at cost + 5%.</p><div class="meta"><span class="price">${priceTxt}</span>${p.inStock?'<span class="badge">In stock</span>':'<span>Order, 3–5 days</span>'}</div></div><div class="side">${control("part", p.id, "", nm)}</div></li>`;
+    });
+  }
+  $("#menu").innerHTML = html || `<li class="empty-menu">Nothing here for that filter. Try “All”.</li>`;
+}
+function renderVan(){
+  $("#van").innerHTML = PARTS.filter(p => p.inStock).map(p => {
+    const svc = SERVICES.find(s => s.part===p.kind);
+    let priceTxt, quick;
+    if (svc && p.price!=null){
+      priceTxt = `${svc.name}, installed: ${range(svc.labor[0]+p.price, svc.labor[1]+p.price)}`;
+      quick = `<button class="btn solid" type="button" data-quick="${p.id}">Add this repair</button>`;
+    } else if (svc){
+      priceTxt = `${svc.name}, installed: labor ${range(svc.labor[0], svc.labor[1])} + part (priced on confirm)`;
+      quick = `<button class="btn solid" type="button" data-quick="${p.id}">Add this repair</button>`;
+    } else {
+      priceTxt = p.price!=null ? `${money(p.price)} + 5% handling` : "Priced on confirm";
+      quick = "";
+    }
+    return `<div class="vcard"><h3>${p.name}</h3><p>${priceTxt}</p>${quick}</div>`;
+  }).join("") || `<p class="sub">Nothing loaded in the van right now. Text me and I'll check what I can get.</p>`;
+}
+
+/* ---- dock ---- */
+function renderDock(){
+  const t = totals(), b = $("#dockMain");
+  if (!t.count){ b.innerHTML = `<span>🔮 Get a price</span><span aria-hidden="true"></span>`; b.dataset.mode="price"; b.setAttribute("aria-label","Get a price"); }
+  else {
+    const amt = t.hi ? range(t.lo, t.hi) : "Quote";
+    b.innerHTML = `<span class="count">${t.count}</span><span>View bag</span><span>${amt}</span>`;
+    b.dataset.mode="bag"; b.setAttribute("aria-label", `View bag, ${t.count} item${t.count>1?"s":""}`);
+  }
+}
+function bumpDock(){ const b = $("#dockMain"); b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump"); }
+
+/* ---- sheet ---- */
+function lineName(l){ if (l.type==="part") return PARTS.find(p=>p.id===l.ref)?.name + " (part only)"; return SERVICES.find(s=>s.id===l.ref)?.name; }
+function orderText(form){
+  const t = totals();
+  const lines = state.bag.map(l => `• ${l.qty>1?l.qty+"× ":""}${lineName(l)}${l.model?" — "+l.model:""} (${priceLine(l).label})`).join("\n");
+  return `MagicByte order\n${lines}\nArea: ${state.area}\nEstimate: ${t.hi?range(t.lo,t.hi):"to be quoted"}${t.quoted?" + quoted items":""}\nName: ${form.name}\nReply to: ${form.reply}${form.notes?"\nNotes: "+form.notes:""}`;
+}
+function renderSheet(){
+  const body = $("#sheetBody");
+  const keep = {}; ["fName","fReply","fNotes"].forEach(id => { const el = document.getElementById(id); if (el) keep[id] = el.value; });
+  setTimeout(() => Object.keys(keep).forEach(id => { const el = document.getElementById(id); if (el) el.value = keep[id]; }));
+  if (state.sent){
+    body.innerHTML = `<ol class="track">
+      <li class="done"><div><strong>Order sent</strong><span>Your text app opened with the order filled in. Hit send there if you haven't.</span></div></li>
+      <li class="now"><div><strong>I confirm the price</strong><span>I'll reply by text or email with the exact total.</span></div></li>
+      <li><div><strong>We pick a time and place</strong><span>Late afternoons, evenings or Sundays.</span></div></li>
+      <li><div><strong>Fixed</strong><span>You pay when the repair is done.</span></div></li></ol>
+      <div class="sbtns"><button class="btn solid" type="button" id="doneClear">Done, clear my bag</button><button class="btn" type="button" id="backBag">Back to my bag</button></div>`;
+    return;
+  }
+  if (!state.bag.length){
+    body.innerHTML = `<div class="emptybag"><img src="assets/mascot-icon.png" alt=""><h3>Your bag is empty</h3><p class="note">Pick your phone and add a repair to see a price.</p><div class="sbtns"><button class="btn solid" type="button" id="browse">Browse repairs</button></div></div>`;
+    return;
+  }
+  const t = totals();
+  const items = state.bag.map(l => {
+    const p = priceLine(l), name = lineName(l);
+    const part = l.type==="part" ? PARTS.find(x=>x.id===l.ref) : null;
+    const svc = part ? SERVICES.find(s=>s.part===part.kind) : null;
+    const swap = part && svc ? `<button class="link" type="button" data-swap="${l.key}">Have me install it instead</button>` : "";
+    return `<div class="line"><div><h3>${name}</h3><div class="for">${l.model ? "for "+l.model : "you install"}</div></div><div class="lp">${p.label}</div>
+      <div class="acts">${control(l.type, l.ref, l.model, name)}<button class="link danger" type="button" data-remove="${l.key}">Remove</button>${swap}</div></div>`;
+  }).join("");
+  const trip = t.trip==null ? "" : `<div><span>Trip fee</span><span>${typeof t.trip==="number" ? money(t.trip) : "Quoted"}</span></div>`;
+  body.innerHTML = `${items}
+    <button class="link danger" type="button" id="clearBag" style="margin-top:8px">Clear bag</button>
+    <label class="lab" for="area">Where should I meet you?</label>
+    <select class="field" id="area">${AREAS.map(a=>`<option ${a===state.area?"selected":""}>${a}</option>`).join("")}</select>
+    <div class="sum">
+      <div><span>Items</span><span>${t.count}</span></div>${trip}
+      <div class="tot"><span>Estimate</span><span>${t.hi ? range(t.lo,t.hi) : "Quoted"}</span></div>
+    </div>
+    <p class="note">${t.quoted ? "Some parts get priced after I check stock, so the final total may be higher. " : ""}Nothing is charged here. You pay when the repair is done; parts I need to order may need a deposit, and I'll tell you first.</p>
+    <label class="lab" for="fName">Name</label><input class="field" id="fName" autocomplete="name">
+    <label class="lab" for="fReply">Where should I reply?</label><input class="field" id="fReply" placeholder="Phone number or email" autocomplete="tel">
+    <label class="lab" for="fNotes">Notes</label><textarea class="field" id="fNotes" placeholder="What happened, timing that works for you…"></textarea>
+    <p class="err" id="formErr" hidden></p>
+    <div class="sbtns"><button class="btn solid" type="button" id="sendOrder">Send order by text</button><button class="btn" type="button" id="copyOrder">Copy order</button></div>`;
+}
+function readForm(){
+  const name = $("#fName").value.trim(), reply = $("#fReply").value.trim(), notes = $("#fNotes").value.trim();
+  $("#fName").setAttribute("aria-invalid", !name); $("#fReply").setAttribute("aria-invalid", !reply);
+  const err = $("#formErr");
+  if (!name || !reply){ err.hidden=false; err.textContent = "Add your name and a phone number or email so I can reply."; return null; }
+  err.hidden = true; return {name, reply, notes};
+}
+let lastFocus = null;
+function openSheet(){ lastFocus = document.activeElement; const s=$("#sheet"); s.hidden=false; renderSheet(); requestAnimationFrame(()=>{ s.classList.add("open"); $("#scrim").classList.add("open"); $("#closeSheet").focus(); }); document.body.style.overflow="hidden"; }
+function closeSheet(){ const s=$("#sheet"); s.classList.remove("open"); $("#scrim").classList.remove("open"); document.body.style.overflow=""; setTimeout(()=>{ s.hidden=true; }, 300); lastFocus && lastFocus.focus(); }
+
+/* ---- toast ---- */
+let tt; function toast(msg){ $("#toastMsg").textContent = msg; $("#toast").classList.add("show"); clearTimeout(tt); tt = setTimeout(()=>$("#toast").classList.remove("show"), 2600); }
+
+function renderAll(){ renderPicker(); renderChips(); renderMenu(); renderVan(); renderDock(); if (!$("#sheet").hidden) renderSheet(); }
+
+/* ---- events ---- */
+document.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) return;
+  if (t.dataset.brand){ state.brand = t.dataset.brand; state.model = MODELS[state.brand][0]; save(); renderAll(); }
+  else if (t.dataset.cat){ state.cat = t.dataset.cat; renderChips(); renderMenu(); }
+  else if (t.dataset.d){ const {type, ref, model, name} = t.dataset; setQty(type, ref, model, qtyOf(type, ref, model) + Number(t.dataset.d), name); }
+  else if (t.dataset.quick){ const p = PARTS.find(x=>x.id===t.dataset.quick); if(!p) return; state.brand="iPhone"; state.model=p.models[0]||state.model; const svc=SERVICES.find(s=>s.part===p.kind); if (svc){ if (!qtyOf("repair",svc.id,state.model)) setQty("repair", svc.id, state.model, 1, svc.name); else toast("Already in your bag"); } else { setQty("part", p.id, "", qtyOf("part",p.id,"")+1, p.name); } }
+  else if (t.dataset.remove){ state.bag = state.bag.filter(l => l.key!==t.dataset.remove); save(); renderAll(); }
+  else if (t.dataset.swap){ const l = state.bag.find(x=>x.key===t.dataset.swap); const p = PARTS.find(x=>x.id===l.ref); const svc = SERVICES.find(s=>s.part===p.kind); state.bag = state.bag.filter(x=>x!==l); setQty("repair", svc.id, p.models[0], 1, svc.name); }
+  else if (t.id==="dockMain"){ if (t.dataset.mode==="bag") openSheet(); else $("#order").scrollIntoView(); }
+  else if (t.id==="toastView"){ $("#toast").classList.remove("show"); openSheet(); }
+  else if (t.id==="closeSheet") closeSheet();
+  else if (t.id==="browse"){ closeSheet(); $("#order").scrollIntoView(); }
+  else if (t.id==="clearBag"){ if (confirm("Remove everything from your bag?")){ state.bag=[]; save(); renderAll(); } }
+  else if (t.id==="sendOrder"){ const f = readForm(); if (!f) return; const body = encodeURIComponent(orderText(f)); window.location.href = `sms:${CONFIG.phone}?&body=${body}`; state.sent = true; renderSheet(); }
+  else if (t.id==="copyOrder"){ const f = readForm(); if (!f) return; const txt = orderText(f); (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(()=>toast("Order copied. Paste it in a text to " + "316-559-4816"), ()=>toast("Couldn't copy. Use Send order by text instead.")); }
+  else if (t.id==="doneClear"){ state.bag=[]; state.sent=false; save(); renderAll(); closeSheet(); }
+  else if (t.id==="backBag"){ state.sent=false; renderSheet(); }
+});
+document.addEventListener("change", e => {
+  if (e.target.id==="modelSel"){ state.model = e.target.value; save(); renderMenu(); }
+  if (e.target.id==="area"){ state.area = e.target.value; save(); renderDock(); renderSheet(); }
+});
+$("#scrim").addEventListener("click", closeSheet);
+document.addEventListener("keydown", e => { if (e.key==="Escape" && !$("#sheet").hidden) closeSheet(); });
+
+paintAvail(); setInterval(paintAvail, 60000);
+
+/* ---- today's location, from site-data.js ---- */
+(function paintWhere(){
+  var D = window.MAGICBYTE_DATA && window.MAGICBYTE_DATA.today;
+  if (!D) return;
+  var a = document.getElementById("whereArea"), n = document.getElementById("whereNote");
+  if (a && D.area) a.textContent = D.area;
+  if (n && D.note) n.textContent = D.note;
+})();
+renderAll();
+</script>
 </body>
 </html>

@@ -34,3 +34,65 @@ window.MAGICBYTE_DATA = {
   ]
 
 };
+
+/* ============================================================
+   Shared parts registry + bag helpers.
+   Both the homepage and the Shop Parts page read these, so a
+   part added on one page shows up correctly on the other.
+   You don't need to edit below this line.
+   ============================================================ */
+(function () {
+  "use strict";
+  var DATA = window.MAGICBYTE_DATA || { stock: [], orderable: [] };
+
+  function kindOf(p) {
+    var m = /screen|battery|port|camera|back/i.exec((p.id || "") + " " + (p.name || ""));
+    return m ? m[0].toLowerCase() : "part";
+  }
+  function modelsOf(p) {
+    var segs = String(p.device || "").split("/").map(function (x) { return x.trim(); }).filter(Boolean);
+    if (!segs.length) return [];
+    var brand = segs[0].split(/\s+/)[0];
+    return segs.map(function (s, i) {
+      if (i === 0 || s.indexOf(brand) === 0) return s;
+      return brand + " " + s;   // "12 Pro" -> "iPhone 12 Pro"
+    });
+  }
+  function toPart(s, inStock) {
+    return {
+      id: s.id,
+      kind: kindOf(s),
+      models: modelsOf(s),
+      name: s.name,
+      price: (s.price == null ? null : Number(s.price)),
+      inStock: !!inStock && (s.qty || 0) > 0
+    };
+  }
+
+  // Every part Jonathan stocks or can order, in one list.
+  window.MagicByteParts = (DATA.stock || []).map(function (s) { return toPart(s, true); })
+    .concat((DATA.orderable || []).map(function (o) { return toPart(o, false); }));
+
+  // One bag shared by every page. Lines look like:
+  //   { key:"part|iphone-12-screen|", type:"part", ref:"iphone-12-screen", model:"", qty:1 }
+  //   { key:"repair|screen|iPhone 13", type:"repair", ref:"screen", model:"iPhone 13", qty:1 }
+  var BAG_KEY = "magicbyte_bag";
+  window.MagicByteBag = {
+    KEY: BAG_KEY,
+    keyOf: function (type, ref, model) { return type + "|" + ref + "|" + (model || ""); },
+    read: function () {
+      try {
+        var raw = localStorage.getItem(BAG_KEY);
+        if (raw) {
+          var e = JSON.parse(raw);
+          if (e && Array.isArray(e.bag)) return e;
+        }
+      } catch (err) { /* storage unavailable — bag just won't persist */ }
+      return { bag: [], brand: null, model: null, area: null };
+    },
+    write: function (env) {
+      try { localStorage.setItem(BAG_KEY, JSON.stringify(env)); }
+      catch (err) { /* bag still works for this visit */ }
+    }
+  };
+})();
