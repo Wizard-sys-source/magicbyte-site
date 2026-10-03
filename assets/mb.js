@@ -26,12 +26,12 @@ const MODELS = {
 
 /* labor: [low, high] or null for "quoted" */
 const SERVICES = [
-  {id:"screen",  cat:"Screens",    name:"Screen replacement",   desc:"Cracked glass, dead touch, lines or a black display.", labor:[35,45], time:"About 1½ hrs", part:"screen"},
-  {id:"battery", cat:"Batteries",  name:"Battery replacement",  desc:"Dies by lunch, shuts off early, or the battery is swelling.", labor:[35,40], time:"About 1½ hrs", part:"battery"},
-  {id:"port",    cat:"Charging",   name:"Charging port repair", desc:"Loose cable, slow charging or no charging at all.", labor:[40,60], time:"About 1½ hrs", part:"port"},
-  {id:"camera",  cat:"Cameras",    name:"Camera repair",        desc:"Blurry, black, or a cracked lens.", labor:[40,50], time:"About 1½ hrs", part:"camera"},
-  {id:"back",    cat:"Back glass", name:"Back glass",           desc:"Same day on Android and iPhone 15 and up. iPhone X–14 takes at least two days.", labor:[40,50], time:"Same day or 2+ days", part:"back"},
-  {id:"polish",  cat:"Screens",    name:"Glass polishing",      desc:"My signature spell: light scratches buffed out of the original glass.", labor:null, time:"About 2 hrs"},
+  {id:"screen",  cat:"Screens",    name:"Screen replacement",   desc:"Cracked glass, dead touch, lines or a black display.", labor:[60,75], time:"About 1½ hrs", part:"screen"},
+  {id:"battery", cat:"Batteries",  name:"Battery replacement",  desc:"Dies by lunch, shuts off early, or the battery is swelling.", labor:[60,70], time:"About 1½ hrs", part:"battery"},
+  {id:"port",    cat:"Charging",   name:"Charging port repair", desc:"Loose cable, slow charging or no charging at all.", labor:[65,85], time:"About 1½ hrs", part:"port"},
+  {id:"camera",  cat:"Cameras",    name:"Camera repair",        desc:"Blurry, black, or a cracked lens.", labor:[65,80], time:"About 1½ hrs", part:"camera"},
+  {id:"back",    cat:"Back glass", name:"Back glass",           desc:"Same day on Android and iPhone 15 and up. iPhone X–14 takes at least two days.", labor:[70,90], time:"Same day or 2+ days", part:"back"},
+  {id:"clean",   cat:"Charging",   name:"Charging port cleaning", desc:"Lint and pocket grime dug out of the port. Fixes most charging scares that are really just dirt.", labor:[30,30], time:"About 15 min"},
   {id:"diag",    cat:"Not sure",   name:"Diagnostics only",     desc:"I find the fault and tell you the fix. No repair booked.", labor:[15,20], time:"About 30 min"}
 ];
 

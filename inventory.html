@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <title>Shop Parts · MagicByte</title>
-<meta name="description" content="Order phone parts from MagicByte in Wichita, KS. In-stock parts mean a same-day repair; everything else ships in a few days.">
+<meta name="description" content="Order phone parts from MagicByte in Wichita, KS. In-stock parts mean a same-day repair; everything else arrives the same day or next.">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#150f1e">
@@ -39,7 +39,7 @@
       <p class="sub" style="margin-bottom:12px">Describe it and I'll work it out. Free, no upfront cost.</p>
       <a class="btn small" href="book.html">Ask the Wizard 🪄</a>
     </div>
-    <p class="note">Don't see your model? <a href="book.html">Ask the Wizard</a>. Most parts can be ordered within a few days.</p>
+    <p class="note">Don't see your model? <a href="book.html">Ask the Wizard</a>. Most parts arrive the same day or next day.</p>
   </section>
   <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
@@ -55,7 +55,7 @@ window.pageInit = () => {
     list.innerHTML = rows.map(p => {
       const nm = p.name + " (part only)";
       const priceTxt = p.price!=null ? `${money(p.price)} + 5%` : "Quoted after review";
-      const stock = p.stock>0 ? `<span class="badge">In stock, ${p.stock} left</span>` : `<span>Order, 3–5 days</span>`;
+      const stock = p.stock>0 ? `<span class="badge">In stock, ${p.stock} left</span>` : `<span>Order, same or next day</span>`;
       return `<li class="item"><div><h3>${p.name}</h3><p class="desc">${p.models.join(" / ")}${p.grade ? ", " + p.grade : ""}</p><div class="meta"><span class="price">${priceTxt}</span>${stock}</div></div><div class="side">${MB.control("part", p.id, "", nm)}</div></li>`;
     }).join("") || `<li class="empty-menu">No parts listed here yet. <a href="book.html">Ask the Wizard</a> and I'll check.</li>`;
   };
