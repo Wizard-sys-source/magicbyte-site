@@ -15,50 +15,59 @@
 </head>
 <body data-page="services">
 <main id="main" class="wrap">
-  <div class="hero solo">
+  <div class="hero">
     <div>
       <h1>Part cost, plus labor.</h1>
       <p>No flat mystery rate. You see the part price and the labor fee before you commit.</p>
     </div>
+    <div class="orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><img src="assets/mascot.png" alt=""></div>
   </div>
 
-  <section id="estimator-section" aria-labelledby="estH">
-    <h2 id="estH">What will mine cost?</h2>
-    <p class="sub">Pick your phone and add what's wrong. The price includes the part when I know it.</p>
-    <div id="order"><div id="menuRoot"></div></div>
+  <section aria-labelledby="menuH">
+    <h2 id="menuH">The repair menu</h2>
+    <p class="sub">Labor for each job. The part is added on top, at cost.</p>
+    <div class="boxes" id="svcList"></div>
   </section>
 
-  <section aria-labelledby="rateH">
-    <h2 id="rateH">Labor rates</h2>
-    <p class="sub">The part is added on top, at cost.</p>
-    <ul class="rates" id="rates"></ul>
-    <p class="note">Need just the part to fit yourself? I'll order pro-grade parts at cost + 5%. <a href="inventory.html">Shop parts</a></p>
+  <section aria-labelledby="scrH">
+    <h2 id="scrH">Screen prices by model</h2>
+    <p class="sub">Screen at cost plus labor. Models not in the van are estimates until I order the part. Add the $10 Wichita trip fee.</p>
+    <div class="card tablewrap"><table class="prices" id="scrTable"><thead><tr><th>Model</th><th>Installed</th></tr></thead><tbody></tbody></table></div>
+    <p class="note">Don't see your phone? <a href="book.html">Ask the Wizard</a> and I'll price it.</p>
   </section>
 
   <section aria-labelledby="limH">
     <h2 id="limH">The forbidden arts</h2>
-    <div class="card teal">
-      <p>I only take on fixes that will last. I don't do <b>deep water resurrections</b> unless the phone still shows a spark of life, and I don't do <b>microsoldering</b> (board-level chip repair).</p>
-      <p style="margin:0">I focus on modular repairs and glass restoration, done properly.</p>
-    </div>
+    <div class="box"><span class="ico">🚫</span><div><strong>What I don't do</strong><span>Deep water resurrections, unless the phone still shows a spark of life, and microsoldering (board-level chip repair). I stick to modular repairs and glass restoration, done properly.</span></div></div>
   </section>
 
   <section aria-labelledby="howH">
     <h2 id="howH">How a job works</h2>
     <ol class="steps">
-      <li><div><strong>Book</strong><span>Add repairs to your bag and send it, <a href="book.html">ask the Wizard</a>, or text 316-559-4816.</span></div></li>
+      <li><div><strong>Book</strong><span>Fill your bag on the <a href="index.html#order">home page</a>, <a href="book.html">ask the Wizard</a>, or text 316-559-4816.</span></div></li>
       <li><div><strong>Quote</strong><span>You get part cost plus labor. If the part isn't in stock, a deposit covers ordering it.</span></div></li>
       <li><div><strong>Repair</strong><span>In-stock repairs are usually done the same day, wherever works for you around Wichita.</span></div></li>
       <li><div><strong>Warranty</strong><span>Every job is covered for 30 days. <a href="trust.html#warranty">See what's covered</a>.</span></div></li>
     </ol>
   </section>
+
+  <div class="choices">
+    <div class="choice"><p>Know your model? Get an exact estimate.</p><a class="btn solid" href="index.html#order">Price my repair</a></div>
+  </div>
   <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
 <script>
 window.pageInit = () => {
-  MB.mountMenu(document.getElementById("menuRoot"));
-  document.getElementById("rates").innerHTML = SERVICES.map(s =>
-    `<li><b>${s.name}</b><span>${s.labor ? range(...s.labor) : "Quoted"}</span><small>${s.time}</small></li>`).join("");
+  const icons = {screen:"📱",battery:"🔋",port:"🔌",camera:"📷",back:"🪟",polish:"✨",diag:"🔍"};
+  document.getElementById("svcList").innerHTML = SERVICES.map(s =>
+    `<div class="box svc"><span class="ico">${icons[s.id]}</span><div><strong>${s.name}</strong><span>${s.desc}</span></div><div class="lp">${s.labor ? range(...s.labor) : "Quoted"}<small>${s.time}</small></div></div>`).join("");
+  const scr = SERVICES.find(s => s.id==="screen"), rows = [];
+  PARTS.filter(p => p.kind==="screen" && p.price!=null).forEach(p => p.models.forEach(m => {
+    if (!rows.some(r => r.m===m)) rows.push({m, lo:scr.labor[0]+p.price, hi:scr.labor[1]+p.price, stock:p.stock});
+  }));
+  rows.sort((a,b) => MODELS.iPhone.indexOf(a.m) - MODELS.iPhone.indexOf(b.m));
+  document.querySelector("#scrTable tbody").innerHTML = rows.map(r =>
+    `<tr><td>${r.m}${r.stock>0 ? ' <span class="badge" style="font:500 12px var(--mono)">in the van</span>' : ""}</td><td>${range(r.lo,r.hi)}</td></tr>`).join("");
 };
 </script>
 </body>

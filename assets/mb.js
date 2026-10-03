@@ -132,33 +132,39 @@ MB.control = (type, ref, model, name) => {
            : `<button class="add" type="button" ${a} data-d="1" aria-label="Add ${esc(name)} to bag">+</button>`;
 };
 
-/* ---------- reusable repair menu (home + services) ---------- */
+/* ---------- model picker (big button + bottom sheet) ---------- */
+MB.modelButton = () => `<button class="modelbtn" type="button" data-pick="1" aria-haspopup="dialog">
+  <span class="mb-ico" aria-hidden="true">📱</span><span><small>Fixing</small><b>${esc(MB.state.model)}</b></span><span class="mb-chg">Change</span></button>`;
+function renderPicker(q=""){
+  const s = MB.state, body = $("#pickBody");
+  const list = MODELS[s.brand].filter(m => m.toLowerCase().includes(q.toLowerCase()));
+  body.querySelector(".seg").innerHTML = Object.keys(MODELS).map(b => `<button type="button" aria-pressed="${b===s.brand}" data-pbrand="${b}">${b}</button>`).join("");
+  body.querySelector(".mgrid").innerHTML = list.map(m => `<button type="button" class="mchip" aria-pressed="${m===s.model}" data-pmodel="${esc(m)}">${esc(m)}</button>`).join("")
+    || `<p class="note">No match. Pick “Other” and tell me the model in your notes.</p>`;
+}
+MB.openPicker = () => { const p = $("#picker"); p.hidden = false; $("#pickSearch").value = ""; renderPicker();
+  requestAnimationFrame(()=>{ p.classList.add("open"); $("#scrim").classList.add("open"); $("#pickSearch").focus({preventScroll:true}); }); document.body.style.overflow="hidden"; };
+MB.closePicker = () => { const p = $("#picker"); p.classList.remove("open"); if ($("#sheet").hidden) { $("#scrim").classList.remove("open"); document.body.style.overflow=""; } setTimeout(()=>{ p.hidden = true; }, 300); };
+
+/* ---------- reusable repair menu (home) ---------- */
 MB.mountMenu = (root) => {
   let cat = "All";
   const CATS = ["All","Screens","Batteries","Charging","Cameras","Back glass","Not sure"];
-  root.innerHTML = `<div class="seg" role="group" aria-label="Phone brand"></div>
-    <div class="selectwrap"><label class="sr" for="modelSel">Model</label><select id="modelSel"></select></div>
-    <div class="chips" role="group" aria-label="Filter repairs"></div><ul class="menu"></ul>`;
-  const seg = root.querySelector(".seg"), sel = root.querySelector("select"), chips = root.querySelector(".chips"), menu = root.querySelector(".menu");
+  root.innerHTML = `<div class="pickslot"></div><div class="chips" role="group" aria-label="Filter repairs"></div><ul class="menu"></ul>`;
+  const slot = root.querySelector(".pickslot"), chips = root.querySelector(".chips"), menu = root.querySelector(".menu");
   function draw(){
     const s = MB.state;
-    seg.innerHTML = Object.keys(MODELS).map(b => `<button type="button" aria-pressed="${b===s.brand}" data-brand="${b}">${b}</button>`).join("");
-    sel.innerHTML = MODELS[s.brand].map(m => `<option ${m===s.model?"selected":""}>${m}</option>`).join("");
+    slot.innerHTML = MB.modelButton();
     chips.innerHTML = CATS.map(c => `<button type="button" aria-pressed="${c===cat}" data-cat="${c}">${c}</button>`).join("");
     menu.innerHTML = SERVICES.filter(x => cat==="All" || x.cat===cat).map(x => {
       const p = MB.priceLine({type:"repair", ref:x.id, model:s.model, qty:1});
       const part = x.part ? MB.partFor(x.part, s.model) : null;
       const badge = part ? (part.stock>0 ? `<span class="badge">In the van</span>` : `<span>Part ships in 3–5 days</span>`) : "";
       const priceTxt = p.quoted ? "Quoted after a look" : (p.partPending ? `Labor ${range(...x.labor)} + part` : (part && part.stock===0 ? "About " : "") + p.label);
-      return `<li class="item"><div><h3>${x.name}</h3><p class="desc">${x.desc}</p><div class="meta"><span class="price">${priceTxt}</span><span>${x.time}</span>${badge}</div></div><div class="side">${MB.control("repair", x.id, s.model, x.name)}</div></li>`;
+      return `<li class="item" id="svc-${x.id}"><div><h3>${x.name}</h3><p class="desc">${x.desc}</p><div class="meta"><span class="price">${priceTxt}</span><span>${x.time}</span>${badge}</div></div><div class="side">${MB.control("repair", x.id, s.model, x.name)}</div></li>`;
     }).join("") || `<li class="empty-menu">Nothing here for that filter. Try “All”.</li>`;
   }
-  root.addEventListener("click", e => {
-    const b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.brand){ MB.state.brand = b.dataset.brand; MB.state.model = MODELS[b.dataset.brand][0]; MB.save(); draw(); }
-    if (b.dataset.cat){ cat = b.dataset.cat; draw(); }
-  });
-  sel.addEventListener("change", () => { MB.state.model = sel.value; MB.save(); draw(); });
+  root.addEventListener("click", e => { const b = e.target.closest("button[data-cat]"); if (b){ cat = b.dataset.cat; draw(); } });
   MB.onChange.push(draw); draw();
 };
 
@@ -183,7 +189,20 @@ function buildChrome(){
     <div class="grab"></div>
     <div class="shead"><h2 id="sheetTitle">Your bag</h2><button class="x" id="closeSheet" type="button" aria-label="Close bag">×</button></div>
     <div class="sbody" id="sheetBody"></div>
+  </div>
+  <div class="sheet" id="picker" role="dialog" aria-modal="true" aria-labelledby="pickTitle" hidden>
+    <div class="grab"></div>
+    <div class="shead"><h2 id="pickTitle">Your phone</h2><button class="x" id="closePicker" type="button" aria-label="Close">×</button></div>
+    <div class="sbody" id="pickBody">
+      <div class="seg" role="group" aria-label="Brand"></div>
+      <label class="sr" for="pickSearch">Search models</label>
+      <input class="field" id="pickSearch" placeholder="Search, e.g. 13 Pro" style="margin-top:12px" autocomplete="off">
+      <div class="mgrid"></div>
+    </div>
   </div>`);
+  /* keep the current page's tab visible in the nav instead of snapping back to Home */
+  const nav = document.querySelector("nav.links"), cur = nav.querySelector("[aria-current]");
+  if (cur) nav.scrollLeft = Math.max(0, cur.offsetLeft - nav.offsetLeft - 18);
   const paint = () => { const [on, t] = MB.availability(); $("#availDot").classList.toggle("on", on); $("#availText").textContent = t; };
   paint(); setInterval(paint, 60000);
 }
@@ -272,6 +291,10 @@ document.addEventListener("DOMContentLoaded", () => {
     else if (d.remove){ MB.state.bag = MB.state.bag.filter(l => l.key!==d.remove); MB.save(); MB.refresh(); }
     else if (d.swap){ const l = MB.state.bag.find(x=>x.key===d.swap); const p = PARTS.find(x=>x.id===l.ref); const svc = SERVICES.find(x=>x.part===p.kind); MB.state.bag = MB.state.bag.filter(x=>x!==l); MB.setQty("repair", svc.id, p.models[0], 1, svc.name); }
     else if (t.id==="dockMain"){ if (d.mode==="bag") MB.openSheet(); else { const o = document.getElementById("order"); if (o) o.scrollIntoView(); else location.href = "index.html#order"; } }
+    else if (d.pick) MB.openPicker();
+    else if (d.pbrand){ MB.state.brand = d.pbrand; $("#pickSearch").value=""; renderPicker(); }
+    else if (d.pmodel){ MB.state.model = d.pmodel; MB.save(); MB.refresh(); MB.closePicker(); MB.toast("Showing prices for " + d.pmodel, false); }
+    else if (t.id==="closePicker") MB.closePicker();
     else if (t.id==="toastView"){ $("#toast").classList.remove("show"); MB.openSheet(); }
     else if (t.id==="closeSheet") MB.closeSheet();
     else if (t.id==="clearBag"){ if (confirm("Remove everything from your bag?")){ MB.state.bag = []; MB.save(); MB.refresh(); } }
@@ -282,8 +305,9 @@ document.addEventListener("DOMContentLoaded", () => {
     else if (t.id==="backBag"){ MB.state.sent = false; renderSheet(); }
   });
   document.addEventListener("change", e => { if (e.target.id==="area"){ MB.state.area = e.target.value; MB.save(); MB.renderDock(); renderSheet(); } });
-  document.addEventListener("keydown", e => { if (e.key==="Escape" && !$("#sheet").hidden) MB.closeSheet(); });
-  document.addEventListener("click", e => { if (e.target.id==="scrim") MB.closeSheet(); });
+  document.addEventListener("input", e => { if (e.target.id==="pickSearch") renderPicker(e.target.value); });
+  document.addEventListener("keydown", e => { if (e.key!=="Escape") return; if (!$("#picker").hidden) MB.closePicker(); else if (!$("#sheet").hidden) MB.closeSheet(); });
+  document.addEventListener("click", e => { if (e.target.id!=="scrim") return; if (!$("#picker").hidden) MB.closePicker(); else MB.closeSheet(); });
   if (location.hash==="#bag") MB.openSheet();
   if (window.pageInit) window.pageInit();
 });
