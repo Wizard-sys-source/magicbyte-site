@@ -24,12 +24,12 @@ window.MAGICBYTE_DATA = {
 
   stock: [
     { id: "iphone-12-screen", category: "iphone", name: "iPhone 12 screen", device: "iPhone 12 / 12 Pro", qty: 2, price: 56.81 },
-    { id: "iphone-13-screen", category: "iphone", name: "iPhone 13 screen", device: "iPhone 13", qty: 2, price: null },
-    { id: "iphone-14-screen", category: "iphone", name: "iPhone 14 screen", device: "iPhone 14", qty: 2, price: null }
+    { id: "iphone-13-screen", category: "iphone", name: "iPhone 13 screen", device: "iPhone 13", qty: 2, price: 72.09 },
+    { id: "iphone-14-screen", category: "iphone", name: "iPhone 14 screen", device: "iPhone 14", qty: 2, price: 66.29 }
   ],
 
   orderable: [
-    { id: "iphone-12-battery", category: "iphone", name: "iPhone 12 battery", device: "iPhone 12 / 12 Pro" },
+    { id: "iphone-12-battery", category: "iphone", name: "iPhone 12 battery", device: "iPhone 12 / 12 Pro", price: 10.40 },
     { id: "iphone-11-screen", category: "iphone", name: "iPhone 11 screen", device: "iPhone 11" }
   ]
 

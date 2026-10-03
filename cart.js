@@ -23,10 +23,12 @@
   "use strict";
 
   /* ---------- 0  Config ------------------------------------
-     Replace this with your Formspree form ID for parts orders.
-     The consultation form is configured separately, in wizard.js.
+     Orders from this page go out as a text message composed on
+     the customer's own phone — nothing to set up, no form IDs.
+     (The written consultation form on book.html still uses
+     Formspree, configured in wizard.js.)
      --------------------------------------------------------- */
-  var FORMSPREE_ENDPOINT = "https://formspree.io/f/REPLACE_WITH_YOUR_PARTS_FORM_ID";
+  var SMS_NUMBER = "+13165594816";
 
   var OLD_STORAGE_KEY = "magicbyte_satchel_v1";  // retired; migrated once
   var PHONE = "316-559-4816";
@@ -284,7 +286,7 @@
         '<div class="satchel-total"><span>Parts subtotal</span><strong id="satchel-total">$0.00</strong></div>' +
         '<p class="field-hint" id="satchel-terms"></p>' +
 
-        '<form id="satchel-form">' +
+        '<div id="satchel-fields">' +
           '<div class="field">' +
             '<label for="s-install">Who\u2019s installing these?</label>' +
             '<select id="s-install" name="installation">' +
@@ -304,11 +306,11 @@
           '<div class="field">' +
             '<label for="s-notes">Notes</label>' +
             '<textarea id="s-notes" name="notes" placeholder="Device model, timing that works for you\u2026"></textarea></div>' +
-          '<input type="hidden" name="order_summary" id="s-summary">' +
-          '<input type="hidden" name="_subject" value="New parts order \u2014 MagicByte">' +
-          '<button type="submit" class="btn btn-primary" id="satchel-submit">Send order</button>' +
+          '<p class="field-hint err" id="satchel-err" role="alert" hidden></p>' +
+          '<button type="button" class="btn btn-primary" id="satchel-send">Send order by text</button>' +
+          '<button type="button" class="btn" id="satchel-copy" style="margin-top:8px">Copy order instead</button>' +
           '<p class="field-hint" id="satchel-status" role="status"></p>' +
-        '</form>' +
+        '</div>' +
       '</div>';
 
     document.body.appendChild(overlay);
@@ -316,7 +318,8 @@
 
     overlay.addEventListener("click", closeDrawer);
     drawer.querySelector(".satchel-close").addEventListener("click", closeDrawer);
-    document.getElementById("satchel-form").addEventListener("submit", sendOrder);
+    document.getElementById("satchel-send").addEventListener("click", sendByText);
+    document.getElementById("satchel-copy").addEventListener("click", copyOrder);
     document.getElementById("s-install").addEventListener("change", renderTerms);
 
     // one delegated handler covers every row, including rows drawn later
@@ -345,7 +348,8 @@
   function renderBag() {
     var body = document.getElementById("satchel-body");
     var totalEl = document.getElementById("satchel-total");
-    var submit = document.getElementById("satchel-submit");
+    var send = document.getElementById("satchel-send");
+    var copy = document.getElementById("satchel-copy");
     if (!body || !totalEl) return;
 
     var ls = lines();
@@ -387,7 +391,8 @@
 
     justAdded = null;
     totalEl.textContent = money(subtotal(ls)) + (hasUnpriced(ls) ? " + quotes" : "");
-    if (submit) submit.disabled = ls.length === 0;
+    if (send) send.disabled = ls.length === 0;
+    if (copy) copy.disabled = ls.length === 0;
     renderTerms();
   }
 
@@ -405,7 +410,7 @@
       return;
     }
 
-    var parts = ["Sending this is a request \u2014 no payment happens here."];
+    var parts = ["This opens your text app with the order filled in \u2014 no payment happens here."];
 
     if (hasSpecialOrder(ls)) {
       parts.push("Your bag has special-order parts, so those need a deposit for the exact part cost, invoiced once I confirm the price.");
@@ -481,73 +486,101 @@
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   }
 
-  /* ---------- 6  Sending the order ---------- */
-  function sendOrder(e) {
-    e.preventDefault();
-
-    var ls = lines();
-    var status = document.getElementById("satchel-status");
-    var submit = document.getElementById("satchel-submit");
-
-    if (ls.length === 0) {
-      status.className = "field-hint err";
-      status.textContent = "Your bag is empty \u2014 add a part first.";
-      return;
+  /* ---------- 6  Sending the order ----------
+     Opens the customer's own text app with the order filled in,
+     so it arrives from their number. Nothing is charged here. */
+  function readShopForm() {
+    var name = document.getElementById("s-name").value.trim();
+    var contact = document.getElementById("s-contact").value.trim();
+    var notes = document.getElementById("s-notes").value.trim();
+    var err = document.getElementById("satchel-err");
+    var ok = true;
+    document.getElementById("s-name").setAttribute("aria-invalid", String(!name));
+    document.getElementById("s-contact").setAttribute("aria-invalid", String(!contact));
+    if (!name || !contact) {
+      err.hidden = false;
+      err.textContent = "Add your name and a phone number or email so I can reply.";
+      ok = false;
+    } else {
+      err.hidden = true;
     }
+    return ok ? { name: name, contact: contact, notes: notes } : null;
+  }
 
+  function orderText(f) {
+    var ls = lines();
     var install = document.getElementById("s-install").value;
-    var orderLines = ls.map(function (l) {
+    var out = ls.map(function (l) {
       var r = resolveLine(l);
       var qty = (l.qty || 0) + "x ";
-      if (l.type === "repair") {
-        return qty + r.name + " \u2014 " + r.priceText;
-      }
-      return qty + r.name +
+      if (l.type === "repair") return "\u2022 " + qty + r.name + " (" + r.priceText + ")";
+      return "\u2022 " + qty + r.name +
              " \u2014 " + (r.priceValue != null ? money(r.priceValue) + " each" : "price to be quoted") +
              " \u2014 " + (r.stock === "order" ? "special order" : "in stock");
     });
-
-    orderLines.push("");
-    orderLines.push("Parts subtotal: " + money(subtotal(ls)) +
-               (hasUnpriced(ls) ? " plus items still to be quoted" : ""));
-    orderLines.push("Installation: " + install);
-    if (install === "Self install") {
-      orderLines.push("Self-install pricing: part cost + 5% handling = " +
-                 money(subtotal(ls) * (1 + SELF_INSTALL_MARKUP)) + " on priced parts");
+    out.push("");
+    out.push("Parts subtotal: " + money(subtotal(ls)) +
+             (hasUnpriced(ls) ? " plus items still to be quoted" : ""));
+    out.push("Installation: " + install);
+    if (install === "Self install" && subtotal(ls)) {
+      out.push("Self-install total: " + money(subtotal(ls) * (1 + SELF_INSTALL_MARKUP)) + " (cost + 5%)");
     }
-    orderLines.push("Deposit needed: " + (hasSpecialOrder(ls) ? "yes, special-order parts in bag" : "no"));
+    out.push("Deposit needed: " + (hasSpecialOrder(ls) ? "yes, special-order parts in bag" : "no"));
+    out.push("");
+    out.push("Name: " + f.name);
+    out.push("Reply to: " + f.contact);
+    if (f.notes) out.push("Notes: " + f.notes);
+    return "MagicByte order\n" + out.join("\n");
+  }
 
-    document.getElementById("s-summary").value = orderLines.join("\n");
+  function afterSend() {
+    var status = document.getElementById("satchel-status");
+    status.className = "field-hint ok";
+    status.textContent = "Your text app should have opened with the order filled in \u2014 hit send there.";
+    castRing(document.querySelector(".satchel-head"), "gold");
+    clearCart(true);
+    document.getElementById("s-name").value = "";
+    document.getElementById("s-contact").value = "";
+    document.getElementById("s-notes").value = "";
+    setTimeout(closeDrawer, 2500);
+  }
 
-    var form = e.target;
-    var data = new FormData(form);
+  function sendByText() {
+    var f = readShopForm();
+    if (!f) return;
+    if (!lines().length) {
+      var err = document.getElementById("satchel-err");
+      err.hidden = false;
+      err.textContent = "Your bag is empty \u2014 add a part first.";
+      return;
+    }
+    window.location.href = "sms:" + SMS_NUMBER + "?&body=" + encodeURIComponent(orderText(f));
+    afterSend();
+  }
 
-    submit.disabled = true;
-    submit.textContent = "Sending\u2026";
-    status.className = "field-hint";
-    status.textContent = "Sending your order\u2026";
-
-    fetch(FORMSPREE_ENDPOINT, {
-      method: "POST",
-      body: data,
-      headers: { Accept: "application/json" }
-    })
-      .then(function (res) {
-        if (!res.ok) throw new Error("rejected");
-        status.className = "field-hint ok";
-        status.textContent = "Sent. You'll get a quote back by text or email, usually same day.";
-        castRing(document.querySelector(".satchel-head"), "gold");
-        clearCart(true);
-        form.reset();
-        submit.textContent = "Send order";
-        setTimeout(closeDrawer, 2200);
-      })
-      .catch(function () {
-        status.className = "field-hint err";
-        status.textContent = "That didn't go through, and your bag is still saved. Text " + PHONE + " and I'll pick it up there.";
-        submit.disabled = false;
-        submit.textContent = "Send order";
-      });
+  function copyOrder() {
+    var f = readShopForm();
+    if (!f) return;
+    if (!lines().length) {
+      var err = document.getElementById("satchel-err");
+      err.hidden = false;
+      err.textContent = "Your bag is empty \u2014 add a part first.";
+      return;
+    }
+    var txt = orderText(f);
+    var done = function () {
+      var status = document.getElementById("satchel-status");
+      status.className = "field-hint ok";
+      status.textContent = "Order copied. Paste it into a text to " + PHONE + ".";
+    };
+    var fail = function () {
+      var status = document.getElementById("satchel-status");
+      status.className = "field-hint err";
+      status.textContent = "Couldn't copy. Use Send order by text instead.";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(done, fail);
+    } else { fail(); }
   }
 
   /* ---------- 7  Toast ---------- */

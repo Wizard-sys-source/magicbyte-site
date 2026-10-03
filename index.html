@@ -171,6 +171,17 @@ textarea.field{min-height:84px;resize:vertical}
 .track li.now::before{border-color:var(--gold);animation:pulse 2s infinite}
 .track strong{display:block}
 .track span{color:var(--muted);font-size:15px}
+
+/* ---- wizard flair: subtle, never in the way ---- */
+.hero img{animation:drift 7s ease-in-out infinite}
+@keyframes drift{50%{transform:translateY(-7px) rotate(-1.5deg)}}
+.btn.solid{animation:glowpulse 3.4s ease-in-out infinite}
+@keyframes glowpulse{50%{box-shadow:0 0 24px rgba(212,167,44,.4)}}
+body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;
+ background-image:radial-gradient(1px 1px at 12% 22%,#efe7d6,transparent),radial-gradient(1px 1px at 68% 8%,#efe7d6,transparent),radial-gradient(1.5px 1.5px at 84% 38%,#d4a72c,transparent),radial-gradient(1px 1px at 32% 64%,#efe7d6,transparent),radial-gradient(1px 1px at 52% 88%,#3fbfb0,transparent),radial-gradient(1.5px 1.5px at 8% 78%,#efe7d6,transparent),radial-gradient(1px 1px at 92% 68%,#efe7d6,transparent),radial-gradient(1px 1px at 44% 12%,#efe7d6,transparent);
+ animation:starfield 9s ease-in-out infinite alternate}
+@keyframes starfield{to{opacity:.18}}
+main.wrap{position:relative;z-index:1}
 @media (min-width:700px){.vcard{flex-basis:46%}}
 </style>
 <script type="application/ld+json">
@@ -277,7 +288,7 @@ textarea.field{min-height:84px;resize:vertical}
     <div class="facts">
       <div class="fact"><strong>Service area</strong><span>All of Wichita, plus Derby, Andover, Haysville, Maize, Goddard, Park City, Bel Aire, Rose Hill and Mulvane. Further out, just ask.</span></div>
       <div class="fact"><strong>Trip fee</strong><span>$10 anywhere in Wichita. Outside Wichita it depends on your address, and I'll quote it up front.</span></div>
-      <div class="fact"><strong>Hours</strong><span>I work a day job Tue–Sat, 7am–3:30pm, so visits are late afternoons, evenings and Sundays. Texts get answered all day, every day.</span></div>
+      <div class="fact"><strong>Hours</strong><span>Visits Tue–Sat 4–8pm and Sun 10am–10pm, around my airport day job. Texts get answered all day, every day.</span></div>
     </div>
   </section>
 
@@ -324,7 +335,8 @@ const CONFIG = {
   tripFeeWichita: 10,
   partsHandling: 0.05,
   dayJob: { days: [2,3,4,5,6], end: 15.5 },   // Tue–Sat until 3:30pm
-  visitHours: { start: 9, end: 21 },          // window shown as "booking now"
+  // Visit windows by weekday (Sun=0). null = no visits that day.
+  visitWindows: { 0:[10,22], 1:null, 2:[16,20], 3:[16,20], 4:[16,20], 5:[16,20], 6:[16,20] },
   bagKey: "magicbyte_bag"                     // share this key with inventory.html
 };
 const MODELS = {
@@ -380,11 +392,20 @@ function totals(){
 }
 
 /* ---- availability ---- */
+function fmtHour(h){ const ap = h >= 12 ? "pm" : "am"; const hh = h % 12 === 0 ? 12 : h % 12; return hh + ap; }
 function availability(){
   const d = new Date(), day = d.getDay(), h = d.getHours() + d.getMinutes()/60;
-  if (h < CONFIG.visitHours.start || h >= CONFIG.visitHours.end) return [false, "Visits resume tomorrow"];
-  if (CONFIG.dayJob.days.includes(day) && h < CONFIG.dayJob.end) return [false, "Visits open after 4pm"];
-  return [true, "Booking visits now"];
+  const w = CONFIG.visitWindows[day];
+  if (w && h >= w[0] && h < w[1]) return [true, "Booking visits now"];
+  const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  for (let i = 0; i < 8; i++){
+    const dd = (day + i) % 7, ww = CONFIG.visitWindows[dd];
+    if (!ww) continue;
+    if (i === 0 && h >= ww[1]) continue;   // today's window already closed
+    if (i === 0) return [false, "Visits open today at " + fmtHour(ww[0])];
+    return [false, "Visits open " + (i === 1 ? "tomorrow" : days[dd]) + " at " + fmtHour(ww[0])];
+  }
+  return [false, "Text me to book a visit"];
 }
 function paintAvail(){ const [on, t] = availability(); $("#availDot").classList.toggle("on", on); $("#availText").textContent = t; }
 
@@ -478,7 +499,7 @@ function renderSheet(){
     body.innerHTML = `<ol class="track">
       <li class="done"><div><strong>Order sent</strong><span>Your text app opened with the order filled in. Hit send there if you haven't.</span></div></li>
       <li class="now"><div><strong>I confirm the price</strong><span>I'll reply by text or email with the exact total.</span></div></li>
-      <li><div><strong>We pick a time and place</strong><span>Late afternoons, evenings or Sundays.</span></div></li>
+      <li><div><strong>We pick a time and place</strong><span>Tue–Sat 4–8pm, Sun 10am–10pm.</span></div></li>
       <li><div><strong>Fixed</strong><span>You pay when the repair is done.</span></div></li></ol>
       <div class="sbtns"><button class="btn solid" type="button" id="doneClear">Done, clear my bag</button><button class="btn" type="button" id="backBag">Back to my bag</button></div>`;
     return;
