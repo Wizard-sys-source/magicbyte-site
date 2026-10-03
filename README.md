@@ -17,6 +17,9 @@ scripts. Drop the files on GitHub Pages and it runs.
 | `consult.html` | Redirect only. Forwards old links to `book.html` |
 | `styles.css` | All styling. Numbered sections, tokens at the top |
 | `wizard.js` | Shared behaviour: the orb, shop filters, written form, effects |
+| `stock.js` | Renders today's location banner + live stock from `site-data.js` (runs before `wizard.js`/`cart.js`) |
+| `site-data.js` | **The file you edit** — today's location, van stock, orderable parts |
+| `voicemail-script.txt` | Your voicemail greeting — record this on your phone |
 | `cart.js` | The bag / parts ordering |
 | `assets/` | Artwork — see below |
 
@@ -46,18 +49,41 @@ link, change it in all five pages — that mismatch is what made some tabs read
 
 ---
 
-## Before you publish: five things only you can answer
+## Daily updates: stock & location (`site-data.js`)
 
-I built the structure for these but deliberately did **not** invent the facts.
-Search the HTML for `EDIT:` to find each one.
+One file drives the "Where's the wizard today" banner on the home page
+and the live stock list (home page strip + Shop Parts grid). To update it
+from your phone: open `site-data.js` in the GitHub app or website, tap
+edit, change the values, commit. The site follows in a minute or two.
 
-| # | What | Where | Why it matters |
-|---|---|---|---|
-| 1 | **Your real availability** | `index.html` → "When can you come out?" | Currently says "message any time, same-day depends on what's booked" — true but vague. Real hours convert better. |
-| 2 | **How far you'll drive** | `index.html` → "Further out" | Decide on a mileage limit and whether there's a travel fee. |
-| 3 | **Towns you'll actually serve** | `index.html` → "Nearby towns", and `areaServed` in the schema | I listed nine around Wichita. **Delete any you won't drive to** — it's a promise once it's published. |
-| 4 | **Payment methods** | `trust.html` → "How do I pay, and when?" | Says you'll confirm methods when booking. Replace with the real list. |
-| 5 | **Opening hours in the schema** | `index.html` → commented block under the JSON-LD | This feeds Google. Don't publish hours you can't keep. |
+- `today.area` — **general area only**, never a street address.
+  Good: "Derby — Rock Rd area". Bad: "1234 N Rock Rd".
+- `today.note` — e.g. "Set up until about 6pm".
+- `stock` — parts in the van. `qty` = how many on hand; `price` = part
+  cost, or `null` for "Quoted after review". Set `qty: 0` and the item
+  disappears from the home page strip.
+- `orderable` — parts you can get in 3–5 days (shown as orderable, not
+  in stock).
+
+Also in the repo root: `voicemail-script.txt` (record this as your
+voicemail greeting) and `google-business-checklist.md` (shot list for
+the Google Business video verification).
+
+---
+
+## Before you publish: things only you can answer
+
+Strider's pass (Oct 2026) filled in the facts below. One `EDIT:` marker
+remains — search the HTML for it.
+
+| # | What | Status |
+|---|---|---|
+| 1 | **Availability** — day job Tue–Sat 7am–3:30pm; repairs scheduled around it (late afternoons, evenings, Sundays); texts answered all day | ✅ Done (`index.html` trip-fee & hours card) |
+| 2 | **Travel fee** — $10 anywhere in Wichita; outside Wichita quoted by address | ✅ Done (`index.html`, `services.html`) |
+| 3 | **Towns served** — Wichita + Derby, Andover, Haysville, Maize, Goddard, Park City, Bel Aire, Rose Hill, Mulvane | ✅ Done (kept all nine + schema) |
+| 4 | **Payment methods** | ⬜ Open — `trust.html` → "How do I pay, and when?" still has the `EDIT:` marker |
+| 5 | **Opening hours in schema** | ✅ Done — repairs are by appointment, so no fixed hours are published (comment updated) |
+| 6 | **Formspree IDs** — consult form + parts-bag form | ⬜ Open — you're setting these up; paste into `wizard.js` (`FORMS`), `cart.js` (`FORMSPREE_ENDPOINT`), and the `book.html` form action |
 
 ### Read the Trust page before you publish it
 

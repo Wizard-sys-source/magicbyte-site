@@ -1,0 +1,24 @@
+MagicByte voicemail greeting
+============================
+Record this as your voicemail greeting at 316-559-4816.
+Keep it under ~45 seconds spoken. Smile while you record it —
+it comes through in the voice.
+
+---
+"You've reached MagicByte phone repair! The wizard can't come to
+the crystal ball right now — he's elbow-deep in somebody's cracked
+screen.
+
+But here's the magic trick: TEXT this number with your phone model
+and what's broken, and I'll text you back with a price, usually the
+same day. Repairs happen Tuesday through Saturday.
+
+After the beep, leave your name, your phone's model, and what's
+wrong with it!"
+---
+
+Notes:
+- Calls are never answered live on purpose — the greeting says so
+  up front, then gives the faster path (text).
+- If you ever get a short custom domain, add one line:
+  "…or find MagicByte online at magicbyte.example."

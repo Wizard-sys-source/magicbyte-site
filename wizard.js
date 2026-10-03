@@ -406,7 +406,7 @@
       form.hidden = true;
       cue.hidden = true;
       btn.classList.remove("sent");
-      label.innerHTML = "Touch the orb<br>to leave me a message";
+      label.innerHTML = "Tap to record<br>a voice message";
       say("");
       state = "idle";
     });
@@ -468,26 +468,28 @@
     };
 
     var DEVICES = {
-      iphone:  "iPhone",
-      samsung: "Samsung Galaxy",
-      pixel:   "Google Pixel",
-      other:   "Another phone or tablet"
+      iphone12: "iPhone 12",
+      iphone13: "iPhone 13",
+      iphone14: "iPhone 14",
+      samsung:  "Samsung Galaxy",
+      pixel:    "Google Pixel",
+      other:    "Another phone or tablet"
     };
 
     /* Caveats, straight from what the services page and FAQ already say.
        Better the customer reads these now than is surprised on the day. */
     function caveats(device, repair) {
       var out = [];
-      if (repair === "backglass" && device === "iphone") {
+      if (repair === "backglass" && /^iphone/.test(device)) {
         out.push("On iPhone X through 14, back glass needs laser separation I don\u2019t have yet, so that one takes at least two days rather than same-day. iPhone 15 and up is same-day.");
       }
       if (repair === "water") {
         out.push("I only take liquid damage on if the device still shows some sign of life. Fully dead means board-level work, and I\u2019ll point you to someone with a microsoldering bench instead of taking your money.");
       }
-      if (repair === "screen" && device === "iphone") {
+      if (repair === "screen" && /^iphone/.test(device)) {
         out.push("An aftermarket screen makes iOS log a non-genuine part in Settings, and True Tone usually stops working. Nothing else about the phone changes. Full detail on the Trust page.");
       }
-      if (repair === "battery" && device === "iphone") {
+      if (repair === "battery" && /^iphone/.test(device)) {
         out.push("With an aftermarket battery, iOS often stops showing the battery health percentage. The battery itself works normally.");
       }
       if (repair === "polish") {
@@ -522,10 +524,27 @@
     Object.keys(DEVICES).forEach(function (k) { deviceWrap.appendChild(chip(k, DEVICES[k], deviceWrap)); });
     Object.keys(REPAIRS).forEach(function (k) { repairWrap.appendChild(chip(k, REPAIRS[k].label, repairWrap)); });
 
+    /* If the screen is sitting in the van, say so — that's the
+       whole point of keeping stock. site-data.js loads first. */
+    function vanStockNote(device, repair) {
+      if (repair !== "screen" || !window.MAGICBYTE_DATA) return null;
+      var map = { iphone12: "iphone-12-screen", iphone13: "iphone-13-screen", iphone14: "iphone-14-screen" };
+      var id = map[device];
+      if (!id) return null;
+      var item = (window.MAGICBYTE_DATA.stock || []).filter(function (s) { return s.id === id; })[0];
+      if (item && item.qty > 0) {
+        return "Good news: I have this exact screen in the van right now (" +
+          item.qty + " left), so it's usually a same-visit repair.";
+      }
+      return null;
+    }
+
     function render() {
       if (!device || !repair) return;
       var r = REPAIRS[repair];
       var notes = caveats(device, repair);
+      var vanNote = vanStockNote(device, repair);
+      if (vanNote) notes.unshift(vanNote);
 
       result.innerHTML =
         '<p class="est-line"><span>MagicByte labor</span><strong>' + r.labor + '</strong></p>' +

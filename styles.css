@@ -1494,6 +1494,7 @@ footer.site .foot-row {
   }
   .action-btn {
     flex: 1;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1797,6 +1798,82 @@ h2 { font-size: 1.62rem; letter-spacing: 0.005em; margin-bottom: 12px; }
 }
 
 /* ---------- 18 Reduced motion + print ---------- */
+/* ============================================================
+   20  Today's location banner + van stock + how-it-works steps
+   ============================================================ */
+.today-banner {
+  margin: 30px 0 0;
+  padding: 16px 18px;
+  border: 1px solid rgba(94, 234, 212, 0.35);
+  border-radius: var(--radius);
+  background: rgba(94, 234, 212, 0.06);
+}
+.today-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin: 0 0 6px;
+}
+.today-kicker::before { content: "📍 "; }
+.today-area {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--parchment);
+  margin: 0;
+}
+.today-note {
+  font-size: 0.86rem;
+  color: var(--parchment-dim);
+  margin: 6px 0 0;
+}
+.van-stock {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.van-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.02);
+}
+.van-item strong { display: block; font-size: 0.95rem; }
+.van-item span { font-size: 0.82rem; color: var(--parchment-dim); }
+.how-steps {
+  list-style: none;
+  counter-reset: steps;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.how-steps li {
+  counter-increment: steps;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 0.95rem;
+  color: var(--parchment-dim);
+}
+.how-steps li::before {
+  content: counter(steps);
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  color: var(--gold-bright);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(5px);
+}
+.how-steps li strong { color: var(--parchment); }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *,

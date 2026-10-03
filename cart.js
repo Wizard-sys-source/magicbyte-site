@@ -118,7 +118,9 @@
 
   /* ---------- 2  Nav button + badge ----------
      Goes inside nav.links so it wraps with the other links on a
-     phone instead of forcing a third row into the header. */
+     phone instead of forcing a third row into the header.
+     A second Bag button goes in the sticky bottom action bar,
+     which is the one people actually see on mobile. */
   function injectNavButton() {
     if (document.querySelector(".cart-nav-btn")) return;
     var links = document.querySelector("nav.links") || document.querySelector(".nav-row");
@@ -127,24 +129,43 @@
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "cart-nav-btn";
+    btn.setAttribute("data-bag-open", "");
     btn.setAttribute("aria-expanded", "false");
     btn.innerHTML =
       '<span class="cart-glyph" aria-hidden="true">\u{1F701}</span>' +
       '<span class="cart-nav-label">Bag</span>' +
-      '<span class="cart-badge" id="cart-badge" hidden>0</span>';
+      '<span class="cart-badge" hidden>0</span>';
     btn.addEventListener("click", openDrawer);
     links.appendChild(btn);
+
+    var bar = document.querySelector(".action-bar");
+    if (bar && !bar.querySelector("[data-bag-open]")) {
+      var ab = document.createElement("button");
+      ab.type = "button";
+      ab.className = "action-btn";
+      ab.setAttribute("data-bag-open", "");
+      ab.setAttribute("aria-expanded", "false");
+      ab.innerHTML =
+        '<span aria-hidden="true">\u{1F6CD}</span><span>Bag</span>' +
+        '<span class="cart-badge" hidden>0</span>';
+      ab.addEventListener("click", openDrawer);
+      // keep "Get a price" last
+      var primary = bar.querySelector(".action-btn.primary");
+      if (primary) bar.insertBefore(ab, primary);
+      else bar.appendChild(ab);
+    }
   }
 
   function renderBadge() {
-    var badge = document.getElementById("cart-badge");
-    var btn = document.querySelector(".cart-nav-btn");
-    if (!badge || !btn) return;
     var n = count(readCart());
-    badge.textContent = n;
-    badge.hidden = n === 0;
-    btn.setAttribute("aria-label",
-      n === 0 ? "Open your bag, empty" : "Open your bag, " + n + " item" + (n === 1 ? "" : "s"));
+    document.querySelectorAll(".cart-badge").forEach(function (badge) {
+      badge.textContent = n;
+      badge.hidden = n === 0;
+    });
+    document.querySelectorAll("[data-bag-open]").forEach(function (btn) {
+      btn.setAttribute("aria-label",
+        n === 0 ? "Open your bag, empty" : "Open your bag, " + n + " item" + (n === 1 ? "" : "s"));
+    });
   }
 
   function bumpGlyph() {
