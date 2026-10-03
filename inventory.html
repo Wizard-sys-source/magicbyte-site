@@ -1,119 +1,67 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shop Parts · MagicByte</title>
 <meta name="description" content="Order phone parts from MagicByte in Wichita, KS. In-stock parts mean a same-day repair; everything else ships in a few days.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#150f1e">
-<link rel="icon" href="assets/favicon.ico" sizes="32x32">
-<link rel="icon" href="assets/mascot-icon.png" type="image/png" sizes="512x512">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" href="assets/mascot-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600;700&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/mb.css">
+<script src="assets/mb.js" defer></script>
 </head>
-<body>
-
-<div class="starfield" aria-hidden="true"></div>
-<a class="skip-link" href="#main">Skip to content</a>
-
-<header class="site">
-  <div class="nav-row">
-    <a class="brand" href="index.html">
-      <img src="assets/mascot-icon.png" alt="">
-      MagicByte
-    </a>
-    <nav class="links" aria-label="Main">
-      <a href="index.html">Home</a>
-      <a href="services.html">Services &amp; Pricing</a>
-      <a href="book.html" class="orb-nav-link">Ask the Wizard</a>
-      <a href="trust.html">Trust &amp; FAQ</a>
-      <a href="inventory.html" aria-current="page">Shop Parts</a>
-    </nav>
-  </div>
-</header>
-
-<main class="wrap" id="main">
-
-  <section class="hero">
-    <p class="eyebrow">Parts shelf</p>
-    <h1>Order parts <span class="accent">for your repair.</span></h1>
-    <p class="lede">Add what you need to your bag and send the order. I'll confirm stock, quote labor if you want it installed, and reply by text or email. In-stock parts mean a same-day repair; everything else ships in a few days.</p>
-  </section>
-
-  <div class="aside" style="margin-bottom:28px;">
-    <p><strong>Where parts come from.</strong> Components are sourced from MobileSentrix and Injured Gadgets. Market prices move, so the final figure is confirmed when your quote goes out.</p>
-    <p><strong>Doing the repair yourself? Cost + 5%.</strong> I'll source and order professional-grade parts for you at cost plus a 5% handling fee. MagicByte isn't liable for damage or defects from self-installation or third-party labor.</p>
+<body data-page="inventory">
+<main id="main" class="wrap">
+  <div class="hero solo">
+    <div>
+      <h1>Order your part from the wizard.</h1>
+      <p>Add parts to your bag and send the order. I'll confirm stock, quote labor if you want it installed, and reply by text or email.</p>
+    </div>
   </div>
 
-  <section id="shop-grid">
-    <div class="shop-filters" aria-label="Filter parts by device">
-      <button type="button" class="shop-filter" data-filter="all" aria-pressed="true">All parts</button>
-      <button type="button" class="shop-filter" data-filter="iphone" aria-pressed="false">iPhone</button>
-      <button type="button" class="shop-filter" data-filter="android" aria-pressed="false">Android</button>
-      <button type="button" class="shop-filter" data-filter="other" aria-pressed="false">Other</button>
+  <section aria-labelledby="diyH" style="padding-top:12px">
+    <div class="facts">
+      <div class="fact teal"><strong>Want it installed?</strong><span>Tap “Have me install it instead” in your bag and labor gets added. In-stock parts mean a same-day repair.</span></div>
+      <div class="fact"><strong>Doing it yourself? Cost + 5%.</strong><span>I order pro-grade parts at cost plus 5% handling. I'm not liable for damage or defects from self-installation or someone else's labor.</span></div>
+      <div class="fact"><strong>Where parts come from</strong><span>MobileSentrix and Injured Gadgets. My van screens are refurbished originals; anything else is noted per part. Prices move, so the final figure is confirmed with your quote.</span></div>
     </div>
-
-    <div class="grid" id="shop-cards">
-
-      <!-- Pinned: stays visible under every filter -->
-      <div class="part-card card-teal" data-always>
-        <div class="part-card-top">
-          <div>
-            <h3>Not sure what's broken?</h3>
-            <p class="part-device">Describe it and I'll work it out.</p>
-          </div>
-          <span class="stock-tag stock-in">Free review</span>
-        </div>
-        <div class="part-card-foot">
-          <span class="part-price quote">No upfront cost</span>
-          <a href="book.html" class="btn-add">Ask the Wizard</a>
-        </div>
-      </div>
-
-      <!-- The rest of the cards are rendered from site-data.js by stock.js.
-           Edit your stock in site-data.js — not here. -->
-
-    </div>
-
-    <noscript>
-      <p class="field-hint">The parts list needs JavaScript to load. Text 316-559-4816 and I'll tell you what's in stock.</p>
-    </noscript>
-
-    <p class="field-hint" style="margin-top:20px;">
-      Showing <span id="filter-count">…</span>. Don't see your model? <a href="book.html">Ask the Wizard</a> — most parts can be ordered within a few days.
-    </p>
   </section>
 
+  <section id="order" aria-labelledby="partsH">
+    <h2 id="partsH">Parts</h2>
+    <div class="chips" role="group" aria-label="Filter parts" id="chips"></div>
+    <ul class="menu" id="parts"></ul>
+    <div class="card teal" style="margin-top:20px">
+      <h3>Not sure what's broken?</h3>
+      <p class="sub" style="margin-bottom:12px">Describe it and I'll work it out. Free, no upfront cost.</p>
+      <a class="btn small" href="book.html">Ask the Wizard 🪄</a>
+    </div>
+    <p class="note">Don't see your model? <a href="book.html">Ask the Wizard</a>. Most parts can be ordered within a few days.</p>
+  </section>
+  <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
-
-<footer class="site wrap">
-  <div class="foot-row">
-    <span>© 2026 MagicByte · Mobile repair · Wichita, KS &amp; surrounding area</span>
-    <span>Voicemail <a href="tel:+13165594816">316-559-4816</a> · text reaches me faster</span>
-  </div>
-</footer>
-
-
-<!-- Sticky contact bar: phone-only. Text is the fastest route to a
-     one-person mobile business, so it leads. -->
-<div class="action-bar" aria-label="Contact MagicByte">
-  <a class="action-btn" href="sms:+13165594816">
-    <span aria-hidden="true">💬</span> Text
-  </a>
-  <a class="action-btn" href="tel:+13165594816">
-    <span aria-hidden="true">📼</span> Voicemail
-  </a>
-  <a class="action-btn primary" href="services.html#estimator-section">
-    <span aria-hidden="true">🔮</span> Get a price
-  </a>
-</div>
-
-<script src="site-data.js"></script>
-<script src="stock.js"></script>
-<script src="wizard.js"></script>
-<script src="cart.js"></script>
+<script>
+window.pageInit = () => {
+  let cat = "All";
+  const CATS = ["All","In stock","iPhone","Android","Other"];
+  const chips = document.getElementById("chips"), list = document.getElementById("parts");
+  const draw = () => {
+    chips.innerHTML = CATS.map(c => `<button type="button" aria-pressed="${c===cat}" data-pcat="${c}">${c}</button>`).join("");
+    const rows = PARTS.filter(p => cat==="All" || (cat==="In stock" ? p.stock>0 : cat==="Android" ? (p.brand==="Galaxy"||p.brand==="Pixel") : p.brand===cat))
+      .sort((a,b) => b.stock - a.stock);
+    list.innerHTML = rows.map(p => {
+      const nm = p.name + " (part only)";
+      const priceTxt = p.price!=null ? `${money(p.price)} + 5%` : "Quoted after review";
+      const stock = p.stock>0 ? `<span class="badge">In stock, ${p.stock} left</span>` : `<span>Order, 3–5 days</span>`;
+      return `<li class="item"><div><h3>${p.name}</h3><p class="desc">${p.models.join(" / ")}${p.grade ? ", " + p.grade : ""}</p><div class="meta"><span class="price">${priceTxt}</span>${stock}</div></div><div class="side">${MB.control("part", p.id, "", nm)}</div></li>`;
+    }).join("") || `<li class="empty-menu">No parts listed here yet. <a href="book.html">Ask the Wizard</a> and I'll check.</li>`;
+  };
+  chips.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { cat = b.dataset.pcat; draw(); } });
+  MB.onChange.push(draw); draw();
+};
+</script>
 </body>
 </html>

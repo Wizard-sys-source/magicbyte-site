@@ -1,189 +1,65 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
+<title>Services & Pricing · MagicByte</title>
+<meta name="description" content="Phone repair pricing in Wichita, KS: part cost plus labor, quoted before you commit. Screens, batteries, charging ports, cameras and back glass.">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Services &amp; Pricing · MagicByte</title>
-<meta name="description" content="MagicByte repair pricing in Wichita, KS: part cost plus a flat labor fee, quoted before you commit. Screens, batteries, back glass, cameras and charging ports.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#150f1e">
-<link rel="icon" href="assets/favicon.ico" sizes="32x32">
-<link rel="icon" href="assets/mascot-icon.png" type="image/png" sizes="512x512">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" href="assets/mascot-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600;700&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/mb.css">
+<script src="assets/mb.js" defer></script>
 </head>
-<body>
-
-<div class="starfield" aria-hidden="true"></div>
-<a class="skip-link" href="#main">Skip to content</a>
-
-<header class="site">
-  <div class="nav-row">
-    <a class="brand" href="index.html">
-      <img src="assets/mascot-icon.png" alt="">
-      MagicByte
-    </a>
-    <nav class="links" aria-label="Main">
-      <a href="index.html">Home</a>
-      <a href="services.html" aria-current="page">Services &amp; Pricing</a>
-      <a href="book.html" class="orb-nav-link">Ask the Wizard</a>
-      <a href="trust.html">Trust &amp; FAQ</a>
-      <a href="inventory.html">Shop Parts</a>
-    </nav>
-  </div>
-</header>
-
-<main class="wrap" id="main">
-
-  <section class="hero">
-    <p class="eyebrow">Services &amp; pricing</p>
-    <h1>Part cost, <span class="accent">plus labor.</span></h1>
-    <p class="lede">No flat mystery rate. You'll always see the part price and the labor fee before you commit — and the promo below applies to labor, not parts.</p>
-  </section>
-
-  <div class="promo">
-    <strong>First 100 Heroes</strong>
-    <span class="note">Labor is $20 for the first 100 customers · parts priced separately at cost · mention it when you book</span>
+<body data-page="services">
+<main id="main" class="wrap">
+  <div class="hero solo">
+    <div>
+      <h1>Part cost, plus labor.</h1>
+      <p>No flat mystery rate. You see the part price and the labor fee before you commit.</p>
+    </div>
   </div>
 
-  <section id="estimator-section">
-    <h2>What will mine cost?</h2>
-    <p class="section-note">Pick your device and what's wrong. You'll get the labor fee, the turnaround, and the honest caveats for that specific repair.</p>
-
-    <div class="estimator" id="estimator">
-      <div class="est-step">
-        <p class="est-label"><span class="est-num">1</span> What have you got?</p>
-        <div class="est-chips" id="est-devices"></div>
-      </div>
-
-      <div class="est-step" id="est-step-2" hidden>
-        <p class="est-label"><span class="est-num">2</span> What's it doing?</p>
-        <div class="est-chips" id="est-repairs"></div>
-      </div>
-
-      <div class="est-step" id="est-step-3" hidden>
-        <p class="est-label"><span class="est-num">3</span> Your estimate</p>
-        <div class="est-result" id="est-result"></div>
-      </div>
-    </div>
-
-    <noscript>
-      <p class="field-hint">The estimator needs JavaScript. The full labor table is just below, or text 316-559-4816 and I'll price it for you.</p>
-    </noscript>
+  <section id="estimator-section" aria-labelledby="estH">
+    <h2 id="estH">What will mine cost?</h2>
+    <p class="sub">Pick your phone and add what's wrong. The price includes the part when I know it.</p>
+    <div id="order"><div id="menuRoot"></div></div>
   </section>
 
+  <section aria-labelledby="rateH">
+    <h2 id="rateH">Labor rates</h2>
+    <p class="sub">The part is added on top, at cost.</p>
+    <ul class="rates" id="rates"></ul>
+    <p class="note">Need just the part to fit yourself? I'll order pro-grade parts at cost + 5%. <a href="inventory.html">Shop parts</a></p>
+  </section>
 
-  <section>
-    <h2>Standard labor rates</h2>
-    <p class="section-note">What labor costs once the promo ends, or for anyone who'd rather skip it. Part cost is added on top.</p>
-
-    <div class="table-scroll">
-      <table class="data">
-        <caption class="visually-hidden">Labor fees and typical repair times</caption>
-        <thead>
-          <tr><th scope="col">Repair</th><th scope="col">Labor fee</th><th scope="col">Time</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Glass polishing</td><td class="price">Quoted</td><td>~2:00</td></tr>
-          <tr><td>Screen replacement</td><td class="price">$35–45</td><td>~1:30</td></tr>
-          <tr><td>Battery replacement</td><td class="price">$35–40</td><td>~1:30</td></tr>
-          <tr><td>Back glass — Android &amp; iPhone 15+</td><td class="price">$40–50</td><td>~1:30</td></tr>
-          <tr><td>Camera repair</td><td class="price">$40–50</td><td>~1:30</td></tr>
-          <tr><td>Charging port repair</td><td class="price">$40–60</td><td>~1:30</td></tr>
-          <tr><td>Diagnostics only, no repair booked</td><td class="price">$15–20</td><td>~0:30</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="card card-teal" style="margin-top:20px;">
-      <h3>Trip fee</h3>
-      <p>Repairs anywhere in Wichita add a <strong>$10 trip fee</strong>. Outside Wichita, the fee depends on your address — ask when you book and I'll quote it up front.</p>
-    </div>
-
-    <div class="card card-teal" style="margin-top:20px;">
-      <h3>What I don't take on</h3>
-      <p>So I only sell fixes that last: no deep water resurrections unless the device still shows a spark of life, and no microsoldering — board-level chip repair needs a bench I don't have yet. I stick to modular work and glass restoration, and I'll tell you straight when a job is outside that.</p>
+  <section aria-labelledby="limH">
+    <h2 id="limH">The forbidden arts</h2>
+    <div class="card teal">
+      <p>I only take on fixes that will last. I don't do <b>deep water resurrections</b> unless the phone still shows a spark of life, and I don't do <b>microsoldering</b> (board-level chip repair).</p>
+      <p style="margin:0">I focus on modular repairs and glass restoration, done properly.</p>
     </div>
   </section>
 
-
-  <section>
-    <h2>How a job works</h2>
-    <div class="grid steps">
-      <div class="card">
-        <h3>Get in touch</h3>
-        <p>Send your device, model and the problem through the <a href="book.html">Ask the Wizard</a> page, or text 316-559-4816.</p>
-      </div>
-      <div class="card">
-        <h3>Quote and deposit</h3>
-        <p>You get a quote — part cost plus labor. If the part isn't in stock, a deposit covers ordering it.</p>
-      </div>
-      <div class="card">
-        <h3>Repair</h3>
-        <p>In-stock repairs are usually done the same day, on site, wherever works for you around Wichita.</p>
-      </div>
-      <div class="card">
-        <h3>Warranty</h3>
-        <p>Every job is covered for 30 days. The <a href="trust.html">FAQ</a> has the full terms.</p>
-      </div>
-    </div>
+  <section aria-labelledby="howH">
+    <h2 id="howH">How a job works</h2>
+    <ol class="steps">
+      <li><div><strong>Book</strong><span>Add repairs to your bag and send it, <a href="book.html">ask the Wizard</a>, or text 316-559-4816.</span></div></li>
+      <li><div><strong>Quote</strong><span>You get part cost plus labor. If the part isn't in stock, a deposit covers ordering it.</span></div></li>
+      <li><div><strong>Repair</strong><span>In-stock repairs are usually done the same day, wherever works for you around Wichita.</span></div></li>
+      <li><div><strong>Warranty</strong><span>Every job is covered for 30 days. <a href="trust.html#warranty">See what's covered</a>.</span></div></li>
+    </ol>
   </section>
-
-
-
-  <section id="devices">
-    <h2>Devices and repairs I take on</h2>
-    <p class="section-note">If your model isn't listed, ask anyway — most parts can be ordered in a few days.</p>
-
-    <dl class="oaths">
-      <div>
-        <dt>iPhone</dt>
-        <dd>Screen · battery · charging port · front and rear camera · back glass (15 and up same-day; X&#8211;14 needs two days) · glass polishing</dd>
-      </div>
-      <div>
-        <dt>Samsung Galaxy</dt>
-        <dd>Screen · battery · charging port · camera · back glass · glass polishing</dd>
-      </div>
-      <div>
-        <dt>Google Pixel</dt>
-        <dd>Screen · battery · charging port · camera · back glass · glass polishing</dd>
-      </div>
-      <div>
-        <dt>Other Android phones and tablets</dt>
-        <dd>Same repairs, subject to parts being available. Send me the model and I'll check before you commit to anything.</dd>
-      </div>
-    </dl>
-  </section>
-
+  <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
-
-<footer class="site wrap">
-  <div class="foot-row">
-    <span>© 2026 MagicByte · Mobile repair · Wichita, KS &amp; surrounding area</span>
-    <span>Voicemail <a href="tel:+13165594816">316-559-4816</a> · text reaches me faster</span>
-  </div>
-</footer>
-
-
-<!-- Sticky contact bar: phone-only. Text is the fastest route to a
-     one-person mobile business, so it leads. -->
-<div class="action-bar" aria-label="Contact MagicByte">
-  <a class="action-btn" href="sms:+13165594816">
-    <span aria-hidden="true">💬</span> Text
-  </a>
-  <a class="action-btn" href="tel:+13165594816">
-    <span aria-hidden="true">📼</span> Voicemail
-  </a>
-  <a class="action-btn primary" href="services.html#estimator-section">
-    <span aria-hidden="true">🔮</span> Get a price
-  </a>
-</div>
-
-<script src="site-data.js"></script>
-<script src="stock.js"></script>
-<script src="wizard.js"></script>
-<script src="cart.js"></script>
+<script>
+window.pageInit = () => {
+  MB.mountMenu(document.getElementById("menuRoot"));
+  document.getElementById("rates").innerHTML = SERVICES.map(s =>
+    `<li><b>${s.name}</b><span>${s.labor ? range(...s.labor) : "Quoted"}</span><small>${s.time}</small></li>`).join("");
+};
+</script>
 </body>
 </html>

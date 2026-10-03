@@ -1,204 +1,127 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ask the Wizard · MagicByte</title>
-<meta name="description" content="Not sure what is wrong with your phone? Leave a voice message or write it out and it goes straight to the technician. Free advice and an estimate back by text or email.">
+<meta name="description" content="Not sure what's wrong with your phone? Leave a voice message or write it out and it goes straight to the technician. Free advice and an estimate back by text or email.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#150f1e">
-<link rel="icon" href="assets/favicon.ico" sizes="32x32">
-<link rel="icon" href="assets/mascot-icon.png" type="image/png" sizes="512x512">
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" href="assets/mascot-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700&family=Spectral:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@600;700&family=Spectral:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/mb.css">
+<script src="assets/mb.js" defer></script>
 </head>
-<body>
-
-<div class="starfield" aria-hidden="true"></div>
-<a class="skip-link" href="#main">Skip to content</a>
-
-<header class="site">
-  <div class="nav-row">
-    <a class="brand" href="index.html">
-      <img src="assets/mascot-icon.png" alt="">
-      MagicByte
-    </a>
-    <nav class="links" aria-label="Main">
-      <a href="index.html">Home</a>
-      <a href="services.html">Services &amp; Pricing</a>
-      <a href="book.html" class="orb-nav-link" aria-current="page">Ask the Wizard</a>
-      <a href="trust.html">Trust &amp; FAQ</a>
-      <a href="inventory.html">Shop Parts</a>
-    </nav>
+<body data-page="book">
+<main id="main" class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Not sure what's wrong? Tell me what happened.</h1>
+      <p>Record a quick voice message or type it out. It goes straight to me, the person who'd do the repair. I'll reply with what I think is wrong and what it would cost. Free, no obligation.</p>
+    </div>
+    <img src="assets/mascot.png" alt="">
   </div>
-</header>
 
-<main class="wrap" id="main">
-
-  <section class="hero" style="text-align:center;">
-    <p class="eyebrow">Ask the wizard 🪄</p>
-    <h1>Not sure what's wrong? <span class="accent">Tell me what happened.</span></h1>
-    <p class="lede" style="margin-left:auto;margin-right:auto;">
-      Not sure what's wrong with your phone? Record a quick voice message or type it out below. It goes straight to me — the person who'd actually do the repair. I'll reply with what I think is wrong and what it would cost. Free, no obligation.
-    </p>
-
-    <ol class="how-steps" style="text-align:left;max-width:520px;margin:22px auto 0;">
-      <li><strong>Tell me what's wrong</strong> — talk into the orb or type it in the form.</li>
-      <li><strong>I reply with a price</strong> — by text or email, usually the same day.</li>
-      <li><strong>We pick a time and place</strong> — I come to you anywhere around Wichita.</li>
+  <section style="padding-top:12px">
+    <ol class="steps">
+      <li><div><strong>Tell me what's wrong</strong><span>Talk into the orb or type it below.</span></div></li>
+      <li><div><strong>I reply with a price</strong><span>By text or email, usually the same day.</span></div></li>
+      <li><div><strong>We pick a time and place</strong><span>I come to you anywhere around Wichita.</span></div></li>
     </ol>
-</section>
-
-  <!-- The orb: the fastest way to describe a problem out loud -->
-  <section class="orb-stage" aria-labelledby="orb-heading">
-    <h2 id="orb-heading" class="visually-hidden">Record a voice message</h2>
-
-    <div class="orb-wrap">
-      <div class="orb-glow" aria-hidden="true"></div>
-
-      <svg class="orb-runes" viewBox="0 0 300 300" aria-hidden="true">
-        <circle class="r-out" cx="150" cy="150" r="142" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 12"/>
-        <circle class="r-in"  cx="150" cy="150" r="128" fill="none" stroke="var(--teal)" stroke-width="0.8" stroke-dasharray="1 9" opacity="0.7"/>
-      </svg>
-
-      <div class="orb-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
-
-      <button type="button" class="orb-btn" id="orb-btn">
-        <span id="orb-label">Tap to record<br>a voice message</span>
-      </button>
-    </div>
-
-    <p class="orb-status" id="orb-status" role="status"></p>
-
-    <div class="orb-actions" id="orb-playback" hidden>
-      <audio class="orb-player" id="orb-player" controls></audio>
-    </div>
-
-    <div class="orb-actions" id="orb-buttons" hidden>
-      <button type="button" class="btn btn-ghost" id="orb-rerecord">Record again</button>
-    </div>
-
-    <button type="button" class="cue-arrow" id="orb-cue" hidden>
-      <span>Add your details to send</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M12 4v14M6 13l6 6 6-6"/>
-      </svg>
-    </button>
-
-    <form id="orb-form" class="spellform" style="max-width:420px;width:100%;" hidden>
-      <div class="field">
-        <label for="orb-contact">Where should I reply?</label>
-        <input type="text" id="orb-contact" name="contact" required placeholder="Phone number or email">
-      </div>
-      <div class="field">
-        <label for="orb-device">Device model <span style="text-transform:none;">(optional)</span></label>
-        <input type="text" id="orb-device" name="device" placeholder="iPhone 13, Galaxy S22…">
-      </div>
-      <button type="submit" class="btn btn-primary" id="orb-send">Send voice message</button>
-    </form>
   </section>
 
-  <p class="path-split">or write it out</p>
-
-  <!-- One written path. Extra booking details fold open only if needed. -->
-  <section class="write-column" aria-labelledby="write-heading">
-    <h2 id="write-heading">Send a written message</h2>
-    <p class="section-note">Tell me what you've got and what it's doing. That's usually enough for an estimate. A photo of the damage helps a lot — you can text it to 316-559-4816 after you send this.</p>
-
-    <form class="spellform" id="write-form" method="POST" action="https://formspree.io/f/REPLACE_WITH_YOUR_CONSULT_FORM_ID">
-      <div class="field">
-        <label for="w-message">What's going on?</label>
-        <textarea id="w-message" name="message" required placeholder="Dropped my Pixel 7, screen is cracked across the top and the touch is dead on the left side."></textarea>
+  <section aria-labelledby="voiceH">
+    <h2 id="voiceH">Record a voice message</h2>
+    <div class="card">
+      <button class="orb" id="orb" type="button" aria-label="Start recording">🔮</button>
+      <p class="orbtxt" id="orbTxt">Tap the orb to record</p>
+      <div id="clip" hidden>
+        <audio id="player" controls></audio>
+        <div class="sbtns"><button class="btn solid" type="button" id="shareClip">Send recording</button><button class="btn small" type="button" id="redo">Record again</button></div>
       </div>
-
-      <div class="field">
-        <label for="w-contact">Where should I reply?</label>
-        <input type="text" id="w-contact" name="contact" required placeholder="Phone number or email">
-      </div>
-
-      <div class="field">
-        <label for="w-device">Device model</label>
-        <input type="text" id="w-device" name="device" placeholder="iPhone 12, Pixel 7, Galaxy S21…">
-      </div>
-
-      <details class="more-fields">
-        <summary>Booking a specific repair? Add the details</summary>
-
-        <div class="field">
-          <label for="w-name">Name</label>
-          <input type="text" id="w-name" name="name">
-        </div>
-
-        <div class="field">
-          <label for="w-issue">Main issue</label>
-          <select id="w-issue" name="issue">
-            <option value="">Not sure yet</option>
-            <option>Screen cracked or display glitching</option>
-            <option>Glass scratched — glass polishing</option>
-            <option>Battery dying fast or swollen</option>
-            <option>Back glass or camera cracked</option>
-            <option>Charging port loose or not charging</option>
-            <option>Liquid damage — device still powers on</option>
-            <option>Something else</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="w-location">Where should we meet?</label>
-          <input type="text" id="w-location" name="location" placeholder="East Wichita, Derby, Andover…">
-        </div>
-
-        <div class="field">
-          <label for="w-timing">Timing that works for you</label>
-          <input type="text" id="w-timing" name="timing" placeholder="Tue–Sat 4–8pm, Sun 10am–10pm…">
-        </div>
-
-        <div class="field">
-          <label class="field-check">
-            <input type="checkbox" name="promo" value="First 100 Heroes">
-            Apply the First 100 Heroes $20 labor promo, if it's still running
-          </label>
-        </div>
-      </details>
-
-      <p class="form-legal">Back up your device before any repair — MagicByte isn't responsible for data loss. The 30-day warranty covers parts and labor against defects, not later drops or liquid contact.</p>
-
-      <div class="form-actions">
-        <button class="btn btn-primary" type="submit">Send message</button>
-        <p class="field-hint" id="write-status" role="status"></p>
-      </div>
-    </form>
+      <p class="note" id="noMic" hidden>Recording doesn't work in this browser. <a href="tel:+13165594816">Call and leave a voicemail</a> instead; it reaches the same place.</p>
+    </div>
   </section>
 
+  <section aria-labelledby="writeH">
+    <h2 id="writeH">Or write it out</h2>
+    <p class="sub">Tell me what you've got and what it's doing. A photo of the damage helps a lot; you can add it in the text.</p>
+    <label class="lab" for="wWhat">What's going on?</label>
+    <textarea class="field" id="wWhat" placeholder="Dropped it, the screen has lines and touch stopped working…"></textarea>
+    <label class="lab" for="wModel">Device model</label>
+    <div class="selectwrap" style="margin:0"><select class="field" id="wModel"></select></div>
+    <label class="lab" for="wIssue">Main issue</label>
+    <div class="selectwrap" style="margin:0"><select class="field" id="wIssue">
+      <option>Not sure yet</option><option>Screen cracked or display glitching</option><option>Glass scratched (glass polishing)</option>
+      <option>Battery dying fast or swollen</option><option>Back glass or camera cracked</option><option>Charging port loose or not charging</option>
+      <option>Liquid damage, still powers on</option><option>Something else</option></select></div>
+    <label class="lab" for="wArea">Where should we meet?</label>
+    <div class="selectwrap" style="margin:0"><select class="field" id="wArea"></select></div>
+    <label class="lab" for="wWhen">Timing that works for you</label>
+    <input class="field" id="wWhen" placeholder="Sunday afternoon, weekday after 4pm…">
+    <label class="lab" for="wName">Name</label>
+    <input class="field" id="wName" autocomplete="name">
+    <label class="lab" for="wReply">Where should I reply?</label>
+    <input class="field" id="wReply" placeholder="Phone number or email" autocomplete="tel">
+    <p class="err" id="wErr" hidden></p>
+    <p class="note">Back up your device before any repair; I'm not responsible for data loss. The 30-day warranty covers parts and labor against defects, not later drops or liquid contact.</p>
+    <div class="sbtns"><button class="btn solid" type="button" id="wSend">Send message by text</button></div>
+  </section>
+  <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
+<script>
+window.pageInit = () => {
+  const $ = s => document.querySelector(s);
+  const models = Object.values(MODELS).flat();
+  $("#wModel").innerHTML = `<option>Not sure</option>` + models.map(m => `<option ${m===MB.state.model?"selected":""}>${m}</option>`).join("");
+  $("#wArea").innerHTML = AREAS.map(a => `<option ${a===MB.state.area?"selected":""}>${a}</option>`).join("");
 
-<footer class="site wrap">
-  <div class="foot-row">
-    <span>© 2026 MagicByte · Mobile repair · Wichita, KS &amp; surrounding area</span>
-    <span>Voicemail <a href="tel:+13165594816">316-559-4816</a> · text reaches me faster</span>
-  </div>
-</footer>
+  $("#wSend").addEventListener("click", () => {
+    const v = id => $(id).value.trim();
+    const missing = [["#wWhat",v("#wWhat")],["#wName",v("#wName")],["#wReply",v("#wReply")]];
+    missing.forEach(([id,val]) => $(id).setAttribute("aria-invalid", !val));
+    if (missing.some(([,val]) => !val)){ $("#wErr").hidden = false; $("#wErr").textContent = "Fill in what's going on, your name, and where I should reply."; return; }
+    $("#wErr").hidden = true;
+    MB.sms(`Ask the Wizard\n${v("#wWhat")}\nModel: ${v("#wModel")}\nIssue: ${v("#wIssue")}\nArea: ${v("#wArea")}${v("#wWhen") ? "\nTiming: "+v("#wWhen") : ""}\nName: ${v("#wName")}\nReply to: ${v("#wReply")}`);
+    MB.toast("Your text app is open with the message. Hit send there.", false);
+  });
 
-
-<!-- Sticky contact bar: phone-only. Text is the fastest route to a
-     one-person mobile business, so it leads. -->
-<div class="action-bar" aria-label="Contact MagicByte">
-  <a class="action-btn" href="sms:+13165594816">
-    <span aria-hidden="true">💬</span> Text
-  </a>
-  <a class="action-btn" href="tel:+13165594816">
-    <span aria-hidden="true">📼</span> Voicemail
-  </a>
-  <a class="action-btn primary" href="services.html#estimator-section">
-    <span aria-hidden="true">🔮</span> Get a price
-  </a>
-</div>
-
-<script src="site-data.js"></script>
-<script src="stock.js"></script>
-<script src="wizard.js"></script>
-<script src="cart.js"></script>
+  /* voice recorder */
+  let rec, chunks = [], blob = null, timer, secs = 0;
+  const orb = $("#orb"), txt = $("#orbTxt");
+  if (!navigator.mediaDevices || !window.MediaRecorder){ orb.disabled = true; $("#noMic").hidden = false; txt.textContent = "Recording unavailable"; return; }
+  orb.addEventListener("click", async () => {
+    if (rec && rec.state === "recording"){ rec.stop(); return; }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      chunks = []; rec = new MediaRecorder(stream);
+      rec.ondataavailable = e => chunks.push(e.data);
+      rec.onstop = () => {
+        stream.getTracks().forEach(t => t.stop()); clearInterval(timer);
+        blob = new Blob(chunks, {type: rec.mimeType || "audio/webm"});
+        $("#player").src = URL.createObjectURL(blob); $("#clip").hidden = false;
+        orb.classList.remove("rec"); orb.setAttribute("aria-label","Start recording"); txt.textContent = `Recorded ${secs}s. Listen back, then send.`;
+      };
+      rec.start(); secs = 0; orb.classList.add("rec"); orb.setAttribute("aria-label","Stop recording");
+      txt.textContent = "Recording… tap to stop";
+      timer = setInterval(() => { secs++; txt.textContent = `Recording ${secs}s… tap to stop`; if (secs >= 180) rec.stop(); }, 1000);
+    } catch(e){ txt.textContent = "Microphone blocked. Allow it in your browser, or call and leave a voicemail."; $("#noMic").hidden = false; }
+  });
+  $("#redo").addEventListener("click", () => { $("#clip").hidden = true; blob = null; txt.textContent = "Tap the orb to record"; });
+  $("#shareClip").addEventListener("click", async () => {
+    if (!blob) return;
+    const ext = blob.type.includes("mp4") ? "m4a" : blob.type.includes("ogg") ? "ogg" : "webm";
+    const file = new File([blob], `magicbyte-message.${ext}`, {type: blob.type});
+    if (navigator.canShare && navigator.canShare({files:[file]})){
+      try { await navigator.share({files:[file], title:"Message for MagicByte", text:`Voice message for MagicByte (${CONFIG.phoneDisplay})`}); MB.toast("Pick your texting app and send it to " + CONFIG.phoneDisplay, false); }
+      catch(e){}
+    } else {
+      $("#noMic").hidden = false;
+      MB.toast("Sharing isn't supported here. Call and leave a voicemail instead.", false);
+    }
+  });
+};
+</script>
 </body>
 </html>
