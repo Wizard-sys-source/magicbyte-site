@@ -1,5 +1,14 @@
 # Changelog
 
+## October 2026 — hero repair animation (from the EasyCare pilot)
+
+Home hero now plays the EasyCare pilot's repair sequence — cracks draw in,
+glitch, teal repair sweep, screen lights up, checkmark pops — then crossfades
+into the MagicByte mascot logo. Recolored to the site theme (teal/gold).
+Plays once on load with CSS alone; tap the phone to replay. Respects
+prefers-reduced-motion (shows the logo statically). Everything else on the
+site is unchanged from the previous pass.
+
 ## October 2026 — flair, declutter, switches, SEO, accessibility
 
 Body copy is unchanged word for word on every page (checked by diffing all
