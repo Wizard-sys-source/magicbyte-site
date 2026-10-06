@@ -11,8 +11,36 @@ const CONFIG = {
   // Visit windows by weekday (Sun=0 .. Sat=6). null = no visits that day.
   visitWindows: { 0:[10,22], 1:null, 2:[16,20], 3:[16,20], 4:[16,20], 5:[16,20], 6:[16,20] },
   // "Where's the wizard today" — GENERAL AREA ONLY, never a street address.
+  // (If this ever looks like an address, ZIP, map link or GPS, the site ignores it and shows its default.)
   today: { area: "On the road around Wichita", note: "and I'll tell you exactly where I am" },
-  bagKey: "magicbyte_bag"
+  bagKey: "magicbyte_bag",
+
+  /* ---- NOT DECIDED YET. Every switch starts OFF or EMPTY and shows nothing until you fill it in. ---- */
+
+  // (a) $20 Heroes promo banner, under the top section of the page.
+  //     placement: "everywhere" | "services-only" | "off"   (anything else counts as "off")
+  //     Stays hidden until title or text has words in it, even when placement is on. Plain text only.
+  heroesPromo: { placement: "off", title: "", text: "" },
+
+  // (b) Screen tier label above "Screen prices by model" on Services & pricing.
+  //     "refurbished" | "xo7" | ""   ("" = no label, same as today)
+  //     DISPLAY ONLY: it never changes a price. Prices still come from PARTS, so make the
+  //     PARTS grades match whichever tier you pick before you turn this on.
+  screenTier: "",
+  screenTierLabels: { refurbished: "Refurbished screens", xo7: "XO7 Soft OLED screens" },
+
+  // (c) Payment methods you take, e.g. ["Cash", "Venmo"].  [] = nothing shown.
+  //     Shows in the bag and in the "How do I pay" answer on Trust & FAQ.
+  paymentMethods: [],
+
+  // (d) Airport-shift premium. Shows only when on is true AND title or text has words in it.
+  //     DISPLAY ONLY: never added to bag totals or to the texted order.
+  //     Shows under "Where and when" on Home and under the menu on Services & pricing.
+  airportShiftPremium: { on: false, title: "", text: "" },
+
+  // (e) Warranty text block, shown in the warranty section of Trust & FAQ.  "" = nothing shown.
+  //     Plain text; a blank line starts a new paragraph.
+  warrantyText: ""
 };
 
 const MODELS = {
@@ -142,9 +170,11 @@ function renderPicker(q=""){
   body.querySelector(".mgrid").innerHTML = list.map(m => `<button type="button" class="mchip" aria-pressed="${m===s.model}" data-pmodel="${esc(m)}">${esc(m)}</button>`).join("")
     || `<p class="note">No match. Pick “Other” and tell me the model in your notes.</p>`;
 }
-MB.openPicker = () => { const p = $("#picker"); p.hidden = false; $("#pickSearch").value = ""; renderPicker();
+let pickFocus = null;
+MB.openPicker = () => { pickFocus = document.activeElement; const p = $("#picker"); p.hidden = false; $("#pickSearch").value = ""; renderPicker();
   requestAnimationFrame(()=>{ p.classList.add("open"); $("#scrim").classList.add("open"); $("#pickSearch").focus({preventScroll:true}); }); document.body.style.overflow="hidden"; };
-MB.closePicker = () => { const p = $("#picker"); p.classList.remove("open"); if ($("#sheet").hidden) { $("#scrim").classList.remove("open"); document.body.style.overflow=""; } setTimeout(()=>{ p.hidden = true; }, 300); };
+MB.closePicker = () => { const p = $("#picker"); p.classList.remove("open"); if ($("#sheet").hidden) { $("#scrim").classList.remove("open"); document.body.style.overflow=""; } setTimeout(()=>{ p.hidden = true; }, 300);
+  const back = pickFocus && pickFocus.isConnected ? pickFocus : document.querySelector("[data-pick]"); if (back) back.focus({preventScroll:true}); };
 
 /* ---------- reusable repair menu (home) ---------- */
 MB.mountMenu = (root) => {
@@ -179,8 +209,8 @@ function buildChrome(){
   </div></header>`);
   document.body.insertAdjacentHTML("beforeend", `
   <nav class="dock" aria-label="Quick actions"><div class="row">
-    <a class="dbtn" href="sms:${CONFIG.phone}">💬 Text</a>
-    <a class="dbtn" href="tel:${CONFIG.phone}">📼 Voicemail</a>
+    <a class="dbtn" href="sms:${CONFIG.phone}"><span aria-hidden="true">💬</span> Text</a>
+    <a class="dbtn" href="tel:${CONFIG.phone}"><span aria-hidden="true">📼</span> Voicemail</a>
     <button class="dbtn main" id="dockMain" type="button"></button>
   </div></nav>
   <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button type="button" id="toastView">View bag</button></div>
@@ -257,11 +287,11 @@ function renderSheet(){
     <div class="selectwrap" style="margin:0"><select class="field" id="area">${AREAS.map(a=>`<option ${a===s.area?"selected":""}>${a}</option>`).join("")}</select></div>
     <div class="sum"><div><span>Items</span><span>${t.count}</span></div>${trip}
       <div class="tot"><span>Estimate</span><span>${t.hi ? range(t.lo,t.hi) : "Quoted"}</span></div></div>
-    <p class="note">${t.quoted ? "Some parts get priced after I check stock, so the final total may be higher. " : ""}Nothing is charged here. You pay when the repair is done; parts I need to order may need a deposit, and I'll tell you first.${s.bag.some(l=>l.type==="part") ? " I'm not liable for damage from self-installation." : ""}</p>
-    <label class="lab" for="fName">Name</label><input class="field" id="fName" autocomplete="name">
-    <label class="lab" for="fReply">Where should I reply?</label><input class="field" id="fReply" placeholder="Phone number or email" autocomplete="tel">
+    <p class="note">${t.quoted ? "Some parts get priced after I check stock, so the final total may be higher. " : ""}Nothing is charged here. You pay when the repair is done; parts I need to order may need a deposit, and I'll tell you first.${s.bag.some(l=>l.type==="part") ? " I'm not liable for damage from self-installation." : ""}</p>${safe(MB.paymentsHTML) || ""}
+    <label class="lab" for="fName">Name</label><input class="field" id="fName" autocomplete="name" aria-required="true">
+    <label class="lab" for="fReply">Where should I reply?</label><input class="field" id="fReply" placeholder="Phone number or email" autocomplete="tel" aria-required="true">
     <label class="lab" for="fNotes">Notes</label><textarea class="field" id="fNotes" placeholder="What happened, timing that works for you…"></textarea>
-    <p class="err" id="formErr" hidden></p>
+    <p class="err" id="formErr" role="alert" hidden></p>
     <div class="sbtns"><button class="btn solid" type="button" id="sendOrder">Send order by text</button><button class="btn" type="button" id="copyOrder">Copy order</button></div>`;
   Object.keys(keep).forEach(id => { const el = document.getElementById(id); if (el) el.value = keep[id]; });
 }
@@ -277,12 +307,201 @@ MB.openSheet = () => { lastFocus = document.activeElement; const s = $("#sheet")
 MB.closeSheet = () => { const s = $("#sheet"); s.classList.remove("open"); $("#scrim").classList.remove("open"); document.body.style.overflow = ""; setTimeout(()=>{ s.hidden = true; }, 300); if (lastFocus) lastFocus.focus(); };
 MB.refresh = () => { MB.renderDock(); MB.onChange.forEach(f => f()); if (!$("#sheet").hidden) renderSheet(); };
 
+/* =====================================================================
+   Additions below this line: switches, tabs, header, flair, focus.
+   Every one is wrapped so a mistake here can never break the bag or
+   the texted order above.
+   ===================================================================== */
+const txt = v => typeof v === "string" ? v.trim() : "";
+const calm = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+const safe = (f, ...a) => { try { return f(...a); } catch(e){ if (window.console) console.warn("MagicByte:", e); } };
+
+/* "Where's the wizard today" stays a general area. Anything that looks like a street
+   address, ZIP code, map link or GPS coordinates is refused, and the page keeps its
+   built-in default instead. */
+MB.looksLikeAddress = s => /\b\d{5}(?:-\d{4})?\b/.test(s)
+  || /-?\d{1,3}\.\d{3,}\s*[,\s]\s*-?\d{1,3}\.\d{3,}/.test(s)
+  || /https?:|www\.|maps\.|goo\.gl/i.test(s)
+  || /(?:^|[\s,#])\d{1,6}\s+(?:[NSEW]\.?\s+)?[\w.'-]+(?:\s+[\w.'-]+)?\s+(?:st|street|ave|avenue|rd|road|dr|drive|ln|lane|ct|court|blvd|boulevard|way|pl|place|cir|circle|pkwy|parkway|ter|terrace|hwy|highway)\b/i.test(s)
+  || /(?:^|[\s,#])\d{2,6}\s+[NSEW]\.?\s+[A-Za-z]/.test(s);
+
+/* ---------- undecided switches (EDIT ME a–e) → page slots ----------
+   A slot is an empty, hidden element in the HTML: <div data-slot="promo" hidden>.
+   It only fills in and unhides when its switch is on AND has text. */
+MB.paymentsHTML = () => {
+  const list = Array.isArray(CONFIG.paymentMethods) ? CONFIG.paymentMethods.map(txt).filter(Boolean) : [];
+  return list.length ? `<div class="pay"><span class="pay-h">Ways to pay</span><ul class="pills">${list.map(m => `<li>${esc(m)}</li>`).join("")}</ul></div>` : "";
+};
+MB.renderSlots = () => {
+  const page = document.body.dataset.page;
+  const fill = (name, html) => { if (!html) return; document.querySelectorAll(`[data-slot="${name}"]`).forEach(el => { el.innerHTML = html; el.hidden = false; }); };
+  const block = (t, b) => (t ? `<strong>${esc(t)}</strong>` : "") + (b ? `<span>${esc(b)}</span>` : "");
+  safe(() => {                                                      /* (a) Heroes promo */
+    const p = CONFIG.heroesPromo || {}, where = txt(p.placement).toLowerCase(), t = txt(p.title), b = txt(p.text);
+    if ((where === "everywhere" || (where === "services-only" && page === "services")) && (t || b))
+      fill("promo", `<span class="ico" aria-hidden="true">✦</span><div>${block(t, b)}</div>`);
+  });
+  safe(() => {                                                      /* (b) screen tier label, display only */
+    const tier = txt(CONFIG.screenTier).toLowerCase(), labels = CONFIG.screenTierLabels || {};
+    const label = (tier === "refurbished" || tier === "xo7") ? txt(labels[tier]) : "";
+    if (label) fill("tier", `<span class="tier">${esc(label)}</span>`);
+  });
+  safe(() => fill("payments", MB.paymentsHTML()));                  /* (c) payment methods */
+  safe(() => {                                                      /* (d) airport-shift premium, display only */
+    const a = CONFIG.airportShiftPremium || {}, t = txt(a.title), b = txt(a.text);
+    if (a.on === true && (t || b)) fill("airport", `<span class="ico" aria-hidden="true">✈️</span><div>${block(t, b)}</div>`);
+  });
+  safe(() => {                                                      /* (e) warranty text block */
+    const w = txt(CONFIG.warrantyText);
+    if (w) fill("warranty", w.split(/\n\s*\n/).map(p => `<p>${esc(p.trim())}</p>`).join(""));
+  });
+};
+
+/* ---------- tabs ----------
+   <div data-tabs> holding children marked data-tab. Each tab's label is that panel's
+   own heading, so no new words. Without JavaScript the panels just show, stacked. */
+let tabSeq = 0;
+MB.tabs = root => {
+  const panels = [...root.children].filter(el => el.hasAttribute("data-tab"));
+  if (panels.length < 2 || root.classList.contains("is-on")) return;
+  const n = ++tabSeq, list = document.createElement("div");
+  list.className = "tablist"; list.setAttribute("role", "tablist");
+  const tabs = panels.map((p, i) => {
+    const h = p.querySelector("h2, h3"), b = document.createElement("button");
+    if (!p.id) p.id = `tabp${n}-${i}`;
+    b.type = "button"; b.id = `tab${n}-${i}`; b.setAttribute("role", "tab"); b.setAttribute("aria-controls", p.id);
+    b.textContent = h ? h.textContent.trim() : String(i + 1);
+    if (h) h.classList.add("tab-h");
+    p.setAttribute("role", "tabpanel"); p.setAttribute("aria-labelledby", b.id);
+    if (!p.querySelector("a[href],button,input,select,textarea,summary")) p.tabIndex = 0;
+    list.appendChild(b); return b;
+  });
+  const select = (i, byUser) => {
+    tabs.forEach((b, j) => { const on = i === j; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; panels[j].hidden = !on; });
+    if (byUser){ panels[i].classList.remove("tab-in"); void panels[i].offsetWidth; panels[i].classList.add("tab-in"); }
+  };
+  list.addEventListener("click", e => { const b = e.target.closest("[role=tab]"); if (b) select(tabs.indexOf(b), true); });
+  list.addEventListener("keydown", e => {
+    const i = tabs.indexOf(document.activeElement), k = {ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1}[e.key];
+    if (i < 0 || k === undefined) return;
+    e.preventDefault(); const j = (k + tabs.length) % tabs.length; select(j, true); tabs[j].focus();
+  });
+  root.insertBefore(list, panels[0]); root.classList.add("is-on");
+  const fromHash = () => { let t = null; try { t = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch(e){} return t ? panels.findIndex(p => p.contains(t)) : -1; };
+  const start = fromHash(); select(start > -1 ? start : 0);
+  window.addEventListener("hashchange", () => { const i = fromHash(); if (i > -1) select(i, true); });
+  root.mbSelect = select; root.mbPanels = panels;
+};
+MB.showTab = panel => { const r = panel && panel.parentElement; if (r && r.mbSelect) r.mbSelect(r.mbPanels.indexOf(panel)); };
+
+/* ---------- header tucks away while you read, comes back when you scroll up ---------- */
+MB.headerTuck = () => {
+  const head = document.querySelector("header.top"); if (!head) return;
+  document.documentElement.classList.add("tucks");
+  let lastY = window.scrollY, acc = 0, ticking = false, hold = 0;
+  const show = () => head.classList.remove("tuck");
+  document.addEventListener("click", e => {          /* in-page jumps (#order, "Get a price"): keep it tucked so it can't cover the target */
+    const a = e.target.closest && e.target.closest('a[href^="#"], #dockMain[data-mode="price"]');
+    if (a && document.getElementById("order") && window.scrollY > 90){ hold = Date.now() + 1000; head.classList.add("tuck"); }
+  }, true);
+  const update = () => {
+    ticking = false;
+    if (Date.now() < hold){ lastY = Math.max(0, window.scrollY); acc = 0; return; }
+    const y = Math.max(0, window.scrollY), dy = y - lastY; lastY = y;
+    if ((dy > 0 && acc < 0) || (dy < 0 && acc > 0)) acc = 0;
+    acc += dy;
+    if (y < 90 || acc < -24) show();
+    else if (acc > 24 && !head.contains(document.activeElement)) head.classList.add("tuck");
+  };
+  window.addEventListener("scroll", () => { if (!ticking){ ticking = true; requestAnimationFrame(update); } }, {passive:true});
+  head.addEventListener("focusin", show);
+};
+
+/* ---------- keyboard focus stays inside an open sheet ---------- */
+document.addEventListener("keydown", e => {
+  if (e.key !== "Tab") return;
+  const sheet = ["#picker", "#sheet"].map(s => $(s)).find(el => el && !el.hidden);
+  if (!sheet) return;
+  const f = [...sheet.querySelectorAll('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(el => el.offsetParent !== null);
+  if (!f.length) return;
+  const first = f[0], last = f[f.length - 1], at = document.activeElement;
+  if (!sheet.contains(at)){ e.preventDefault(); first.focus(); }
+  else if (e.shiftKey && at === first){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && at === last){ e.preventDefault(); first.focus(); }
+});
+
+/* ---------- wizard flair: visuals and motion only, never words ----------
+   Everything here is skipped under prefers-reduced-motion, and does nothing in
+   browsers without the Web Animations API. */
+let bursts = 0;
+MB.sparkle = (el, count = 8, spread = 36) => {
+  if (!el || calm() || bursts > 2 || !el.animate) return;
+  const r = el.getBoundingClientRect(); if (!r.width) return;
+  const layer = document.createElement("div");
+  layer.className = "mb-burst"; layer.setAttribute("aria-hidden", "true");
+  layer.style.left = (r.left + r.width / 2) + "px"; layer.style.top = (r.top + r.height / 2) + "px";
+  document.body.appendChild(layer); bursts++;
+  let left = count;
+  const done = () => { if (--left === 0){ layer.remove(); bursts--; } };
+  for (let i = 0; i < count; i++){
+    const s = document.createElement("i"); if (i % 3 === 1) s.className = "t";
+    layer.appendChild(s);
+    const a = (Math.PI * 2 * i) / count + Math.random() * .6, d = spread * (.65 + Math.random() * .6);
+    const x = Math.cos(a) * d, y = Math.sin(a) * d;
+    const anim = s.animate([
+      { transform: "translate(0,0) scale(.2) rotate(0deg)", opacity: 0 },
+      { transform: `translate(${(x * .3).toFixed(1)}px,${(y * .3).toFixed(1)}px) scale(.9) rotate(25deg)`, opacity: 1, offset: .25 },
+      { transform: `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(.6) rotate(80deg)`, opacity: 0 }
+    ], { duration: 620 + Math.random() * 260, easing: "cubic-bezier(.2,.7,.3,1)", fill: "forwards" });
+    anim.onfinish = done; anim.oncancel = done;
+  }
+};
+MB.flair = () => {
+  /* a soft glow under every floating mascot; animations pause while it's off screen */
+  document.querySelectorAll(".orbit").forEach(o => {
+    if (!o.querySelector(".shade")){ const s = document.createElement("b"); s.className = "shade"; o.prepend(s); }
+    if ("IntersectionObserver" in window) new IntersectionObserver(es => es.forEach(en => o.classList.toggle("zzz", !en.isIntersecting))).observe(o);
+  });
+  /* a sparkle answers every add to the bag (only when the count really goes up) */
+  document.addEventListener("click", e => {
+    const b = e.target.closest && e.target.closest('button[data-type][data-d="1"]'); if (!b) return;
+    const d = b.dataset, p = d.type === "part" ? PARTS.find(x => x.id === d.ref) : null;
+    if (MB.qtyOf(d.type, d.ref, d.model) < (p && p.stock > 0 ? Math.min(p.stock, 5) : 5)) MB.sparkle(b, 8, 34);
+  }, true);
+  if (document.body.dataset.page !== "index") return;
+  /* homepage only: twinkling stars, one arrival moment, and a mascot you can tap */
+  const o = document.querySelector(".hero .orbit"); if (!o) return;
+  const img = o.querySelector("img");
+  [[4, 30, 0], [90, 60, 1.3], [24, 94, 2.4]].forEach(([x, y, d]) => {
+    const t = document.createElement("b"); t.className = "twk";
+    t.style.left = x + "%"; t.style.top = y + "%"; t.style.animationDelay = d + "s"; o.appendChild(t);
+  });
+  let seen = false; try { seen = sessionStorage.getItem("mb_arrived") === "1"; sessionStorage.setItem("mb_arrived", "1"); } catch(e){}
+  if (!seen && !calm()){
+    o.classList.add("arrive");
+    setTimeout(() => MB.sparkle(img || o, 12, 64), 650);
+    setTimeout(() => {
+      const c = document.querySelector(".choices .btn.solid"); if (!c) return;
+      c.classList.add("glint"); setTimeout(() => c.classList.remove("glint"), 1600);
+    }, 1050);
+  }
+  let hopping = false;
+  o.addEventListener("click", () => {
+    if (hopping || calm() || !img || !img.animate) return;
+    hopping = true;
+    const hop = img.animate([{translate: "0 0"}, {translate: "0 -16px", offset: .4}, {translate: "0 0"}], {duration: 520, easing: "cubic-bezier(.3,.7,.4,1)"});
+    hop.onfinish = hop.oncancel = () => { hopping = false; };
+    MB.sparkle(img, 9, 52);
+  });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   buildChrome(); MB.renderDock();
-  const where = document.querySelector(".where");
-  if (where && CONFIG.today){
-    where.innerHTML = `<strong>\u{1F4CD} ${esc(CONFIG.today.area)}</strong>` +
-      `<span><a href="sms:${CONFIG.phone}">Text me</a> ${esc(CONFIG.today.note)}</span>`;
+  const where = document.querySelector(".where"), today = CONFIG.today || {};
+  const area = txt(today.area), note = txt(today.note);
+  if (where && area && !MB.looksLikeAddress(area + " " + note)){
+    where.innerHTML = `<strong><span aria-hidden="true">\u{1F4CD}</span> ${esc(area)}</strong>` +
+      `<span><a href="sms:${CONFIG.phone}">Text me</a>${note ? " " + esc(note) : ""}</span>`;
   }
   document.addEventListener("click", e => {
     const t = e.target.closest("button"); if (!t) return;
@@ -309,5 +528,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("keydown", e => { if (e.key!=="Escape") return; if (!$("#picker").hidden) MB.closePicker(); else if (!$("#sheet").hidden) MB.closeSheet(); });
   document.addEventListener("click", e => { if (e.target.id!=="scrim") return; if (!$("#picker").hidden) MB.closePicker(); else MB.closeSheet(); });
   if (location.hash==="#bag") MB.openSheet();
+  safe(MB.renderSlots);
+  document.querySelectorAll("[data-tabs]").forEach(r => safe(MB.tabs, r));
+  safe(MB.headerTuck);
   if (window.pageInit) window.pageInit();
+  safe(MB.flair);
 });

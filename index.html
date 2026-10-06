@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>MagicByte · Mobile Phone Repair in Wichita, KS</title>
-<meta name="description" content="Mobile phone repair that comes to you in Wichita, KS. iPhone, Samsung Galaxy and Google Pixel — screens, batteries, charging ports and cameras, same day. Part cost plus labor, quoted up front.">
-<meta property="og:title" content="MagicByte · Mobile Phone Repair in Wichita, KS">
-<meta property="og:description" content="A one-person mobile phone repair shop. I come to you, same day, with the tools and parts to revive your device.">
-<meta property="og:image" content="assets/og-image.png">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mobile Phone Repair in Wichita, KS | MagicByte</title>
+<meta name="description" content="Mobile phone repair in Wichita, KS that comes to you. Screens, batteries, charging ports and cameras for iPhone, Galaxy and Pixel, priced as part cost plus labor.">
+<link rel="canonical" href="https://wizard-sys-source.github.io/magicbyte-site/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MagicByte">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Mobile Phone Repair in Wichita, KS | MagicByte">
+<meta property="og:description" content="Mobile phone repair in Wichita, KS that comes to you. Screens, batteries, charging ports and cameras for iPhone, Galaxy and Pixel, priced as part cost plus labor.">
+<meta property="og:url" content="https://wizard-sys-source.github.io/magicbyte-site/">
+<meta property="og:image" content="https://wizard-sys-source.github.io/magicbyte-site/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#150f1e">
 <link rel="icon" href="assets/mascot-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,15 +56,16 @@
     </div>
     <div class="orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><img src="assets/mascot.png" alt=""></div>
   </div>
+  <div class="promo" data-slot="promo" hidden></div>
 
   <div class="where">
-    <strong>📍 On the road around Wichita</strong>
+    <strong><span aria-hidden="true">📍</span> On the road around Wichita</strong>
     <span><a href="sms:+13165594816">Text me</a> and I'll tell you exactly where I am.</span>
   </div>
 
   <div class="choices">
     <div class="choice"><p>I know what's broken.</p><a class="btn solid" href="#order">Get my repair price</a></div>
-    <div class="choice"><p>Not sure? Tell me what happened.</p><a class="btn" href="book.html">Ask the Wizard 🪄</a></div>
+    <div class="choice"><p>Not sure? Tell me what happened.</p><a class="btn" href="book.html">Ask the Wizard <span aria-hidden="true">🪄</span></a></div>
   </div>
 
   <section id="order" aria-labelledby="orderH">
@@ -75,34 +80,38 @@
     <div class="van" id="van"></div>
   </section>
 
-  <section aria-labelledby="howH">
-    <h2 id="howH">How an order works</h2>
-    <ol class="steps">
-      <li><div><strong>Fill your bag</strong><span>Add the repairs or parts you need. Nothing is charged on this site.</span></div></li>
-      <li><div><strong>Send it by text</strong><span>Your order goes to my phone with your model, location and notes.</span></div></li>
-      <li><div><strong>I confirm the price</strong><span>Exact part cost and labor before you commit. Parts I need to order may need a deposit.</span></div></li>
-      <li><div><strong>I come to you</strong><span>Most repairs are done in one visit, wherever you already are.</span></div></li>
-    </ol>
-  </section>
+  <!-- Three tabs on phones with JavaScript; three plain sections without it. Tab labels are these headings. -->
+  <div class="tabs" data-tabs>
+    <section id="where-when" aria-labelledby="areaH" data-tab>
+      <h2 id="areaH">Where and when</h2>
+      <div class="boxes">
+        <div class="box"><span class="ico" aria-hidden="true">🗺️</span><div><strong>Service area</strong><span>All of Wichita, plus Derby, Andover, Haysville, Maize, Goddard, Park City, Bel Aire, Rose Hill and Mulvane. Further out, just ask.</span></div></div>
+        <div class="box"><span class="ico" aria-hidden="true">🚐</span><div><strong>Trip fee</strong><span>$10 anywhere in Wichita. Outside Wichita it depends on your address, and I'll quote it up front.</span></div></div>
+        <div class="box"><span class="ico" aria-hidden="true">🕓</span><div><strong>Hours</strong><span>Visits Tue–Sat 4–8pm and Sun 10am–10pm, around my airport day job. Texts get answered all day, every day.</span></div></div>
+        <div class="box" data-slot="airport" hidden></div>
+      </div>
+    </section>
 
-  <section aria-labelledby="areaH">
-    <h2 id="areaH">Where and when</h2>
-    <div class="boxes">
-      <div class="box"><span class="ico">🗺️</span><div><strong>Service area</strong><span>All of Wichita, plus Derby, Andover, Haysville, Maize, Goddard, Park City, Bel Aire, Rose Hill and Mulvane. Further out, just ask.</span></div></div>
-      <div class="box"><span class="ico">🚐</span><div><strong>Trip fee</strong><span>$10 anywhere in Wichita. Outside Wichita it depends on your address, and I'll quote it up front.</span></div></div>
-      <div class="box"><span class="ico">🕓</span><div><strong>Hours</strong><span>Visits Tue–Sat 4–8pm and Sun 10am–10pm, around my airport day job. Texts get answered all day, every day.</span></div></div>
-    </div>
-  </section>
+    <section id="how" aria-labelledby="howH" data-tab>
+      <h2 id="howH">How an order works</h2>
+      <ol class="steps">
+        <li><div><strong>Fill your bag</strong><span>Add the repairs or parts you need. Nothing is charged on this site.</span></div></li>
+        <li><div><strong>Send it by text</strong><span>Your order goes to my phone with your model, location and notes.</span></div></li>
+        <li><div><strong>I confirm the price</strong><span>Exact part cost and labor before you commit. Parts I need to order may need a deposit.</span></div></li>
+        <li><div><strong>I come to you</strong><span>Most repairs are done in one visit, wherever you already are.</span></div></li>
+      </ol>
+    </section>
 
-  <section aria-labelledby="promH">
-    <h2 id="promH">My promises</h2>
-    <div class="boxes">
-      <div class="box"><span class="ico">🏷️</span><div><strong>Upfront pricing</strong><span>You know the part cost and labor before you commit.</span></div></div>
-      <div class="box"><span class="ico">🛡️</span><div><strong>30-day warranty</strong><span>Parts and workmanship covered for 30 days.</span></div></div>
-      <div class="box"><span class="ico">✨</span><div><strong>No fix, no charge</strong><span>If I can't fix it, you owe nothing for labor.</span></div></div>
-    </div>
-    <p class="note">Data handling, parts and warranty details are <a href="trust.html">all written down</a>.</p>
-  </section>
+    <section id="promises" aria-labelledby="promH" data-tab>
+      <h2 id="promH">My promises</h2>
+      <div class="boxes">
+        <div class="box"><span class="ico" aria-hidden="true">🏷️</span><div><strong>Upfront pricing</strong><span>You know the part cost and labor before you commit.</span></div></div>
+        <div class="box"><span class="ico" aria-hidden="true">🛡️</span><div><strong>30-day warranty</strong><span>Parts and workmanship covered for 30 days.</span></div></div>
+        <div class="box"><span class="ico" aria-hidden="true">✨</span><div><strong>No fix, no charge</strong><span>If I can't fix it, you owe nothing for labor.</span></div></div>
+      </div>
+      <p class="note">Data handling, parts and warranty details are <a href="trust.html">all written down</a>.</p>
+    </section>
+  </div>
 
   <section aria-labelledby="aboutH">
     <div class="about"><img src="assets/mascot-icon.png" alt=""><div>

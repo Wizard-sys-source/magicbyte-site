@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Ask the Wizard · MagicByte</title>
-<meta name="description" content="Not sure what's wrong with your phone? Leave a voice message or write it out and it goes straight to the technician. Free advice and an estimate back by text or email.">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Free Phone Repair Estimate in Wichita, KS | MagicByte</title>
+<meta name="description" content="Not sure what's wrong with your phone? Record a voice message or write it out, and get a free repair estimate by text or email. Mobile phone repair in Wichita, KS.">
+<link rel="canonical" href="https://wizard-sys-source.github.io/magicbyte-site/book.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MagicByte">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Free Phone Repair Estimate in Wichita, KS | MagicByte">
+<meta property="og:description" content="Not sure what's wrong with your phone? Record a voice message or write it out, and get a free repair estimate by text or email. Mobile phone repair in Wichita, KS.">
+<meta property="og:url" content="https://wizard-sys-source.github.io/magicbyte-site/book.html">
+<meta property="og:image" content="https://wizard-sys-source.github.io/magicbyte-site/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#150f1e">
 <link rel="icon" href="assets/mascot-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,8 +31,9 @@
     </div>
     <div class="orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><img src="assets/mascot.png" alt=""></div>
   </div>
+  <div class="promo" data-slot="promo" hidden></div>
 
-  <section style="padding-top:12px">
+  <section class="tight">
     <ol class="steps">
       <li><div><strong>Tell me what's wrong</strong><span>Talk into the orb or type it below.</span></div></li>
       <li><div><strong>I reply with a price</strong><span>By text or email, usually the same day.</span></div></li>
@@ -31,43 +41,64 @@
     </ol>
   </section>
 
-  <section aria-labelledby="voiceH">
-    <h2 id="voiceH">Record a voice message</h2>
-    <div class="card">
-      <button class="orb" id="orb" type="button" aria-label="Start recording">🔮</button>
-      <p class="orbtxt" id="orbTxt">Tap the orb to record</p>
-      <div id="clip" hidden>
-        <audio id="player" controls></audio>
-        <div class="sbtns"><button class="btn solid" type="button" id="shareClip">Send recording</button><button class="btn small" type="button" id="redo">Record again</button></div>
+  <!-- Voice or written: two tabs with JavaScript, two plain sections without it. -->
+  <div class="tabs" data-tabs>
+    <section id="voice" aria-labelledby="voiceH" data-tab>
+      <h2 id="voiceH">Record a voice message</h2>
+      <div class="card">
+        <button class="orb" id="orb" type="button" aria-label="Start recording">🔮</button>
+        <p class="orbtxt" id="orbTxt">Tap the orb to record</p>
+        <div id="clip" hidden>
+          <audio id="player" controls></audio>
+          <div class="sbtns"><button class="btn solid" type="button" id="shareClip">Send recording</button><button class="btn small" type="button" id="redo">Record again</button></div>
+        </div>
+        <p class="note" id="noMic" hidden>Recording doesn't work in this browser. <a href="tel:+13165594816">Call and leave a voicemail</a> instead; it reaches the same place.</p>
       </div>
-      <p class="note" id="noMic" hidden>Recording doesn't work in this browser. <a href="tel:+13165594816">Call and leave a voicemail</a> instead; it reaches the same place.</p>
-    </div>
-  </section>
+    </section>
 
-  <section aria-labelledby="writeH">
-    <h2 id="writeH">Or write it out</h2>
-    <p class="sub">Tell me what you've got and what it's doing. A photo of the damage helps a lot; you can add it in the text.</p>
-    <label class="lab" for="wWhat">What's going on?</label>
-    <textarea class="field" id="wWhat" placeholder="Dropped it, the screen has lines and touch stopped working…"></textarea>
-    <label class="lab" for="wModel">Device model</label>
-    <div class="selectwrap" style="margin:0"><select class="field" id="wModel"></select></div>
-    <label class="lab" for="wIssue">Main issue</label>
-    <div class="selectwrap" style="margin:0"><select class="field" id="wIssue">
-      <option>Not sure yet</option><option>Screen cracked or display glitching</option><option>Glass scratched (glass polishing)</option>
-      <option>Battery dying fast or swollen</option><option>Back glass or camera cracked</option><option>Charging port loose or not charging</option>
-      <option>Liquid damage, still powers on</option><option>Something else</option></select></div>
-    <label class="lab" for="wArea">Where should we meet?</label>
-    <div class="selectwrap" style="margin:0"><select class="field" id="wArea"></select></div>
-    <label class="lab" for="wWhen">Timing that works for you</label>
-    <input class="field" id="wWhen" placeholder="Sunday afternoon, weekday after 4pm…">
-    <label class="lab" for="wName">Name</label>
-    <input class="field" id="wName" autocomplete="name">
-    <label class="lab" for="wReply">Where should I reply?</label>
-    <input class="field" id="wReply" placeholder="Phone number or email" autocomplete="tel">
-    <p class="err" id="wErr" hidden></p>
-    <p class="note">Back up your device before any repair; I'm not responsible for data loss. The 30-day warranty covers parts and labor against defects, not later drops or liquid contact.</p>
-    <div class="sbtns"><button class="btn solid" type="button" id="wSend">Send message by text</button></div>
-  </section>
+    <section id="write" aria-labelledby="writeH" data-tab>
+      <h2 id="writeH">Or write it out</h2>
+      <p class="sub">Tell me what you've got and what it's doing. A photo of the damage helps a lot; you can add it in the text.</p>
+      <label class="lab" for="wWhat">What's going on?</label>
+      <textarea class="field" id="wWhat" aria-required="true" placeholder="Dropped it, the screen has lines and touch stopped working…"></textarea>
+      <div class="pair">
+        <div>
+          <label class="lab" for="wModel">Device model</label>
+          <div class="selectwrap" style="margin:0"><select class="field" id="wModel"></select></div>
+        </div>
+        <div>
+          <label class="lab" for="wIssue">Main issue</label>
+          <div class="selectwrap" style="margin:0"><select class="field" id="wIssue">
+            <option>Not sure yet</option><option>Screen cracked or display glitching</option><option>Glass scratched (glass polishing)</option>
+            <option>Battery dying fast or swollen</option><option>Back glass or camera cracked</option><option>Charging port loose or not charging</option>
+            <option>Liquid damage, still powers on</option><option>Something else</option></select></div>
+        </div>
+      </div>
+      <div class="pair">
+        <div>
+          <label class="lab" for="wArea">Where should we meet?</label>
+          <div class="selectwrap" style="margin:0"><select class="field" id="wArea"></select></div>
+        </div>
+        <div>
+          <label class="lab" for="wWhen">Timing that works for you</label>
+          <input class="field" id="wWhen" placeholder="Sunday afternoon, weekday after 4pm…">
+        </div>
+      </div>
+      <div class="pair">
+        <div>
+          <label class="lab" for="wName">Name</label>
+          <input class="field" id="wName" autocomplete="name" aria-required="true">
+        </div>
+        <div>
+          <label class="lab" for="wReply">Where should I reply?</label>
+          <input class="field" id="wReply" placeholder="Phone number or email" autocomplete="tel" aria-required="true">
+        </div>
+      </div>
+      <p class="err" id="wErr" role="alert" hidden></p>
+      <p class="note">Back up your device before any repair; I'm not responsible for data loss. The 30-day warranty covers parts and labor against defects, not later drops or liquid contact.</p>
+      <div class="sbtns"><button class="btn solid" type="button" id="wSend">Send message by text</button></div>
+    </section>
+  </div>
   <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
 <script>
@@ -90,7 +121,9 @@ window.pageInit = () => {
   /* voice recorder */
   let rec, chunks = [], blob = null, timer, secs = 0;
   const orb = $("#orb"), txt = $("#orbTxt");
-  if (!navigator.mediaDevices || !window.MediaRecorder){ orb.disabled = true; $("#noMic").hidden = false; txt.textContent = "Recording unavailable"; return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder){ orb.disabled = true; $("#noMic").hidden = false; txt.textContent = "Recording unavailable";
+    if (MB.showTab && !location.hash) MB.showTab(document.getElementById("write"));   /* no recorder here: open the written form instead */
+    return; }
   orb.addEventListener("click", async () => {
     if (rec && rec.state === "recording"){ rec.stop(); return; }
     try {
