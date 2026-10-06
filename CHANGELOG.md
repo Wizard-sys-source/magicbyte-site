@@ -1,5 +1,72 @@
 # Changelog
 
+## October 2026 — hero animation, face slots, Sheets prices, price display, second-pass switches
+
+(Built by Strider after Claude hit its usage limit mid-pass; same spec, same
+rules: checkout code byte-identical, EDIT ME stays the control panel.)
+
+### Hero animation (pure CSS/JS, visuals only)
+- A cracked phone drops in and shakes; a teal repair beam sweeps down and the
+  cracks fade; the phone shrinks into the mascot with a sparkle; the card flips
+  to Jonathan's photo. With no `assets/jonathan.jpg` it holds on the mascot —
+  never a broken image, even with JavaScript off. Plays once per session, off
+  under reduced motion, pauses off-screen.
+- Photo slots: hero (end of the animation), a face card under the Trust intro,
+  the About section on Home, and the bag header. Every one falls back to the
+  mascot if the photo file is missing.
+
+### Prices from Google Sheets
+- New `sheetId` in EDIT ME. When set, the published sheet's `parts`, `labor`
+  and `settings` tabs override PARTS / SERVICES labor / trip fee / today box /
+  announcement on every page load. Bad rows and unreachable sheets fall back
+  to the baked-in values; the page never breaks. Starter CSVs with the exact
+  columns are with Jonathan.
+
+### Price display (transparency that doesn't start arguments)
+- Repair menu leads with the installed total ("About $136–$151 installed");
+  the itemized math (part ~$76 · labor $60–$75 · trip $10) lives behind a
+  "See the math" tap. Part prices round to whole dollars in display; checkout
+  math keeps exact cents. Same treatment on the van cards and the screen
+  table. Service descriptions stay symptom → outcome → price; process details
+  stay on the Trust page, out of the sales path.
+- Labor reframe line (`priceNote`, editable): "Labor covers the repair, full
+  testing, the 30-day warranty, and me driving to you."
+
+### New switches (all off/empty by default)
+- `announceBar`, `trustBadges`, `testimonials`, `reviewUrl`, `socials`,
+  `buyPhones`, `firstOrder` (display only), `faceCaption`, `callLine`,
+  `priceNote`. Same fail-safe rules as the first pass: typos, wrong types and
+  deleted lines show nothing; HTML typed into a switch renders as plain text;
+  review/social URLs must start with http(s).
+
+### Copy fixes
+- "The 30-day ward" → "The 30-day warranty" (both places). "The forbidden
+  arts" → "What I don't do". "Glass restoration" removed (not offered yet);
+  the "Glass scratched (glass polishing)" option removed from Ask the Wizard.
+- "Rather just talk? Call or text 316-559-4816." above the repair menu (editable).
+- Shop headline "Order your part from the wizard." → "Order your part."
+- Menu badge "Part ships in 3–5 days" → "Part arrives same or next day"
+  (matches the decided parts promise).
+
+### Removals
+- `consult.html` and `faq.html` deleted; new `404.html` catches dead links and
+  forwards old consult URLs to Ask the Wizard, old faq URLs to Trust & FAQ
+  (one line to change if you'd rather consults went to Trust).
+
+### Checkout
+Untouched: MB.priceLine, MB.totals, MB.setQty, MB.orderText, MB.sms,
+renderSheet and readForm are byte-identical to the previous pass (verified by
+diff and by running old-vs-new order scenarios in Node: identical totals and
+identical texted orders).
+
+## Decisions still waiting on you
+1. Photo: drop `assets/jonathan.jpg` in and the hero flip, face card, About and bag light up.
+2. Old consult links → Ask the Wizard (one line in 404.html to send them to Trust instead).
+3. Google review link: your Business profile lists your street address — linking it puts that address one tap from the site.
+4. Screen tier + the aftermarket-vs-refurbished-originals wording contradiction (Trust vs Shop).
+5. Payment methods, airport premium, Heroes promo wording/placement, Home tab order, custom domain.
+6. "Deep water resurrections" — still wizard-worded in "What I don't do" (kept; flagging).
+
 ## October 2026 — flair, declutter, switches, SEO, accessibility
 
 Body copy is unchanged word for word on every page (checked by diffing all

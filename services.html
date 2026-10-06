@@ -38,6 +38,7 @@
     <section id="menu" aria-labelledby="menuH" data-tab>
       <h2 id="menuH">The repair menu</h2>
       <p class="sub">Labor for each job. The part is added on top, at cost.</p>
+      <p class="note" data-slot="pricenote" hidden></p>
       <div class="boxes" id="svcList"></div>
     </section>
 
@@ -52,8 +53,8 @@
   <div class="box mt" data-slot="airport" hidden></div>
 
   <section aria-labelledby="limH">
-    <h2 id="limH">The forbidden arts</h2>
-    <div class="box"><span class="ico" aria-hidden="true">🚫</span><div><strong>What I don't do</strong><span>Deep water resurrections, unless the phone still shows a spark of life, and microsoldering (board-level chip repair). I stick to modular repairs and glass restoration, done properly.</span></div></div>
+    <h2 id="limH">What I don't do</h2>
+    <div class="box"><span class="ico" aria-hidden="true">🚫</span><div><span>Deep water resurrections, unless the phone still shows a spark of life, and microsoldering (board-level chip repair). I stick to modular repairs, done properly.</span></div></div>
   </section>
 
   <section aria-labelledby="howH">
@@ -69,6 +70,7 @@
   <div class="choices">
     <div class="choice"><p>Know your model? Get an exact estimate.</p><a class="btn solid" href="index.html#order">Price my repair</a></div>
   </div>
+  <div class="socials" data-slot="socials" hidden></div>
   <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
 <script>
@@ -82,7 +84,7 @@ window.pageInit = () => {
   }));
   rows.sort((a,b) => MODELS.iPhone.indexOf(a.m) - MODELS.iPhone.indexOf(b.m));
   document.querySelector("#scrTable tbody").innerHTML = rows.map(r =>
-    `<tr><td>${r.m}${r.stock>0 ? ' <span class="badge sm">in the van</span>' : ""}</td><td>${range(r.lo,r.hi)}</td></tr>`).join("");
+    `<tr><td>${r.m}${r.stock>0 ? ' <span class="badge sm">in the van</span>' : ""}</td><td>About ${rrange(r.lo,r.hi)}</td></tr>`).join("");
 };
 </script>
 </body>

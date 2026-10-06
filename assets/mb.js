@@ -40,7 +40,48 @@ const CONFIG = {
 
   // (e) Warranty text block, shown in the warranty section of Trust & FAQ.  "" = nothing shown.
   //     Plain text; a blank line starts a new paragraph.
-  warrantyText: ""
+  warrantyText: "",
+
+  /* ---- Site content, second pass. Same rule: empty/off shows nothing. ---- */
+
+  // (f) Google Sheet price source. Paste the sheet ID (the long string between /d/ and /edit in your sheet's URL).
+  //     Empty = use the values above. When set, the published sheet overrides PARTS prices/stock/grades,
+  //     SERVICES labor/time, and the settings below on every page load. If the sheet can't be reached
+  //     or a row is bad, the values above are used and the page never breaks.
+  sheetId: "",
+
+  // (g) Announcement banner under the header, every page. Shows only when on AND text has words in it.
+  announceBar: { on: false, text: "" },
+
+  // (h) Trust badge row on Home. Each {t:"title", d:"detail"}. Empty array = no row.
+  //     Suggestions — write your own: {t:"Straight answers", d:"Text me a symptom, get a price. No jargon, no pressure."},
+  //     {t:"Parts at cost", d:"You see what the part costs me."}, {t:"I come to you", d:"Home, office, coffee shop."},
+  //     {t:"30-day warranty", d:"Parts and workmanship, in plain English."}
+  trustBadges: [],
+
+  // (i) Testimonials on Home. [{q:"They fixed it in my driveway.", n:"— Sam R."}]. Empty = nothing shown.
+  testimonials: [],
+
+  // (j) Google review link. "" = not shown. NOTE: your Business profile lists your street
+  //     address — linking it puts that address one tap from the site.
+  reviewUrl: "",
+
+  // (k) Social links. Empty values stay hidden.
+  socials: { instagram: "", tiktok: "", facebook: "" },
+
+  // (l) "We buy phones" block on Shop parts. Shows only when title or text has words in it.
+  buyPhones: { title: "", text: "" },
+
+  // (m) First-order nudge in the bag. DISPLAY ONLY — your text must tell customers
+  //     to type the code in their notes.
+  firstOrder: { on: false, code: "", text: "" },
+
+  // Your face, your words. faceCaption shows under your photo; callLine shows above the repair menu.
+  faceCaption: "That's me — Jonathan. One tech, one van, you always get me.",
+  callLine: "Rather just talk? Call or text 316-559-4816.",
+
+  // One line near pricing that reframes labor.
+  priceNote: "Labor covers the repair, full testing, the 30-day warranty, and me driving to you."
 };
 
 const MODELS = {
@@ -189,9 +230,20 @@ MB.mountMenu = (root) => {
     menu.innerHTML = SERVICES.filter(x => cat==="All" || x.cat===cat).map(x => {
       const p = MB.priceLine({type:"repair", ref:x.id, model:s.model, qty:1});
       const part = x.part ? MB.partFor(x.part, s.model) : null;
-      const badge = part ? (part.stock>0 ? `<span class="badge">In the van</span>` : `<span>Part ships in 3–5 days</span>`) : "";
-      const priceTxt = p.quoted ? "Quoted after a look" : (p.partPending ? `Labor ${range(...x.labor)} + part` : (part && part.stock===0 ? "About " : "") + p.label);
-      return `<li class="item" id="svc-${x.id}"><div><h3>${x.name}</h3><p class="desc">${x.desc}</p><div class="meta"><span class="price">${priceTxt}</span><span>${x.time}</span>${badge}</div></div><div class="side">${MB.control("repair", x.id, s.model, x.name)}</div></li>`;
+      const badge = part ? (part.stock>0 ? `<span class="badge">In the van</span>` : `<span>Part arrives same or next day</span>`) : "";
+      /* Installed total first; the itemized math lives one tap behind it. */
+      let priceTxt, math = "";
+      const tripBit = s.area==="Wichita" ? " · Trip $10" : "";
+      if (p.quoted){ priceTxt = "Quoted after a look"; }
+      else if (p.partPending){
+        priceTxt = `Labor ${range(...x.labor)} + part`;
+        math = `<details class="math"><summary>See the math</summary><span>Labor ${range(...x.labor)} · Part quoted after I check stock${tripBit}</span></details>`;
+      } else {
+        priceTxt = `About ${rrange(p.lo, p.hi)} installed`;
+        const pc = part && part.price!=null ? part.price : null;
+        math = `<details class="math"><summary>See the math</summary><span>Part ~${pc!=null ? rmoney(pc) : "quoted"} · Labor ${range(...x.labor)}${tripBit}</span></details>`;
+      }
+      return `<li class="item" id="svc-${x.id}"><div><h3>${x.name}</h3><p class="desc">${x.desc}</p><div class="meta"><span class="price">${priceTxt}</span><span>${x.time}</span>${badge}</div>${math}</div><div class="side">${MB.control("repair", x.id, s.model, x.name)}</div></li>`;
     }).join("") || `<li class="empty-menu">Nothing here for that filter. Try “All”.</li>`;
   }
   root.addEventListener("click", e => { const b = e.target.closest("button[data-cat]"); if (b){ cat = b.dataset.cat; draw(); } });
@@ -207,6 +259,8 @@ function buildChrome(){
       <div class="status"><span class="dot" id="availDot"></span><span id="availText"></span></div></div>
     <nav class="links" aria-label="Site">${NAV.map(([id,href,label]) => `<a href="${href}"${id===page?' aria-current="page"':""}>${label.replace("&","&amp;")}</a>`).join("")}</nav>
   </div></header>`);
+  const head = document.querySelector("header.top");
+  if (head) head.insertAdjacentHTML("afterend", `<div class="announce" data-slot="announce" hidden></div>`);
   document.body.insertAdjacentHTML("beforeend", `
   <nav class="dock" aria-label="Quick actions"><div class="row">
     <a class="dbtn" href="sms:${CONFIG.phone}"><span aria-hidden="true">💬</span> Text</a>
@@ -217,7 +271,7 @@ function buildChrome(){
   <div class="scrim" id="scrim"></div>
   <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
     <div class="grab"></div>
-    <div class="shead"><h2 id="sheetTitle">Your bag</h2><button class="x" id="closeSheet" type="button" aria-label="Close bag">×</button></div>
+    <div class="shead"><img class="bagface" src="assets/jonathan.jpg" onerror="this.onerror=null;this.src='assets/mascot-icon.png'" alt=""><h2 id="sheetTitle">Your bag</h2><button class="x" id="closeSheet" type="button" aria-label="Close bag">×</button></div>
     <div class="sbody" id="sheetBody"></div>
   </div>
   <div class="sheet" id="picker" role="dialog" aria-modal="true" aria-labelledby="pickTitle" hidden>
@@ -287,7 +341,7 @@ function renderSheet(){
     <div class="selectwrap" style="margin:0"><select class="field" id="area">${AREAS.map(a=>`<option ${a===s.area?"selected":""}>${a}</option>`).join("")}</select></div>
     <div class="sum"><div><span>Items</span><span>${t.count}</span></div>${trip}
       <div class="tot"><span>Estimate</span><span>${t.hi ? range(t.lo,t.hi) : "Quoted"}</span></div></div>
-    <p class="note">${t.quoted ? "Some parts get priced after I check stock, so the final total may be higher. " : ""}Nothing is charged here. You pay when the repair is done; parts I need to order may need a deposit, and I'll tell you first.${s.bag.some(l=>l.type==="part") ? " I'm not liable for damage from self-installation." : ""}</p>${safe(MB.paymentsHTML) || ""}
+    <p class="note">${t.quoted ? "Some parts get priced after I check stock, so the final total may be higher. " : ""}Nothing is charged here. You pay when the repair is done; parts I need to order may need a deposit, and I'll tell you first.${s.bag.some(l=>l.type==="part") ? " I'm not liable for damage from self-installation." : ""}</p>${safe(MB.paymentsHTML) || ""}${safe(MB.firstOrderHTML) || ""}
     <label class="lab" for="fName">Name</label><input class="field" id="fName" autocomplete="name" aria-required="true">
     <label class="lab" for="fReply">Where should I reply?</label><input class="field" id="fReply" placeholder="Phone number or email" autocomplete="tel" aria-required="true">
     <label class="lab" for="fNotes">Notes</label><textarea class="field" id="fNotes" placeholder="What happened, timing that works for you…"></textarea>
@@ -316,6 +370,67 @@ const txt = v => typeof v === "string" ? v.trim() : "";
 const calm = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 const safe = (f, ...a) => { try { return f(...a); } catch(e){ if (window.console) console.warn("MagicByte:", e); } };
 
+/* Display money: rounded whole dollars for customer-facing totals.
+   Checkout math keeps its exact cents; this is only what the eye sees. */
+const rmoney = n => "$" + Math.round(n);
+const rrange = (a,b) => a===b ? rmoney(a) : rmoney(a) + "–" + rmoney(b).slice(1);
+
+/* ---------- Google Sheet price source ----------
+   sheetId set → fetch the published tabs and override PARTS / SERVICES / settings.
+   Anything missing or malformed is ignored; the baked-in EDIT ME values always win
+   by default, so the page can never break because of the sheet. */
+function parseCSV(t){
+  const rows = []; let row = [], cur = "", q = false;
+  for (let i = 0; i < t.length; i++){
+    const c = t[i];
+    if (q){ if (c === '"'){ if (t[i+1] === '"'){ cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === ","){ row.push(cur); cur = ""; }
+    else if (c === "\n" || c === "\r"){ if (cur !== "" || row.length){ row.push(cur); rows.push(row); } row = []; cur = ""; if (c === "\r" && t[i+1] === "\n") i++; }
+    else cur += c;
+  }
+  if (cur !== "" || row.length){ row.push(cur); rows.push(row); }
+  if (!rows.length) return [];
+  const head = rows[0].map(h => h.trim());
+  return rows.slice(1).map(r => { const o = {}; head.forEach((h,i) => o[h] = (r[i]||"").trim()); return o; });
+}
+MB.applySheet = data => {
+  if (data.parts) data.parts.forEach(r => {
+    const p = PARTS.find(x => x.id === r.id); if (!p || !r.id) return;
+    const price = parseFloat(r.price); if (r.price !== "" && !isNaN(price) && price >= 0) p.price = Math.round(price*100)/100;
+    const stock = parseInt(r.stock, 10); if (r.stock !== "" && !isNaN(stock) && stock >= 0) p.stock = Math.min(stock, 99);
+    if (r.grade) p.grade = r.grade.slice(0, 60);
+    if (r.name) p.name = r.name.slice(0, 80);
+  });
+  if (data.labor) data.labor.forEach(r => {
+    const s = SERVICES.find(x => x.id === r.id); if (!s || !r.id) return;
+    const lo = parseFloat(r.labor_low), hi = parseFloat(r.labor_high);
+    if (!isNaN(lo) && !isNaN(hi) && lo >= 0 && hi >= lo) s.labor = [lo, hi];
+    if (r.time) s.time = r.time.slice(0, 40);
+    if (r.name) s.name = r.name.slice(0, 60);
+  });
+  if (data.settings) data.settings.forEach(r => {
+    if (!r.key) return; const v = r.value || "";
+    if (r.key === "tripFeeWichita"){ const n = parseFloat(v); if (!isNaN(n) && n >= 0) CONFIG.tripFeeWichita = n; }
+    else if (r.key === "todayArea" && v) CONFIG.today.area = v.slice(0, 80);
+    else if (r.key === "todayNote") CONFIG.today.note = v.slice(0, 120);
+    else if (r.key === "announceOn") CONFIG.announceBar.on = /^true|1|yes$/i.test(v);
+    else if (r.key === "announceText") CONFIG.announceBar.text = v.slice(0, 200);
+  });
+};
+MB.loadSheet = () => {
+  const id = txt(CONFIG.sheetId);
+  if (!id || !window.fetch) return Promise.resolve(false);
+  const csv = sh => fetch("https://docs.google.com/spreadsheets/d/" + encodeURIComponent(id) + "/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent(sh), {cache:"no-store"})
+    .then(r => { if (!r.ok) throw new Error("sheet"); return r.text(); });
+  return Promise.all([csv("parts").catch(() => ""), csv("labor").catch(() => ""), csv("settings").catch(() => "")])
+    .then(([p, l, s]) => {
+      if (!p && !l && !s) return false;
+      MB.applySheet({ parts: p ? parseCSV(p) : null, labor: l ? parseCSV(l) : null, settings: s ? parseCSV(s) : null });
+      return true;
+    }).catch(() => false);
+};
+
 /* "Where's the wizard today" stays a general area. Anything that looks like a street
    address, ZIP code, map link or GPS coordinates is refused, and the page keeps its
    built-in default instead. */
@@ -331,6 +446,12 @@ MB.looksLikeAddress = s => /\b\d{5}(?:-\d{4})?\b/.test(s)
 MB.paymentsHTML = () => {
   const list = Array.isArray(CONFIG.paymentMethods) ? CONFIG.paymentMethods.map(txt).filter(Boolean) : [];
   return list.length ? `<div class="pay"><span class="pay-h">Ways to pay</span><ul class="pills">${list.map(m => `<li>${esc(m)}</li>`).join("")}</ul></div>` : "";
+};
+/* First-order nudge: display only. Never touches totals or the texted order. */
+MB.firstOrderHTML = () => {
+  const f = CONFIG.firstOrder || {}, t = txt(f.text), c = txt(f.code);
+  if (f.on !== true || !(t || c)) return "";
+  return `<p class="note firstorder">${t ? esc(t) + " " : ""}${c ? `Mention code <strong>${esc(c)}</strong> in your notes.` : ""}</p>`;
 };
 MB.renderSlots = () => {
   const page = document.body.dataset.page;
@@ -355,6 +476,36 @@ MB.renderSlots = () => {
     const w = txt(CONFIG.warrantyText);
     if (w) fill("warranty", w.split(/\n\s*\n/).map(p => `<p>${esc(p.trim())}</p>`).join(""));
   });
+  safe(() => {                                                      /* (g) announcement banner */
+    const a = CONFIG.announceBar || {}, t = txt(a.text);
+    if (a.on === true && t) fill("announce", `<span>${esc(t)}</span>`);
+  });
+  safe(() => {                                                      /* (h) trust badges */
+    const bs = Array.isArray(CONFIG.trustBadges) ? CONFIG.trustBadges : [];
+    const items = bs.map(b => { const t = txt(b && b.t), d = txt(b && b.d);
+      return (t || d) ? `<div class="box"><div>${t?`<strong>${esc(t)}</strong>`:""}${d?`<span>${esc(d)}</span>`:""}</div></div>` : ""; }).join("");
+    if (items) fill("badges", items);
+  });
+  safe(() => {                                                      /* (i) testimonials + review link */
+    const ts = Array.isArray(CONFIG.testimonials) ? CONFIG.testimonials : [];
+    const items = ts.map(q => { const x = txt(q && q.q), n = txt(q && q.n);
+      return x ? `<figure class="tst"><blockquote>${esc(x)}</blockquote>${n?`<figcaption>${esc(n)}</figcaption>`:""}</figure>` : ""; }).join("");
+    const rv = txt(CONFIG.reviewUrl), okRv = /^https?:/i.test(rv);
+    if (items || okRv) fill("testimonials", items + (okRv ? `<p class="note"><a href="${esc(rv)}" rel="noopener">Read my Google reviews</a></p>` : ""));
+  });
+  safe(() => {                                                      /* (k) social links */
+    const s = CONFIG.socials || {};
+    const links = [["instagram","Instagram"],["tiktok","TikTok"],["facebook","Facebook"]]
+      .map(([k,label]) => { const u = txt(s[k]); return /^https?:/i.test(u) ? `<a href="${esc(u)}" rel="noopener">${label}</a>` : ""; }).join("");
+    if (links) fill("socials", `<span class="soc-h">Find me</span> ${links}`);
+  });
+  safe(() => {                                                      /* (l) we buy phones */
+    const b = CONFIG.buyPhones || {}, t = txt(b.title), x = txt(b.text);
+    if (t || x) fill("buyphones", `<div class="box"><span class="ico" aria-hidden="true">📲</span><div>${t?`<strong>${esc(t)}</strong>`:""}${x?`<span>${esc(x)}</span>`:""}<span><a href="sms:${CONFIG.phone}">Text me what you've got</a></span></div></div>`);
+  });
+  safe(() => { const c = txt(CONFIG.faceCaption); if (c) fill("facecaption", esc(c)); });
+  safe(() => { const c = txt(CONFIG.callLine); if (c) fill("callline", `<span>${esc(c)}</span>`); });
+  safe(() => { const c = txt(CONFIG.priceNote); if (c) fill("pricenote", `<span>${esc(c)}</span>`); });
 };
 
 /* ---------- tabs ----------
@@ -471,12 +622,13 @@ MB.flair = () => {
   if (document.body.dataset.page !== "index") return;
   /* homepage only: twinkling stars, one arrival moment, and a mascot you can tap */
   const o = document.querySelector(".hero .orbit"); if (!o) return;
-  const img = o.querySelector("img");
+  const img = o.querySelector(".fx-mascot") || o.querySelector("img");
   [[4, 30, 0], [90, 60, 1.3], [24, 94, 2.4]].forEach(([x, y, d]) => {
     const t = document.createElement("b"); t.className = "twk";
     t.style.left = x + "%"; t.style.top = y + "%"; t.style.animationDelay = d + "s"; o.appendChild(t);
   });
   let seen = false; try { seen = sessionStorage.getItem("mb_arrived") === "1"; sessionStorage.setItem("mb_arrived", "1"); } catch(e){}
+  if (o.querySelector(".fx")){ safe(MB.heroFx, o); return; }   /* new hero owns the sequence */
   if (!seen && !calm()){
     o.classList.add("arrive");
     setTimeout(() => MB.sparkle(img || o, 12, 64), 650);
@@ -495,14 +647,42 @@ MB.flair = () => {
   });
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-  buildChrome(); MB.renderDock();
+/* ---------- hero animation: cracked phone → repair beam → mascot → photo ----------
+   Pure CSS/JS, visuals only. Plays once per session; off under reduced motion;
+   pauses off-screen. With no photo file it holds on the mascot. Without JS the
+   mascot simply shows (the phone/beam start invisible in CSS). */
+MB.heroFx = o => {
+  const fx = o.querySelector(".fx"); if (!fx || fx.dataset.fx) return; fx.dataset.fx = "1";
+  const face = fx.querySelector(".fx-face");
+  const hasPhoto = () => face && !face.classList.contains("gone") && face.complete && face.naturalWidth > 0;
+  const settle = photo => { fx.classList.add("done"); fx.classList.toggle("showface", !!photo); };
+  if (calm()){ settle(hasPhoto()); return; }
+  let seen = false;
+  try { seen = sessionStorage.getItem("mb_fx") === "1"; sessionStorage.setItem("mb_fx", "1"); } catch(e){}
+  if (seen){ settle(hasPhoto()); return; }
+  fx.classList.add("play");
+  const step = (cls, ms) => setTimeout(() => { if (fx.isConnected) fx.classList.add(cls); }, ms);
+  step("shake", 750);
+  step("beam", 1450);
+  step("heal", 2150);
+  setTimeout(() => { if (fx.isConnected){ fx.classList.add("morph"); MB.sparkle(fx.querySelector(".fx-mascot") || fx, 10, 44); } }, 2650);
+  setTimeout(() => { if (fx.isConnected) settle(hasPhoto()); }, 3650);
+  if ("IntersectionObserver" in window) new IntersectionObserver(es => es.forEach(en => fx.classList.toggle("zzz", !en.isIntersecting))).observe(fx);
+};
+
+/* "Where's the wizard today" — re-runnable so the sheet can update it too. */
+MB.paintWhere = () => {
   const where = document.querySelector(".where"), today = CONFIG.today || {};
   const area = txt(today.area), note = txt(today.note);
   if (where && area && !MB.looksLikeAddress(area + " " + note)){
     where.innerHTML = `<strong><span aria-hidden="true">\u{1F4CD}</span> ${esc(area)}</strong>` +
       `<span><a href="sms:${CONFIG.phone}">Text me</a>${note ? " " + esc(note) : ""}</span>`;
   }
+};
+
+MB.boot = () => {
+  buildChrome(); MB.renderDock();
+  MB.paintWhere();
   document.addEventListener("click", e => {
     const t = e.target.closest("button"); if (!t) return;
     const d = t.dataset;
@@ -533,4 +713,13 @@ document.addEventListener("DOMContentLoaded", () => {
   safe(MB.headerTuck);
   if (window.pageInit) window.pageInit();
   safe(MB.flair);
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  MB.boot();
+  /* Sheet override lands in the background; the baked-in values show meanwhile. */
+  try {
+    const r = MB.loadSheet();
+    if (r && r.then) r.then(ok => { if (ok){ MB.paintWhere(); safe(MB.renderSlots); MB.refresh(); } });
+  } catch(e){}
 });

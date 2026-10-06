@@ -26,7 +26,7 @@
 <main id="main" class="wrap">
   <div class="hero solo">
     <div>
-      <h1>Order your part from the wizard.</h1>
+      <h1>Order your part.</h1>
       <p>Add parts to your bag and send the order. I'll confirm stock, quote labor if you want it installed, and reply by text or email.</p>
     </div>
   </div>
@@ -41,6 +41,8 @@
     </div>
   </section>
 
+  <div data-slot="buyphones" hidden></div>
+
   <section id="order" aria-labelledby="partsH">
     <h2 id="partsH">Parts</h2>
     <div class="chips" role="group" aria-label="Filter parts" id="chips"></div>
@@ -52,6 +54,7 @@
     </div>
     <p class="note">Don't see your model? <a href="book.html">Ask the Wizard</a>. Most parts arrive the same day or next day.</p>
   </section>
+  <div class="socials" data-slot="socials" hidden></div>
   <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
 <script>

@@ -322,3 +322,64 @@ table.prices td:last-child,table.prices th:last-child{text-align:right;font-fami
 /* Fold open (wide): let short lists sit side by side */
 @media (min-width:640px){.facts{grid-template-columns:1fr 1fr;gap:20px 26px}}
 [hidden]{display:none!important}
+
+/* ---------- hero repair animation (second pass) ---------- */
+.fx{position:absolute;inset:0}
+.fx .fx-mascot{position:absolute;inset:14px;width:auto;height:calc(100% - 28px);margin:auto;z-index:2}
+.fx .fx-phone{position:absolute;left:50%;top:6%;width:62px;height:118px;margin-left:-31px;border-radius:14px;
+  background:linear-gradient(165deg,#332b52 0%,#1b1530 70%);border:3px solid #574e80;
+  box-shadow:inset 0 0 0 4px #12101f,0 8px 22px rgba(0,0,0,.5);opacity:0;z-index:3;transform:translateY(-160px)}
+.fx .fx-phone::after{content:"";position:absolute;inset:8px;border-radius:8px;background:linear-gradient(165deg,#3d3560,#241d40)}
+.fx .fx-crack{position:absolute;background:#aeb8d8;opacity:.95;border-radius:2px;z-index:1}
+.fx .fx-crack.c1{left:18%;top:6%;width:3px;height:52%;transform:rotate(14deg)}
+.fx .fx-crack.c2{left:52%;top:22%;width:3px;height:44%;transform:rotate(-20deg)}
+.fx .fx-crack.c3{left:8%;top:48%;width:64%;height:3px;transform:rotate(-8deg)}
+.fx .fx-beam{position:absolute;left:50%;top:-4%;width:84px;height:12px;margin-left:-42px;border-radius:6px;
+  background:linear-gradient(90deg,transparent,#5eead4,transparent);opacity:0;z-index:4}
+.fx .fx-face{position:absolute;inset:14px;width:calc(100% - 28px);height:calc(100% - 28px);object-fit:cover;
+  border-radius:50%;opacity:0;transform:rotateY(90deg) scale(.92);transition:opacity .6s,transform .6s;z-index:5}
+.fx .fx-face.gone{display:none}
+.fx.play .fx-mascot{opacity:0;transform:scale(.5)}
+.fx.play .fx-phone{animation:fx-drop .55s cubic-bezier(.3,1.4,.5,1) forwards}
+@keyframes fx-drop{to{opacity:1;transform:translateY(0)}}
+.fx.play.shake .fx-phone{animation:fx-shake .5s}
+@keyframes fx-shake{20%{transform:translate(-6px,0) rotate(-5deg)}45%{transform:translate(5px,0) rotate(4deg)}70%{transform:translate(-3px,0)}100%{transform:translate(0,0)}}
+.fx.play.beam .fx-beam{animation:fx-beam 1s ease-in forwards}
+@keyframes fx-beam{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(150px)}}
+.fx.play.heal .fx-crack{opacity:0;transition:opacity .45s}
+.fx.play.morph .fx-phone{animation:none;opacity:0;transform:scale(.3);transition:opacity .45s,transform .45s}
+.fx.play.morph .fx-mascot{opacity:1;transform:scale(1);transition:opacity .45s,transform .55s cubic-bezier(.3,1.5,.5,1)}
+.fx.done .fx-phone,.fx.done .fx-beam{display:none}
+.fx.done .fx-mascot{opacity:1;transform:scale(1)}
+.fx.done.showface .fx-mascot{opacity:0;transform:scale(.9)}
+.fx.done.showface .fx-face{opacity:1;transform:rotateY(0) scale(1)}
+.orbit.zzz .fx *{animation-play-state:paused}
+
+/* ---------- second-pass components ---------- */
+.announce{background:#0d2b26;color:#d9f7ee;text-align:center;padding:9px 14px;font-size:14px}
+.announce[hidden]{display:none}
+.callline{text-align:center;color:var(--gold);font-weight:600;margin:20px 0 0}
+.callline[hidden]{display:none}
+.badges{margin-top:18px}
+.badges[hidden]{display:none}
+.tsts{margin-top:var(--section)}
+.tsts[hidden]{display:none}
+.tst{margin:0 0 14px;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.tst blockquote{margin:0 0 8px;font-style:italic}
+.tst figcaption{color:var(--muted);font-size:15px}
+.socials{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;margin:18px 0 0;font-size:15px}
+.socials[hidden]{display:none}
+.soc-h{color:var(--muted)}
+.facecard{margin:0 0 22px;text-align:center}
+.facecard img{width:120px;height:120px;object-fit:cover;border-radius:50%;margin:0 auto 10px;border:3px solid var(--gold)}
+.facecard figcaption{color:var(--muted);font-style:italic;max-width:420px;margin:0 auto}
+.bagface{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+.shead{display:flex;align-items:center;gap:12px}
+.shead h2{margin:0;flex:1}
+details.math{margin-top:8px;font-size:14.5px;color:var(--muted)}
+details.math summary{cursor:pointer;color:var(--teal);display:inline-block;padding:6px 0}
+details.math summary::after{content:" +"}
+details.math[open] summary::after{content:" −"}
+details.math span{display:block;padding:2px 0 8px}
+.firstorder{border:1px dashed var(--gold);border-radius:12px;padding:10px 14px}
+.about img.face{width:72px;height:72px;object-fit:cover;border-radius:50%;border:2px solid var(--gold)}

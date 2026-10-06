@@ -54,7 +54,7 @@
       <h1>Your phone, mended on the spot.</h1>
       <p>I bring the tools and parts to you — home, office, or a coffee shop — and fix your iPhone, Galaxy or Pixel the same day.</p>
     </div>
-    <div class="orbit" aria-hidden="true"><i></i><i></i><i></i><i></i><img src="assets/mascot.png" alt=""></div>
+    <div class="orbit" aria-hidden="true"><div class="fx" id="fx"><img class="fx-mascot" src="assets/mascot.png" alt=""><div class="fx-phone"><i class="fx-crack c1"></i><i class="fx-crack c2"></i><i class="fx-crack c3"></i></div><div class="fx-beam"></div><img class="fx-face" src="assets/jonathan.jpg" alt="" onerror="this.classList.add('gone')"></div></div>
   </div>
   <div class="promo" data-slot="promo" hidden></div>
 
@@ -68,10 +68,14 @@
     <div class="choice"><p>Not sure? Tell me what happened.</p><a class="btn" href="book.html">Ask the Wizard <span aria-hidden="true">🪄</span></a></div>
   </div>
 
+  <div class="boxes badges" data-slot="badges" hidden></div>
+
+  <p class="callline" data-slot="callline" hidden></p>
   <section id="order" aria-labelledby="orderH">
     <h2 id="orderH">What are we fixing?</h2>
     <p class="sub">Pick your phone, then add repairs to your bag. Prices update as you go.</p>
     <div id="menuRoot"></div>
+    <p class="note" data-slot="pricenote" hidden></p>
   </section>
 
   <section aria-labelledby="vanH">
@@ -113,12 +117,15 @@
     </section>
   </div>
 
+  <div class="tsts" data-slot="testimonials" hidden></div>
+
   <section aria-labelledby="aboutH">
-    <div class="about"><img src="assets/mascot-icon.png" alt=""><div>
+    <div class="about"><img class="face" src="assets/jonathan.jpg" onerror="this.onerror=null;this.src='assets/mascot-icon.png'" alt="Jonathan"><div>
     <h2 id="aboutH">About me</h2>
     <p>I treat phones as precision hardware worth restoring properly, not something to swap for an expensive full assembly. The wizard hat is there to make a cracked screen feel less like a bad day. The benchwork underneath it is careful and conventional.</p>
     </div></div>
   </section>
+  <div class="socials" data-slot="socials" hidden></div>
   <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
 </main>
 <script>
@@ -129,7 +136,7 @@ window.pageInit = () => {
     const live = PARTS.filter(p => p.stock > 0);
     van.innerHTML = live.map(p => {
       const svc = SERVICES.find(s => s.part===p.kind);
-      return `<div class="card vcard"><h3>${p.name}</h3><p>${svc.name}, installed: ${range(svc.labor[0]+p.price, svc.labor[1]+p.price)}. ${p.stock} on hand.</p>${MB.control("repair", svc.id, p.models[0], svc.name)}</div>`;
+      return `<div class="card vcard"><h3>${p.name}</h3><p>${svc.name}, about ${rmoney(svc.labor[0]+p.price)}–${rmoney(svc.labor[1]+p.price).slice(1)} installed. ${p.stock} on hand.</p>${MB.control("repair", svc.id, p.models[0], svc.name)}</div>`;
     }).join("") || `<p class="sub">Nothing loaded in the van right now. Text me and I'll check what I can get.</p>`;
   };
   MB.onChange.push(draw); draw();

@@ -13,7 +13,8 @@ script. Drop the files on GitHub Pages and it runs.
 | `book.html` | Ask the Wizard — voice orb + written form (both send by text) |
 | `inventory.html` | Shop parts |
 | `trust.html` | Trust & FAQ |
-| `faq.html` / `consult.html` | Redirects only, for old links |
+| `faq.html` / `consult.html` | REMOVED Oct 2026 — `404.html` now catches their old links |
+| `404.html` | Catches dead links; forwards old consult/faq URLs |
 | `assets/mb.css` | All styling |
 | `assets/mb.js` | Shared: header, bottom dock, bag, availability, checkout |
 | `assets/` images | Mascot, icons, share card — do not replace |
@@ -21,8 +22,28 @@ script. Drop the files on GitHub Pages and it runs.
 
 ## Editing prices, stock and hours
 
-**Everything lives in the top section of `assets/mb.js`** (the `EDIT ME`
-block):
+**Two ways, your choice.** Everything still lives in the top section of
+`assets/mb.js` (the `EDIT ME` block) as the fallback — and the site now can
+also pull from a Google Sheet you edit on your phone:
+
+1. **Google Sheet (easiest):** create a sheet with three tabs named exactly
+   `parts`, `labor`, `settings`, with these columns:
+   - `parts`: `id, name, price, stock, grade`
+   - `labor`: `id, name, labor_low, labor_high, time`
+   - `settings`: `key, value` (keys: `tripFeeWichita`, `todayArea`,
+     `todayNote`, `announceOn`, `announceText`)
+   
+   Then File → Share → Publish to web, and paste the sheet ID (the long
+   string between `/d/` and `/edit` in the sheet's URL) into `sheetId` in
+   EDIT ME. The site fetches the sheet on every page load and overrides the
+   baked-in values. Rows are matched by `id`; unknown ids and bad numbers
+   are ignored. If the sheet can't be reached, the baked-in values are used
+   and the page never breaks.
+2. **EDIT ME directly:** as before — `CONFIG`, `PARTS`, `SERVICES` at the top
+   of `assets/mb.js`.
+
+Either way, commit and push only matters for code changes; price edits in the
+sheet go live on their own in a minute or two.
 
 - `CONFIG.visitWindows` — visit hours per weekday (`null` = closed)
 - `CONFIG.today` — the "where's the wizard today" area (general area only,
@@ -52,6 +73,17 @@ it has words in it. Typos, wrong types and deleted lines all count as off.
 | `paymentMethods` | a list, e.g. `["Cash", "Venmo"]` | In the bag, and in the FAQ answer *How do I pay* |
 | `airportShiftPremium` | `on: true/false`, `title`, `text` | *Where and when* on Home, under the tabs on Services. Display only — never added to totals or the texted order |
 | `warrantyText` | plain text; a blank line starts a new paragraph | Top of the warranty section on Trust & FAQ |
+| `sheetId` | your Google Sheet's ID, or `""` | When set, the sheet overrides PARTS, SERVICES labor/time, and sheet-driven settings on every load |
+| `announceBar` | `on: true/false`, `text` | Slim banner under the header, every page |
+| `trustBadges` | list of `{t, d}` | Badge row on Home |
+| `testimonials` | list of `{q, n}` | Quotes on Home |
+| `reviewUrl` | a URL, or `""` | "Read my Google reviews" under testimonials. NOTE: your Business profile lists your street address |
+| `socials` | `{instagram, tiktok, facebook}` URLs | Link row above every footer; empty ones hidden |
+| `buyPhones` | `title`, `text` | "We buy phones" block on Shop parts |
+| `firstOrder` | `on: true/false`, `code`, `text` | Nudge in the bag. Display only — the text must tell customers to type the code in their notes |
+| `faceCaption` | plain text | Caption under your photo on Trust |
+| `callLine` | plain text | "Rather just talk?" line above the repair menu on Home |
+| `priceNote` | plain text | One line near pricing reframing labor |
 
 Each place it can show is an empty, hidden element in the HTML, like
 `<div data-slot="promo" hidden></div>`. Move or delete that element to change
