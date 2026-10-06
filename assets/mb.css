@@ -322,3 +322,39 @@ table.prices td:last-child,table.prices th:last-child{text-align:right;font-fami
 /* Fold open (wide): let short lists sit side by side */
 @media (min-width:640px){.facts{grid-template-columns:1fr 1fr;gap:20px 26px}}
 [hidden]{display:none!important}
+
+/* ---------- hero repair art (adapted from the EasyCare pilot) ----------
+   Broken phone → cracks → repair sweep → screen lights up → checkmark →
+   crossfades into the mascot logo. Plays once on load (the play class is in
+   the HTML); tap the phone to watch it again. */
+.mb-art{width:150px;justify-self:center}
+.mb-phone{all:unset;display:block;position:relative;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:mb-drift 6.5s ease-in-out infinite}
+.mb-phone:focus-visible{outline:3px solid var(--teal);outline-offset:6px;border-radius:26px}
+.mb-phone svg{display:block;width:100%;height:auto;filter:drop-shadow(0 16px 22px rgba(2,8,30,.5))}
+.mb-phone .mb-logo{position:absolute;inset:0;margin:auto;width:78%;opacity:0;pointer-events:none;filter:drop-shadow(0 10px 24px rgba(212,167,44,.3))}
+@keyframes mb-drift{50%{transform:translateY(-8px) rotate(-1.5deg)}}
+.mb-phone .cracks path{stroke-dasharray:100;stroke-dashoffset:0;opacity:0}
+.mb-phone .glitch,.mb-phone .sweep{opacity:0}
+.mb-phone .gear,.mb-phone .check{transform-box:fill-box;transform-origin:center}
+.mb-phone.play .cracks path{animation:mb-crack 3.6s .3s ease-out both}
+.mb-phone.play .glitch{animation:mb-glitch 3.6s .3s linear both}
+.mb-phone.play .sweep{animation:mb-sweep 3.6s .3s cubic-bezier(.5,0,.3,1) both}
+.mb-phone.play .on{animation:mb-turnon 3.6s .3s ease both}
+.mb-phone.play .gear{animation:mb-spin 3.6s .3s cubic-bezier(.3,.7,.3,1) both}
+.mb-phone.play .check{animation:mb-checkpop 3.6s .3s ease both}
+.mb-phone.play svg{animation:mb-phoneout 4.6s .3s ease both}
+.mb-phone.play .mb-logo{animation:mb-logoin 4.6s .3s ease both}
+@keyframes mb-crack{0%{stroke-dashoffset:100;opacity:1}16%{stroke-dashoffset:0;opacity:1}50%{opacity:1}64%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes mb-glitch{0%{opacity:0}12%{opacity:1}20%{opacity:.45}26%{opacity:1}50%{opacity:1}58%,100%{opacity:0}}
+@keyframes mb-sweep{0%,44%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(330px)}71%,100%{opacity:0;transform:translateX(330px)}}
+@keyframes mb-turnon{0%,52%{opacity:0}70%,100%{opacity:1}}
+@keyframes mb-spin{0%,52%{transform:rotate(-120deg)}78%,100%{transform:rotate(0)}}
+@keyframes mb-checkpop{0%,68%{transform:scale(0)}80%{transform:scale(1.18)}88%,100%{transform:scale(1)}}
+@keyframes mb-phoneout{0%,78%{opacity:1;transform:scale(1)}92%,100%{opacity:0;transform:scale(.82)}}
+@keyframes mb-logoin{0%,78%{opacity:0;transform:scale(.7)}92%,100%{opacity:1;transform:scale(1)}}
+@media (max-width:420px){.mb-art{width:112px}}
+@media (prefers-reduced-motion:reduce){
+  .mb-phone{animation:none}
+  .mb-phone svg{display:none}
+  .mb-phone .mb-logo{position:static;opacity:1;transform:none}
+}

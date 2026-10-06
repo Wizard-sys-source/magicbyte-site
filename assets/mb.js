@@ -495,6 +495,15 @@ MB.flair = () => {
   });
 };
 
+/* Hero repair art (adapted from the EasyCare pilot): tap the phone to watch
+   the repair again. The play class is in the HTML so it runs once on load
+   with CSS alone; this only re-triggers it. */
+document.addEventListener("click", e => {
+  const b = e.target && e.target.closest ? e.target.closest(".mb-phone") : null;
+  if (!b) return;
+  b.classList.remove("play"); void b.offsetWidth; b.classList.add("play");
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   buildChrome(); MB.renderDock();
   const where = document.querySelector(".where"), today = CONFIG.today || {};
