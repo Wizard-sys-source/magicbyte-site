@@ -256,7 +256,7 @@ footer{padding:48px 0 10px;color:var(--muted);font-size:14.5px}
   clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:mb-twinkle 3.8s ease-in-out infinite}
 .orbit .twk:nth-of-type(2){background:#f3dc8c}
 .orbit.arrive{animation:mb-arrive .9s cubic-bezier(.2,.8,.2,1) both}
-.orbit.zzz::before,.orbit.zzz::after,.orbit.zzz > *{animation-play-state:paused}
+.orbit.zzz::before,.orbit.zzz::after,.orbit.zzz *{animation-play-state:paused}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes twinkle{50%{opacity:.25}}
 @keyframes mb-hover{0%,100%{transform:translateY(0) rotate(-1.4deg)}50%{transform:translateY(-9px) rotate(1.4deg)}}
@@ -321,40 +321,119 @@ table.prices td:last-child,table.prices th:last-child{text-align:right;font-fami
 
 /* Fold open (wide): let short lists sit side by side */
 @media (min-width:640px){.facts{grid-template-columns:1fr 1fr;gap:20px 26px}}
-[hidden]{display:none!important}
 
-/* ---------- hero repair art (adapted from the EasyCare pilot) ----------
-   Broken phone → cracks → repair sweep → screen lights up → checkmark →
-   crossfades into the mascot logo. Plays once on load (the play class is in
-   the HTML); tap the phone to watch it again. */
-.mb-art{width:150px;justify-self:center}
-.mb-phone{all:unset;display:block;position:relative;width:100%;cursor:pointer;-webkit-tap-highlight-color:transparent;animation:mb-drift 6.5s ease-in-out infinite}
-.mb-phone:focus-visible{outline:3px solid var(--teal);outline-offset:6px;border-radius:26px}
-.mb-phone svg{display:block;width:100%;height:auto;filter:drop-shadow(0 16px 22px rgba(2,8,30,.5))}
-.mb-phone .mb-logo{position:absolute;inset:0;margin:auto;width:78%;opacity:0;pointer-events:none;filter:drop-shadow(0 10px 24px rgba(212,167,44,.3))}
-@keyframes mb-drift{50%{transform:translateY(-8px) rotate(-1.5deg)}}
-.mb-phone .cracks path{stroke-dasharray:100;stroke-dashoffset:0;opacity:0}
-.mb-phone .glitch,.mb-phone .sweep{opacity:0}
-.mb-phone .gear,.mb-phone .check{transform-box:fill-box;transform-origin:center}
-.mb-phone.play .cracks path{animation:mb-crack 3.6s .3s ease-out both}
-.mb-phone.play .glitch{animation:mb-glitch 3.6s .3s linear both}
-.mb-phone.play .sweep{animation:mb-sweep 3.6s .3s cubic-bezier(.5,0,.3,1) both}
-.mb-phone.play .on{animation:mb-turnon 3.6s .3s ease both}
-.mb-phone.play .gear{animation:mb-spin 3.6s .3s cubic-bezier(.3,.7,.3,1) both}
-.mb-phone.play .check{animation:mb-checkpop 3.6s .3s ease both}
-.mb-phone.play svg{animation:mb-phoneout 4.6s .3s ease both}
-.mb-phone.play .mb-logo{animation:mb-logoin 4.6s .3s ease both}
-@keyframes mb-crack{0%{stroke-dashoffset:100;opacity:1}16%{stroke-dashoffset:0;opacity:1}50%{opacity:1}64%,100%{stroke-dashoffset:0;opacity:0}}
-@keyframes mb-glitch{0%{opacity:0}12%{opacity:1}20%{opacity:.45}26%{opacity:1}50%{opacity:1}58%,100%{opacity:0}}
-@keyframes mb-sweep{0%,44%{opacity:1;transform:translateX(0)}70%{opacity:1;transform:translateX(330px)}71%,100%{opacity:0;transform:translateX(330px)}}
-@keyframes mb-turnon{0%,52%{opacity:0}70%,100%{opacity:1}}
-@keyframes mb-spin{0%,52%{transform:rotate(-120deg)}78%,100%{transform:rotate(0)}}
-@keyframes mb-checkpop{0%,68%{transform:scale(0)}80%{transform:scale(1.18)}88%,100%{transform:scale(1)}}
-@keyframes mb-phoneout{0%,78%{opacity:1;transform:scale(1)}92%,100%{opacity:0;transform:scale(.82)}}
-@keyframes mb-logoin{0%,78%{opacity:0;transform:scale(.7)}92%,100%{opacity:1;transform:scale(1)}}
-@media (max-width:420px){.mb-art{width:112px}}
-@media (prefers-reduced-motion:reduce){
-  .mb-phone{animation:none}
-  .mb-phone svg{display:none}
-  .mb-phone .mb-logo{position:static;opacity:1;transform:none}
-}
+/* ===== October pass 2: opening animation, photo spots, talk bar, banner, badges, voices, socials, prices ===== */
+
+/* Home hero: a cracked phone mends itself into the mascot, then turns to your photo (mb.js MB.hero) */
+.home-hero{grid-template-columns:1fr 160px}
+.stagewrap{margin:0;justify-self:center;display:grid;justify-items:center;gap:8px}
+.home-hero .stage{width:160px;height:160px}
+.stage{perspective:640px}
+.stage .flip{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,.7,.2,1)}
+.stage.flipped .flip{transform:rotateY(180deg)}
+.stage.instant .flip{transition:none}
+.stage .face{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.stage .face.back{transform:rotateY(180deg)}
+.stage:not(.has-photo) .face.back{display:none}
+.stage .face.back img{inset:13%;width:74%;height:74%;margin:0;border-radius:50%;object-fit:cover;border:3px solid var(--gold);background:var(--panel-2);
+  filter:none;animation:none;box-shadow:0 10px 26px rgba(5,3,10,.55),0 0 0 6px rgba(212,167,44,.12)}
+.stage.intro .logo{opacity:0}
+.stage .phone{position:absolute;inset:0;margin:auto;width:44%;height:76%;overflow:visible;pointer-events:none}
+.stage.has-photo{cursor:pointer}
+.cap{margin:0;max-width:180px;text-align:center;font:italic 400 15px/1.35 var(--serif);color:var(--muted)}
+@media (max-width:420px){.home-hero{grid-template-columns:1fr 124px}.home-hero .stage{width:124px;height:124px}}
+
+/* "Rather just talk?" under the Home hero */
+.talkline{margin:14px 0 0;color:var(--muted);font-size:17px}
+.talkline a{display:inline-flex;align-items:center;min-height:44px;vertical-align:middle;font:700 18px/1 var(--mono);color:var(--text);
+  text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:1.5px;text-underline-offset:.3em}
+
+/* announcement banner, under the header on every page */
+.announce{background:linear-gradient(90deg,rgba(212,167,44,.17),rgba(212,167,44,.06));border-bottom:1px solid rgba(212,167,44,.45)}
+.announce .wrap{display:flex;align-items:center;gap:10px;min-height:46px}
+.announce .ico{flex:none;color:var(--gold);line-height:1}
+.announce p{flex:1;margin:0;padding:6px 0;font-size:15.5px;line-height:1.4}
+.announce .x{flex:none;margin-right:-12px;border-color:transparent;color:var(--muted)}
+
+/* trust badges on Home: one grouped panel, two across */
+.badgerow{margin:22px 0 0}
+.badges{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.badges li{background:var(--panel);display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:14px 14px 15px}
+.badges li > div:only-child{grid-column:1/-1}
+.badges li:last-child:nth-child(odd){grid-column:1/-1}
+.badges .ico{font-size:20px;line-height:1.3}
+.badges strong{display:block;font-size:15.5px;line-height:1.3}
+.badges div > span{display:block;margin-top:3px;color:var(--muted);font-size:14.5px;line-height:1.45}
+@media (max-width:359px){.badges{grid-template-columns:1fr}.badges li:last-child:nth-child(odd){grid-column:auto}}
+
+/* testimonials and the Google reviews link */
+.voices{display:flex;gap:12px;overflow-x:auto;margin:var(--section) -6px 0;padding:6px 6px 12px;scroll-snap-type:x mandatory;scroll-padding:0 6px;scrollbar-width:none}
+.voices::-webkit-scrollbar{display:none}
+.voice{flex:0 0 84%;max-width:440px;margin:0;scroll-snap-align:start;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:6px 16px 16px 6px}
+.voice:only-child{flex-basis:100%;max-width:none}
+.voice blockquote{margin:0}
+.voice p{margin:0;font:italic 400 17.5px/1.5 var(--serif);color:var(--text)}
+.voice p::before{content:"\201C"}
+.voice p::after{content:"\201D"}
+.voice figcaption{margin-top:10px;font:500 13.5px/1.3 var(--mono);color:var(--muted)}
+.review{margin:16px 0 0}
+.review .btn{display:inline-flex;width:auto}
+
+/* social links in the footer */
+footer .socials{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.socials a{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--line-strong);border-radius:999px;color:var(--text);text-decoration:none;font:500 14px/1 var(--mono)}
+
+/* "We buy phones" on Shop parts */
+.buy{border-color:rgba(212,167,44,.6);background:linear-gradient(160deg,rgba(212,167,44,.12),rgba(212,167,44,.02)),var(--panel)}
+.buy h2{margin:0 0 6px}
+.buy p{margin:0 0 14px;color:var(--muted)}
+.buy .btn{display:inline-flex;width:auto}
+
+/* the bag: your photo by the title, the first-order nudge under it */
+.shead{gap:12px}
+.bag-me{flex:none;width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--panel-2)}
+.bag-t{flex:1;min-width:0}
+.bag-t .cap{max-width:none;margin-top:5px;text-align:left;font-size:14px}
+.nudge{flex:none;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;margin:12px 20px 0;padding:12px 14px;border-radius:14px;border:1px solid rgba(212,167,44,.6);background:rgba(212,167,44,.1)}
+.nudge.after{display:none}
+.nudge .ico{color:var(--gold);line-height:1.5}
+.nudge p{margin:0;font-size:15.5px;line-height:1.5}
+.nudge code{display:inline-block;padding:5px 9px;border-radius:8px;background:var(--gold);color:var(--gold-ink);font:700 14px/1 var(--mono);-webkit-user-select:all;user-select:all}
+
+/* your number, big, on the bar at the bottom of every page */
+.dock .talk{max-width:680px;margin:0 auto 8px;display:flex;align-items:center;gap:12px}
+.dock .talk .num{flex:none;display:flex;align-items:center;min-height:44px;font:700 22px/1 var(--mono);letter-spacing:.01em;color:var(--text);text-decoration:none}
+.dock .talk span{font-size:13.5px;line-height:1.3;color:var(--muted)}
+@media (max-width:370px){.dock .talk .num{font-size:19px}.dock .talk span{font-size:12.5px}}
+
+/* prices: one installed number, the math behind a quiet tap */
+.math{margin:0;border:0}
+.math summary{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;font:500 13.5px/1 var(--mono);color:var(--teal)}
+.math summary::after{content:"";position:static;width:6px;height:6px;color:inherit;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg)}
+.math[open] summary::after{content:"";transform:translateY(1px) rotate(225deg)}
+.math dl{margin:0 0 6px;padding:10px 12px;max-width:300px;display:grid;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:12px}
+.math dl div{display:flex;justify-content:space-between;gap:16px;font:500 13.5px/1.7 var(--mono)}
+.math dt{color:var(--muted)}
+.math dd{margin:0;color:var(--text)}
+.laborline{margin:-6px 0 4px}
+.tripnote{margin-top:12px}
+
+/* Trust & FAQ: your photo beside the heading */
+.me-hero{grid-template-columns:1fr auto;grid-template-areas:"t f" "p p";column-gap:16px;align-items:center}
+.me-hero h1{grid-area:t;margin:0}
+.me-slot{grid-area:f;margin:0;display:grid;justify-items:center;gap:8px}
+.me-slot img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--panel-2);filter:none;box-shadow:0 8px 24px rgba(5,3,10,.4)}
+.me-copy{grid-area:p;margin-top:16px}
+.me-copy .review{margin-top:14px}
+@media (min-width:600px){.me-hero{grid-template-areas:"t f" "p f";align-items:start}.me-slot{align-self:center}.me-slot img{width:132px;height:132px}}
+
+/* step text is a plain paragraph now */
+.steps p{margin:0;color:var(--muted);font-size:16px}
+
+/* ?sheetcheck panel (only for you) */
+.sheetcheck{margin:20px 0 0;padding:16px 18px;border:2px dashed var(--teal);border-radius:14px;background:var(--panel);font-size:15px}
+.sheetcheck h2{font-size:20px}
+.sheetcheck h3{margin:12px 0 4px;font:600 15px/1.4 var(--mono)}
+.sheetcheck ul{margin:0;padding-left:18px;color:var(--muted)}
+
+[hidden]{display:none!important}

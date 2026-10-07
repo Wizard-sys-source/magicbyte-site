@@ -37,52 +37,61 @@
   <div class="tabs" data-tabs>
     <section id="menu" aria-labelledby="menuH" data-tab>
       <h2 id="menuH">The repair menu</h2>
-      <p class="sub">Labor for each job. The part is added on top, at cost.</p>
-      <div class="boxes" id="svcList"></div>
+      <p class="sub">Pick your phone, then add repairs to your bag. Prices update as you go.</p>
+      <p class="note laborline" data-slot="laborline" hidden></p>
+      <div id="order"></div>
     </section>
 
     <section id="screens" aria-labelledby="scrH" data-tab>
       <h2 id="scrH">Screen prices by model</h2>
-      <p class="sub">Screen at cost plus labor. Models not in the van are estimates until I order the part. Add the $10 Wichita trip fee.</p>
+      <p class="sub">Models not in the van are estimates until I order the part.</p>
       <p class="tierline" data-slot="tier" hidden></p>
       <div class="card tablewrap"><table class="prices" id="scrTable"><thead><tr><th>Model</th><th>Installed</th></tr></thead><tbody></tbody></table></div>
+      <p class="note tripnote" data-slot="tripnote" hidden></p>
       <p class="note">Don't see your phone? <a href="book.html">Ask the Wizard</a> and I'll price it.</p>
     </section>
   </div>
   <div class="box mt" data-slot="airport" hidden></div>
 
   <section aria-labelledby="limH">
-    <h2 id="limH">The forbidden arts</h2>
-    <div class="box"><span class="ico" aria-hidden="true">🚫</span><div><strong>What I don't do</strong><span>Deep water resurrections, unless the phone still shows a spark of life, and microsoldering (board-level chip repair). I stick to modular repairs and glass restoration, done properly.</span></div></div>
+    <h2 id="limH">What I don't do</h2>
+    <div class="box"><span class="ico" aria-hidden="true">🚫</span><div><span>Deep water resurrections, unless the phone still shows a spark of life, and microsoldering (board-level chip repair). I stick to modular repairs, done properly.</span></div></div>
   </section>
 
   <section aria-labelledby="howH">
     <h2 id="howH">How a job works</h2>
     <ol class="steps">
-      <li><div><strong>Book</strong><span>Fill your bag on the <a href="index.html#order">home page</a>, <a href="book.html">ask the Wizard</a>, or text 316-559-4816.</span></div></li>
-      <li><div><strong>Quote</strong><span>You get part cost plus labor. If the part isn't in stock, a deposit covers ordering it.</span></div></li>
-      <li><div><strong>Repair</strong><span>In-stock repairs are usually done the same day, wherever works for you around Wichita.</span></div></li>
-      <li><div><strong>Warranty</strong><span>Every job is covered for 30 days. <a href="trust.html#warranty">See what's covered</a>.</span></div></li>
+      <li><div><strong>Book</strong><p>Fill your bag on the <a href="index.html#order">home page</a>, <a href="book.html">ask the Wizard</a>, or text <span data-bind="phone">316-559-4816</span>.</p></div></li>
+      <li><div><strong>Quote</strong><p>You get part cost plus labor. If the part isn't in stock, a deposit covers ordering it.</p></div></li>
+      <li><div><strong>Repair</strong><p>In-stock repairs are usually done the same day, wherever works for you around Wichita.</p></div></li>
+      <li><div><strong>Warranty</strong><p>Every job is covered for 30 days. <a href="trust.html#warranty">See what's covered</a>.</p></div></li>
     </ol>
   </section>
 
   <div class="choices">
     <div class="choice"><p>Know your model? Get an exact estimate.</p><a class="btn solid" href="index.html#order">Price my repair</a></div>
   </div>
-  <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
+  <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816" data-bind="phone">316-559-4816</a> go to voicemail; texts reach me faster.
+    <p class="socials" data-slot="socials" hidden></p></footer>
 </main>
 <script>
 window.pageInit = () => {
-  const icons = {screen:"📱",battery:"🔋",port:"🔌",camera:"📷",back:"🪟",clean:"🧹",polish:"✨",diag:"🔍"};
-  document.getElementById("svcList").innerHTML = SERVICES.map(s =>
-    `<div class="box svc"><span class="ico" aria-hidden="true">${icons[s.id] || "🔧"}</span><div><strong>${s.name}</strong><span>${s.desc}</span></div><div class="lp">${s.labor ? range(...s.labor) : "Quoted"}<small>${s.time}</small></div></div>`).join("");
-  const scr = SERVICES.find(s => s.id==="screen"), rows = [];
-  PARTS.filter(p => p.kind==="screen" && p.price!=null).forEach(p => p.models.forEach(m => {
-    if (!rows.some(r => r.m===m)) rows.push({m, lo:scr.labor[0]+p.price, hi:scr.labor[1]+p.price, stock:p.stock});
-  }));
-  rows.sort((a,b) => MODELS.iPhone.indexOf(a.m) - MODELS.iPhone.indexOf(b.m));
-  document.querySelector("#scrTable tbody").innerHTML = rows.map(r =>
-    `<tr><td>${r.m}${r.stock>0 ? ' <span class="badge sm">in the van</span>' : ""}</td><td>${range(r.lo,r.hi)}</td></tr>`).join("");
+  MB.mountMenu(document.getElementById("order"));
+  /* every screen with a known price, installed in Wichita: the bag's own math, trip fee included */
+  const tbody = document.querySelector("#scrTable tbody");
+  const table = () => {
+    const scr = SERVICES.find(s => s.id === "screen"), rows = [];
+    if (!scr || !Array.isArray(scr.labor)){ tbody.innerHTML = ""; return; }
+    PARTS.filter(p => p.kind === "screen" && p.price != null).forEach(p => p.models.forEach(m => {
+      if (MB.partFor("screen", m) === p && !rows.some(r => r.m === m)) rows.push({ m, stock: p.stock });
+    }));
+    rows.sort((a, b) => MODELS.iPhone.indexOf(a.m) - MODELS.iPhone.indexOf(b.m));
+    tbody.innerHTML = rows.map(r => {
+      const t = MB.quoteFor({ type: "repair", ref: "screen", model: r.m }, "Wichita");
+      return `<tr><td>${esc(r.m)}${r.stock > 0 ? ' <span class="badge sm">in the van</span>' : ""}</td><td>${range(t.lo, t.hi)}</td></tr>`;
+    }).join("");
+  };
+  MB.onChange.push(table); table();
 };
 </script>
 </body>

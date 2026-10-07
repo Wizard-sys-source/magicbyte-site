@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found | MagicByte</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#150f1e">
+<script>
+/* GitHub Pages shows this page for any address that doesn't exist. The old FAQ and consult
+   pages were folded into Trust & FAQ, so their addresses forward there. To send an old
+   address somewhere else, change it here. */
+(function(){
+  var moved = { "faq": "trust.html#faq", "consult": "trust.html" };
+  var root = /\.github\.io$/i.test(location.hostname) ? ((location.pathname.match(/^\/[^\/]+\//) || ["/"])[0]) : "/";
+  var page = location.pathname.slice(root.length).replace(/\/$/, "").replace(/\.html?$/i, "").toLowerCase();
+  if (moved[page]) location.replace(root + moved[page]);
+})();
+</script>
+<style>
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#150f1e;color:#efe7d6;font:400 18px/1.6 Spectral,Georgia,serif;padding:24px;box-sizing:border-box}
+  main{max-width:520px}
+  h1{font:600 34px/1.1 Spectral,Georgia,serif;margin:0 0 12px}
+  p{color:#a99fb8;margin:0}
+  a{color:#3fbfb0;display:inline-block;padding:10px 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>Nothing at this address.</h1>
+  <p><a href="index.html" data-home>Go to the home page</a> or <a href="trust.html" data-trust>Trust &amp; FAQ</a>.</p>
+</main>
+<script>
+(function(){
+  var root = /\.github\.io$/i.test(location.hostname) ? ((location.pathname.match(/^\/[^\/]+\//) || ["/"])[0]) : "/";
+  document.querySelector("[data-home]").href = root;
+  document.querySelector("[data-trust]").href = root + "trust.html";
+})();
+</script>
+</body>
+</html>

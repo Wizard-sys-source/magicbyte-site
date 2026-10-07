@@ -52,22 +52,26 @@
     </div>
     <p class="note">Don't see your model? <a href="book.html">Ask the Wizard</a>. Most parts arrive the same day or next day.</p>
   </section>
-  <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816">316-559-4816</a> go to voicemail; texts reach me faster.</footer>
+
+  <!-- "We buy phones" (EDIT ME l). Hidden until it has words. -->
+  <section data-slot="webuy" hidden></section>
+  <footer>© 2026 MagicByte, mobile phone repair in Wichita, KS. Calls to <a href="tel:+13165594816" data-bind="phone">316-559-4816</a> go to voicemail; texts reach me faster.
+    <p class="socials" data-slot="socials" hidden></p></footer>
 </main>
 <script>
 window.pageInit = () => {
   let cat = "All";
   const CATS = ["All","In stock","iPhone","Android","Other"];
-  const chips = document.getElementById("chips"), list = document.getElementById("parts");
+  const chips = document.getElementById("chips"), list = document.getElementById("parts"), open = MB.mathMemory(list);
   const draw = () => {
     chips.innerHTML = CATS.map(c => `<button type="button" aria-pressed="${c===cat}" data-pcat="${c}">${c}</button>`).join("");
     const rows = PARTS.filter(p => cat==="All" || (cat==="In stock" ? p.stock>0 : cat==="Android" ? (p.brand==="Galaxy"||p.brand==="Pixel") : p.brand===cat))
       .sort((a,b) => b.stock - a.stock);
     list.innerHTML = rows.map(p => {
-      const nm = p.name + " (part only)";
-      const priceTxt = p.price!=null ? `${money(p.price)} + 5%` : "Quoted after review";
+      const nm = p.name + " (part only)", q = MB.partQuote(p.id), k = "part-" + p.id;
+      const priceTxt = q ? q.lead : "Quoted after review";
       const stock = p.stock>0 ? `<span class="badge">In stock, ${p.stock} left</span>` : `<span>Order, same or next day</span>`;
-      return `<li class="item"><div><h3>${p.name}</h3><p class="desc">${p.models.join(" / ")}${p.grade ? ", " + p.grade : ""}</p><div class="meta"><span class="price">${priceTxt}</span>${stock}</div></div><div class="side">${MB.control("part", p.id, "", nm)}</div></li>`;
+      return `<li class="item"><div><h3>${esc(p.name)}</h3><p class="desc">${esc(p.models.join(" / "))}${p.grade ? ", " + esc(p.grade) : ""}</p><div class="meta"><span class="price">${esc(priceTxt)}</span>${stock}</div>${q ? MB.mathHTML(q.rows, k, open.has(k)) : ""}</div><div class="side">${MB.control("part", p.id, "", nm)}</div></li>`;
     }).join("") || `<li class="empty-menu">No parts listed here yet. <a href="book.html">Ask the Wizard</a> and I'll check.</li>`;
   };
   chips.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { cat = b.dataset.pcat; draw(); } });
